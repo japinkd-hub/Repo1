@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AZWA / IZA — Afspraken Dashboard</title>
+<style>
+:root{
+  --primary:#86004D;--primary-dark:#5C0036;--primary-light:#f9ecf4;
+  --accent:#C00000;--bg:#CED1D3;--text:#1a1a1a;
+  --sidebar-w:230px;--detail-w:360px;--header-h:48px;--statusbar-h:32px;
+  --T1:#1565C0;--T2:#2E7D32;--T3:#6A1B9A;--TIZA:#86004D;
+  --radius:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;font-size:13px;
+     display:flex;flex-direction:column;height:100vh;overflow:hidden;background:var(--bg)}
+
+/* HEADER */
+header{height:var(--header-h);background:var(--primary);color:#fff;
+       display:flex;align-items:center;padding:0 14px;gap:12px;flex-shrink:0;
+       border-bottom:2px solid var(--primary-dark)}
+header h1{font-size:14px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+.hnav{display:flex;gap:4px;margin-left:auto}
+.hnav-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+          color:#fff;padding:5px 12px;border-radius:4px;cursor:pointer;font-size:12px;
+          transition:background .15s}
+.hnav-btn:hover{background:rgba(255,255,255,.28)}
+.hnav-btn.on{background:#fff;color:var(--primary);font-weight:700}
+
+/* BODY WRAP */
+.body-wrap{display:flex;flex:1;overflow:hidden}
+
+/* LEFT SIDEBAR */
+.sidebar-left{width:var(--sidebar-w);flex-shrink:0;background:#fff;
+              border-right:2px solid #ccc;overflow-y:auto;padding:10px 0}
+.sb-section{padding:8px 12px 4px}
+.sb-title{font-size:10px;font-weight:700;color:#888;letter-spacing:.8px;
+          text-transform:uppercase;margin-bottom:6px}
+.sb-search{width:100%;padding:6px 8px;border:1.5px solid #ccc;border-radius:4px;
+           font-size:12px;outline:none}
+.sb-search:focus{border-color:var(--primary)}
+.chip-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.chip{padding:3px 8px;border-radius:12px;font-size:11px;cursor:pointer;
+      border:1.5px solid #ccc;background:#fff;color:#444;transition:all .12s;user-select:none}
+.chip.on{color:#fff;border-color:transparent}
+.chip-T1{border-color:var(--T1)}.chip-T1.on{background:var(--T1)}
+.chip-T2{border-color:var(--T2)}.chip-T2.on{background:var(--T2)}
+.chip-T3{border-color:var(--T3)}.chip-T3.on{background:var(--T3)}
+.chip-IZA{border-color:var(--TIZA)}.chip-IZA.on{background:var(--TIZA)}
+.chip-src{}.chip-src.on{background:var(--primary);border-color:var(--primary)}
+.chip-ond{}.chip-ond.on{background:#444;border-color:#444;color:#fff}
+.chip-stat.on{background:#555;border-color:#555;color:#fff}
+.sb-divider{height:1px;background:#eee;margin:6px 0}
+.sb-count{font-size:11px;color:#888;padding:0 12px 6px}
+
+.leg-row{display:flex;align-items:center;gap:6px;font-size:11px;color:#444;padding:2px 0}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.leg-sq{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.leg-tf{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* MAIN AREA */
+.main-area{flex:1;overflow-y:auto;padding:12px 14px;background:var(--bg)}
+
+/* TF CARDS VIEW */
+.tf-section{margin-bottom:18px}
+.tf-hdr{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius);
+        color:#fff;margin-bottom:8px;cursor:pointer;user-select:none}
+.tf-hdr h2{font-size:13px;font-weight:700;flex:1}
+.tf-badge{background:rgba(255,255,255,.25);padding:2px 8px;border-radius:10px;font-size:11px}
+.tf-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+
+.wg-block{background:#fff;border-radius:var(--radius);border:1px solid #ddd;overflow:hidden}
+.wg-hdr{padding:6px 10px;font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px}
+.wg-body{padding:6px 8px;display:flex;flex-direction:column;gap:4px}
+
+.agr-tag{display:flex;align-items:flex-start;gap:6px;padding:5px 6px;border-radius:4px;
+         cursor:pointer;transition:background .12s;border:1px solid transparent}
+.agr-tag:hover{background:#f5f5f5;border-color:#ddd}
+.agr-tag.selected{background:var(--primary-light);border-color:var(--primary)}
+.agr-nr{font-size:10px;font-weight:700;color:#fff;padding:2px 5px;border-radius:3px;
+        white-space:nowrap;flex-shrink:0;min-width:36px;text-align:center}
+.agr-titel{font-size:12px;color:#222;line-height:1.35}
+.agr-meta{display:flex;gap:4px;margin-top:2px;flex-wrap:wrap}
+.status-pill{font-size:10px;padding:1px 6px;border-radius:9px;color:#fff;white-space:nowrap}
+
+/* LIST VIEW */
+.list-wrap{background:#fff;border-radius:var(--radius);border:1px solid #ddd;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#f0f0f0;padding:7px 10px;text-align:left;font-weight:700;
+   border-bottom:2px solid #ccc;position:sticky;top:0;z-index:2;white-space:nowrap}
+td{padding:6px 10px;border-bottom:1px solid #eee;vertical-align:top}
+tr:hover td{background:#fafafa;cursor:pointer}
+tr.selected td{background:var(--primary-light)}
+td.nr-cell{font-weight:700;font-size:11px;white-space:nowrap}
+td.tf-cell span{display:inline-block;padding:2px 6px;border-radius:3px;font-size:10px;color:#fff}
+td.src-cell span{padding:2px 6px;border-radius:3px;font-size:10px;color:#fff;display:inline-block}
+
+/* ONDERDELEN VIEW */
+.ond-section{margin-bottom:16px}
+.ond-hdr{display:flex;align-items:center;gap:8px;background:#fff;
+         border-radius:var(--radius);padding:8px 12px;margin-bottom:6px;
+         border-left:4px solid var(--primary)}
+.ond-hdr h3{font-size:13px;font-weight:700;flex:1}
+.ond-badge{background:#eee;padding:2px 8px;border-radius:10px;font-size:11px;color:#555}
+.ond-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px}
+
+/* DETAIL PANEL */
+.detail-panel{width:0;flex-shrink:0;background:#fff;border-left:2px solid #ccc;
+              overflow:hidden;transition:width .2s ease;display:flex;flex-direction:column}
+.detail-panel.open{width:var(--detail-w)}
+.dp-hdr{background:var(--primary);color:#fff;padding:10px 12px;flex-shrink:0}
+.dp-hdr-nr{font-size:10px;opacity:.8;margin-bottom:2px}
+.dp-hdr-titel{font-size:13px;font-weight:700;line-height:1.4}
+.dp-close{background:none;border:none;color:#fff;cursor:pointer;font-size:18px;
+          position:absolute;right:10px;top:10px;opacity:.8}
+.dp-hdr{position:relative}
+.dp-body{flex:1;overflow-y:auto;padding:12px}
+.dp-field{margin-bottom:10px}
+.dp-label{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;
+          letter-spacing:.5px;margin-bottom:3px}
+.dp-value{font-size:12px;color:#222;line-height:1.5}
+.dp-pills{display:flex;flex-wrap:wrap;gap:4px}
+.dp-src-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;color:#fff;font-weight:700}
+.dp-tf-badge{display:inline-block;padding:3px 8px;border-radius:3px;font-size:11px;color:#fff;font-weight:700}
+.dp-divider{height:1px;background:#eee;margin:8px 0}
+.dp-nav{background:var(--primary-dark);padding:6px 8px;display:flex;gap:4px;flex-shrink:0}
+.dp-nav-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);
+            color:#fff;padding:3px 8px;border-radius:3px;cursor:pointer;font-size:11px}
+.dp-nav-btn:hover{background:rgba(255,255,255,.35)}
+.related-tag{display:flex;align-items:flex-start;gap:6px;padding:5px 6px;
+             border-radius:4px;cursor:pointer;border:1px solid #eee;margin-bottom:3px}
+.related-tag:hover{background:#f5f5f5}
+.related-nr{font-size:10px;font-weight:700;color:#fff;padding:2px 5px;border-radius:3px;white-space:nowrap;min-width:34px;text-align:center}
+.related-t{font-size:11px;color:#444}
+
+/* CLUSTERING */
+.cl-card{border:1.5px solid #e0c8d8;border-radius:6px;margin-bottom:8px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.cl-card:hover{border-color:var(--primary)}
+.cl-card.active{border-color:var(--primary);background:var(--primary-light)}
+.cl-card-hdr{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#f7edf4}
+.cl-card.active .cl-card-hdr{background:#f0d5e6}
+.cl-name{font-size:11px;font-weight:700;color:var(--primary);flex:1}
+.cl-badge{font-size:9px;padding:2px 6px;border-radius:8px;color:#fff;font-weight:700;white-space:nowrap}
+.cl-badge-praktijk{background:#2E7D32}
+.cl-badge-onderzoek{background:#F57C00}
+.cl-nrs{display:flex;flex-wrap:wrap;gap:4px;padding:6px 10px 8px}
+.cl-nr-btn{font-size:10px;font-weight:700;color:#fff;padding:2px 7px;border-radius:3px;
+           background:var(--primary);cursor:pointer;transition:opacity .12s}
+.cl-nr-btn:hover{opacity:.8}
+
+/* DP CLUSTER SECTION */
+.dp-cl-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.dp-cl-btn{display:flex;align-items:flex-start;gap:5px;padding:5px 7px;border-radius:4px;
+           cursor:pointer;border:1.5px solid #e0c8d8;background:#fdf5fa;transition:all .12s;width:100%}
+.dp-cl-btn:hover{background:var(--primary-light);border-color:var(--primary)}
+.dp-cl-nr{font-size:10px;font-weight:700;color:#fff;padding:2px 5px;border-radius:3px;white-space:nowrap}
+.dp-cl-t{font-size:11px;color:#333;line-height:1.35}
+
+/* STATUS BAR */
+.status-bar{height:var(--statusbar-h);background:var(--primary-dark);color:#fff;
+            display:flex;align-items:center;padding:0 12px;gap:16px;flex-shrink:0;font-size:11px}
+.sb-hint{margin-left:auto;opacity:.6;font-size:10px}
+.stat-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:3px}
+.stat-sq{width:8px;height:8px;border-radius:1px;display:inline-block;margin-right:3px}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:40px;color:#888;font-size:13px}
+
+/* HIDDEN */
+.hidden{display:none!important}
+/* ─── Toggle group button ─── */
+.sb-grp-toggle{font-size:10px;padding:2px 7px;border-radius:3px;border:1px solid currentColor;cursor:pointer;background:transparent;line-height:1.4;color:#86004D;flex-shrink:0}
+.sb-grp-toggle:hover{background:#f9ecf4}
+
+/* ─── DP Settings panel ─── */
+#dpSettingsPanel{position:fixed;bottom:62px;left:0;width:230px;background:#fff;border:1.5px solid #e0c8d8;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.18);z-index:200;display:none;max-height:70vh;overflow-y:auto}
+.dps-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 6px;border-bottom:1px solid #eee;background:var(--primary);color:#fff;border-radius:4px 4px 0 0}
+.dps-header span{font-size:11px;font-weight:700}
+.dps-close{background:none;border:none;color:#fff;cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
+.dps-subtitle{font-size:9.5px;color:#888;padding:5px 12px 2px;text-transform:uppercase;letter-spacing:.5px}
+.dps-row{display:flex;align-items:center;gap:7px;padding:4px 12px;font-size:11px;color:#333;cursor:pointer;width:100%;border:none;background:none}
+.dps-row:hover{background:#f5f5f5}
+.dps-row input{cursor:pointer;accent-color:var(--primary)}
+.sb-settings-footer{padding:8px 12px;border-top:1px solid #eee}
+.sb-settings-btn{width:100%;padding:6px 10px;background:#f9ecf4;border:1px solid #e0c8d8;border-radius:4px;font-size:11px;color:var(--primary);cursor:pointer;text-align:left;transition:all .15s}
+.sb-settings-btn:hover{background:#f0d5e6;border-color:var(--primary)}
+
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#f0f0f0}
+::-webkit-scrollbar-thumb{background:#bbb;border-radius:3px}
+
+/* ─── Aanspreekpunten Branches ─── */
+.dp-contacts{margin-top:2px}
+.dp-contact-group{margin-bottom:7px}
+.dp-contact-group-label{font-size:10px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;line-height:1.4}
+.dp-contact-toel{font-weight:400;color:#999;font-style:italic;text-transform:none;letter-spacing:0}
+.dp-contact-person{display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:4px;background:#faf5f8;border:1px solid #eedde7;margin-bottom:2px}
+.dp-contact-person:hover{background:#f0e0eb;border-color:var(--primary-light)}
+.dp-contact-branche{font-size:9px;font-weight:700;color:#fff;background:var(--primary);padding:2px 5px;border-radius:3px;white-space:nowrap;flex-shrink:0}
+.dp-contact-naam{font-size:11px;color:#333;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dp-contact-email{font-size:10px;color:var(--primary);cursor:pointer;white-space:nowrap;flex-shrink:0;padding:1px 4px;border-radius:3px;border:1px solid transparent}
+.dp-contact-email:hover{background:#f0d0e4;border-color:var(--primary-light)}
+.dp-contact-empty{font-size:11px;color:#bbb;font-style:italic;padding:2px 0 3px}
+.dp-copy-btn{width:100%;padding:5px 8px;background:#f5eaf2;border:1px solid #d4a8c8;border-radius:4px;font-size:11px;color:var(--primary);cursor:pointer;text-align:center;transition:all .15s;display:block}
+.dp-copy-btn:hover{background:#ead0e4;border-color:var(--primary)}
+
+/* HLO-cluster */
+.hlo-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;margin-right:3px}
+.dp-hlo-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.hlo-chip{padding:2px 8px;border-radius:10px;font-size:10px;cursor:pointer;border:1px solid transparent;transition:all .15s}
+.hlo-chip:hover{opacity:.85;border-color:currentColor}
+.hlo-chip.active{border:2px solid var(--primary);box-shadow:0 0 0 1px var(--primary)}
+.sb-hlo-list{display:flex;flex-direction:column;gap:3px;margin-top:4px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AZWA / IZA — Afspraken &amp; Voortgang</h1>
+  <nav class="hnav">
+    <button class="hnav-btn on" id="navT" onclick="setView('thematafels')">Thematafels</button>
+    <button class="hnav-btn" id="navL" onclick="setView('lijst')">Lijst</button>
+    <button class="hnav-btn" id="navO" onclick="setView('onderdelen')">Onderdelen</button>
+  </nav>
+</header>
+
+<div class="body-wrap">
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-left">
+    <div class="sb-section">
+      <div class="sb-title">Zoeken</div>
+      <div style="display:flex;gap:4px;align-items:center">
+        <input class="sb-search" id="q" type="search" placeholder="Nr., titel, trekker…" oninput="applyFilters()" style="flex:1">
+        <button id="copyLinkBtn" onclick="copyFilterLink()" style="padding:4px 7px;border-radius:4px;font-size:10px;cursor:pointer;border:1px solid #ccc;background:#fff;white-space:nowrap;flex-shrink:0" title="Kopieer filterlink">🔗</button>
+      </div>
+    </div>
+    <div class="sb-divider"></div>
+
+    <div class="sb-section">
+      <div class="sb-title" style="display:flex;align-items:center;justify-content:space-between">Thematafel <button class="sb-grp-toggle" id="toggle-tf" onclick="toggleGroup('tf')">↓ uit</button></div>
+      <div class="chip-row" id="tf-chips"></div>
+    </div>
+    <div class="sb-divider"></div>
+
+    <div class="sb-section">
+      <div class="sb-title" style="display:flex;align-items:center;justify-content:space-between">Bron <button class="sb-grp-toggle" id="toggle-src" onclick="toggleGroup('src')">↓ uit</button></div>
+      <div class="chip-row" id="src-chips"></div>
+    </div>
+    <div class="sb-divider"></div>
+
+    <div class="sb-section">
+      <div class="sb-title" style="display:flex;align-items:center;justify-content:space-between">Status <button class="sb-grp-toggle" id="toggle-stat" onclick="toggleGroup('stat')">↓ uit</button></div>
+      <div class="chip-row" id="stat-chips"></div>
+    </div>
+    <div class="sb-divider"></div>
+
+    <div class="sb-section">
+      <div class="sb-title" style="display:flex;align-items:center;justify-content:space-between">Onderdeel (IZA) <button class="sb-grp-toggle" id="toggle-ond" onclick="toggleGroup('ond')">↓ uit</button></div>
+      <div class="chip-row" id="ond-chips"></div>
+    </div>
+    <div class="sb-divider"></div>
+
+    <div class="sb-count" id="result-count"></div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-title">Clustering</div>
+      <div id="cl-sidebar"></div>
+    </div>
+      <div class="sb-section">
+        <div class="sb-title">HLO-cluster</div>
+        <div id="hlo-sidebar"></div>
+      </div>
+
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-title">Legenda Status</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#0277BD"></span> Actief</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#2E7D32"></span> Op schema</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#C00000"></span> Aandacht</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#888"></span> Niet gestart</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#aaa"></span> Geparkeerd</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#bbb"></span> Onbekend</div>
+    </div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-title">Thematafels</div>
+      <div class="leg-row"><span class="leg-tf" style="background:var(--T1)"></span> T1 — Medtech &amp; Digitale Zorg</div>
+      <div class="leg-row"><span class="leg-tf" style="background:var(--T2)"></span> T2 — Opschaling Passende Zorg</div>
+      <div class="leg-row"><span class="leg-tf" style="background:var(--T3)"></span> T3 — Databeschikbaarheid &amp; AI</div>
+      <div class="leg-row"><span class="leg-tf" style="background:var(--TIZA)"></span> IZA — Overige Afspraken</div>
+    </div>
+  <div class="sb-settings-footer">
+    <button class="sb-settings-btn" onclick="toggleDpSettings()">&#9881; Instellingen detailkolom</button>
+  </div>
+  </aside>
+
+  <!-- DP Settings panel -->
+  <div id="dpSettingsPanel"></div>
+
+  <!-- MAIN AREA -->
+  <main class="main-area" id="mainArea">
+    <!-- Progress bars -->
+    <div id="tf-progress-bars" style="margin-bottom:10px;display:flex;flex-direction:column;gap:6px"></div>
+    <!-- Thematafels view -->
+    <div id="viewThematafels"></div>
+    <!-- Lijst view -->
+    <div id="viewLijst" class="hidden">
+      <div class="list-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nr.</th><th>Titel</th><th>Thematafel</th><th>Bron</th>
+              <th>Werkgroep</th><th>Status</th><th>Deadline</th>
+            </tr>
+          </thead>
+          <tbody id="listBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Onderdelen view -->
+    <div id="viewOnderdelen" class="hidden"></div>
+  </main>
+
+  <!-- DETAIL PANEL -->
+  <aside class="detail-panel" id="detailPanel">
+    <div class="dp-hdr">
+      <div class="dp-hdr-nr" id="dpNr"></div>
+      <div class="dp-hdr-titel" id="dpTitel"></div>
+      <button class="dp-close" onclick="closeDetail()" aria-label="Detailpaneel sluiten">✕</button>
+    </div>
+    <div class="dp-nav" id="dpNav"></div>
+    <div class="dp-body" id="dpBody"></div>
+  </aside>
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <span><span class="stat-dot" style="background:#0277BD"></span>Actief</span>
+  <span><span class="stat-dot" style="background:#2E7D32"></span>Op schema</span>
+  <span><span class="stat-dot" style="background:#C00000"></span>Aandacht</span>
+  <span><span class="stat-dot" style="background:#888"></span>Niet gestart</span>
+  <span><span class="stat-dot" style="background:#aaa"></span>Geparkeerd</span>
+  <span><span class="stat-dot" style="background:#bbb"></span>Onbekend</span>
+  <span class="sb-hint">Esc = sluit paneel &nbsp;|&nbsp; Klik op afspraak voor details</span>
+</div>
+
+<script>
+function validateAGRS(data) {
+  const required = ['nr','t','status','tf','wg','kern'];
+  data.forEach(d => required.forEach(k => {
+    if (!d[k]) console.warn(`Record ${d.nr}: veld '${k}' ontbreekt`);
+  }));
+}
+// === DATA ===
+
+// ═══ AANSPREEKPUNTEN BRANCHES ════════════════════════════════
+// Gevuld vanuit Excel-tab "Aanspreekpunten Branches" in v5
+// Personen worden ingevuld door elke branche; dashboard laadt automatisch
+const CONTACTS = [
+  { id:"WG_MEDTECH",    label:"Werkgroep Medische Technologie",           toel:"ZN vertegenwoordiging",                                   personen:[] },
+  { id:"WG_HLO_TECH",  label:"HLO Werkgroep Technologie (cluster 8)",    toel:"HLO specifiek",                                           personen:[] },
+  { id:"WG_DHZ",       label:"Werkgroep Digitale en Hybride Zorg",        toel:"",                                                        personen:[] },
+  { id:"BO_MEDTECH",   label:"Bureauoverleg Thematafel Medtech & Digitale Zorg", toel:"coördinatie IZA/AZWA/HLO",                         personen:[] },
+  { id:"TF_OPSCHALING",label:"Thematafel Opschaling Passende Zorg",       toel:"",                                                        personen:[] },
+  { id:"TF_DAI",       label:"Werkgroep Realisatie AI in de Zorg",        toel:"onder Thematafel Databeschikbaarheid en AI",               personen:[] },
+  { id:"IBZ",          label:"Informatieberaad Zorg",                     toel:"onder Thematafel Databeschikbaarheid en AI",               personen:[] },
+  { id:"TF_ARBEIDSMARKT",label:"Thematafel Arbeidsmarkt en opleiden",     toel:"",                                                        personen:[] },
+  { id:"TF_1LIJN",     label:"Thematafel Versterken 1e lijn",             toel:"incl. HLO-specifieke onderwerpen",                        personen:[] },
+  { id:"TF_ACUTE",     label:"Thematafel Versterken acute zorg en MSZ",   toel:"incl. Project C1 Triage MSZ",                             personen:[] }
+];
+
+// ═══ HLO-CLUSTER DATA ════════════════════════════════════════
+const HLO_COLORS = {
+  'C5':'#DEEBF7','C6':'#FCE4D6','C7':'#E2EFDA','C8':'#FFF2CC',
+  'C11':'#FDEBD0','C13':'#EAD1DC','C14':'#F4CCCC','C15':'#D0E4F1','C16':'#E8DAEF'
+};
+const HLO_TEXT_COLORS = {
+  'C5':'#1F4E79','C6':'#833C00','C7':'#375623','C8':'#7F6000',
+  'C11':'#833C00','C13':'#4A0020','C14':'#C00000','C15':'#1F4E79','C16':'#4A235A'
+};
+function hloColor(val) {
+  if (!val || val==='—') return '#F2F2F2';
+  const first = val.split('/')[0].trim().split(' ')[0];
+  return HLO_COLORS[first] || '#F2F2F2';
+}
+function hloTextColor(val) {
+  if (!val || val==='—') return '#666';
+  const first = val.split('/')[0].trim().split(' ')[0];
+  return HLO_TEXT_COLORS[first] || '#333';
+}
+let activeHlo = null;
+
+const AGRS = [{"nr":"1.1","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Innovatieplatform","kern":"VWS stimuleert bestaande platformen (Digizo.nu en ZE&GG) als plek om innovatievraagstukken te agenderen, evalueren, opschalen en best practices te delen. Bestaande platformen nemen naast digitalisering en AI ook medtech mee als middel in herontwerp en standaardisatie van processen.","trekker":"VWS-Z & VWS-GMT","deadline":"Q1 2027","status":"Nog niet gestart","vg":"VWS in overleg met Zorg voor Innoveren om platform door te ontwikkelen; prognose vernieuwde opdrachtbrief zomer 2026.","prio":"Geprioriteerd","samenhang":"↔ Digizo.nu / ZE&GG  |  ↔ Medtech 1.3 (opschalen innovaties)","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"—","mib":"KIA G&Z | Missie III: Meedoen met ziekte/beperking\nOnderwerp: Innovatieplatform medtech — publiek-private samenwerking rondom assistieve en medische technologieën\n+ KIA ST | Imaging, Sensors & Mechatronics","ezk":"EZK Groeimarkt: Machinebouw / MedTech (5,2% groei/jr)\nNTS: Imaging Technologies + Mechatronics & Opto-Mechatronics\nNGF: NXTGEN Hightech (biomedische productietechnologie,\n     Lab-on-Chip, Organ-on-Chip)\nInstrument: HHT Strategisch Programma Medische Technologie","src":"Medtech","ond":"AZWA"},{"nr":"1.2","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Internationale samenwerking","kern":"VWS zet extra in op netwerken met landen zoals India, Zweden en Japan om samen te werken en relevante arbeidsbesparende innovaties voor Nederland te benutten.","trekker":"VWS-GMT","deadline":"Doorlopend","status":"Achter op schema","vg":"Werkgroep heeft goedkeuring gegeven voor opdracht aan Zweedse ambassade (ecosysteem in kaart brengen). VWS werkt aan soft landing programma India.","prio":"Geprioriteerd","samenhang":"—","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"—","mib":"KIA G&Z | Internationalisering\nOnderwerp: Internationale samenwerking medtech — handelsdiplomatie, Europese markttoegang, export LSH-innovaties","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nInstrument: Handelsdiplomatie + aantrekken buitenlandse\ninvesteringen | Horizon Europe | IPCEI\nDoel: internationale marktpositie NL medtech versterken","src":"Medtech","ond":"AZWA"},{"nr":"1.3","hlo":"C8 Technologie / C7 Kennis","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Schaalbare innovaties","kern":"Gedurende AZWA worden per sector door AZWA-partijen innovaties geselecteerd die bijdragen aan arbeidsbesparing, werkplezier of arbeidsproductiviteit voor verdere opschaling. AZWA-partijen committeren leden aan implementatie.","trekker":"n.t.b.","deadline":"Doorlopend","status":"Op schema","vg":"VWS plant eerste overleg eerste helft april; in combinatie met afspraken Financiering bundelen & Faciliteren.","prio":"Geprioriteerd","samenhang":"↔ Medtech 1.1 (innovatieplatform)  |  ↔ Medtech 3.5 / 3.7","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"Medtech doorbraakmiddel\nSchaalbare innovaties: opschaling hulpmiddelen\n(incontinentiemateriaal, vacuumtherapie, stoma sensor)","mib":"KIA G&Z | Missie II+III: Zorg in leefomgeving + Meedoen\nOnderwerp: Schaalbare medtech-innovaties — opschaling bewezen toepassingen\nKIA ST | Sensors, Imaging, Mechatronics (enabling tech)\nKIA DIG | IP2: Domein-specifieke foundation-modellen","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nNTS: Imaging, Mechatronics, Biomolecular & Cell Tech\nNGF: NXTGEN Hightech — schaalbaarheid medisch-technologische\n     productie | RegMed XB (cel-/gentherapie, pilot fabrieken)\nInstrument: WBSO + Innovatiekrediet voor opschaling","src":"Medtech","ond":"AZWA"},{"nr":"2.1","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Innovatieprogramma (vraaggestuurd)","kern":"VWS zet programma op voor vraaggestuurde, arbeidsbesparende medtech-ontwikkeling via NWO, ZonMw, RVO, Health Holland. Nauwe samenwerking met eindgebruikers; principes passende zorg als voorwaarde.","trekker":"VWS-GMT","deadline":"Q2 2026","status":"Gestart","vg":"NWO, ZonMw, RVO en Health Holland schrijven op verzoek VWS een eerste voorstel. Wordt in april aan werkgroep voorgelegd.","prio":"Geprioriteerd","samenhang":"↔ Medtech 2.2 (financiering)  |  ↔ AI Werkgroep (doorbraakafspraak AI)","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"Medtech doorbraakmiddel\nVraaggestuurd innovatieprogramma als basis\nvoor opschaling 3 medische hulpmiddelen","mib":"KIA G&Z | Missie II+III: Zorg in leefomgeving + Meedoen\nOnderwerp: Vraaggestuurd innovatieprogramma medtech — market-pull voor PPS\nKIA ST | Biomolecular & Cell Tech, Imaging, Sensors\nKIA DIG | IP2: Domein-AI voor zorg","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nNGF: NXTGEN Hightech — vraaggestuurde innovatieprogramma's\n     biomedische productietechnologie\nInstrument: WBSO + PPS-subsidies EZK/NWO\nDoel: marktcreatie NL medtech via vraag-pull mechanisme","src":"Medtech","ond":"AZWA"},{"nr":"2.2","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Afstemmen van financiering innovatie","kern":"VWS stemt met andere ministeries, NWO, RVO, Health Holland, ZonMw, NZa en zorgverzekeraars af om bestaande innovatieregelingen bijeen te brengen. Afspraken over maatschappelijk verantwoorde prijsmodellen inclusief services en beschikbaarheid.","trekker":"VWS-GMT","deadline":"Q2 2026","status":"Gestart","vg":"NWO, ZonMw, RVO en Health Holland schrijven eerste voorstel (zelfde traject als 2.1). Wordt in april aan werkgroep voorgelegd.","prio":"Geprioriteerd","samenhang":"↔ Medtech 2.1  |  ↔ Medtech 3.5 (financiering bundelen)","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"—","mib":"KIA G&Z | Randvoorwaarden: Financiering & valorisatie\nOnderwerp: Afstemmen financiering innovatie — cofinanciering publiek/privaat, NGF-instrumenten","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nInstrument: NGF cofinanciering | WBSO | Innovatiekrediet\n            | InvestNL risicokapitaal voor medtech scale-ups\nDoel: afstemming financieringsmix publiek-privaat","src":"Medtech","ond":"AZWA"},{"nr":"3.1","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Integratie in IZA/HLO","kern":"Om afspraken rondom arbeidsbesparende medtech succesvol met IZA en HLO te integreren, wordt verbinding gelegd met lopende afspraken digitale en hybride zorg. Lessen Digizo.nu worden meegenomen. Afstemming met doorbraakafspraak AI om overlap te voorkomen.","trekker":"VWS-Z","deadline":"Q2 2026","status":"Nog te starten","vg":"VWS maakt korte notitie ter bespreking in werkgroep(en) met belangrijkste verbindingen IZA/AZWA/HLO afspraken digitale en hybride zorg en AI.","prio":"Geprioriteerd","samenhang":"↔ Werkgroep Digitale & Hybride Zorg  |  ↔ AI Werkgroep  |  ↔ HLO Werkgroep Technologie","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"—","mib":"KIA G&Z | Prioriteit 4: Structurele samenwerking zorgakkoorden\nOnderwerp: Integratie medtech-innovaties in IZA/HLO — aansluiting KIA-programma's op zorgakkoorden-governance","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nDoel: Integratie medtech-innovaties in zorgakkoorden via\n      strategische inkoop overheid (EZK-instrument)\nEZK Industriebeleid: vraagstimulering via overheidsinkoop\n      als doorbraakstrategie voor innovatieve MedTech","src":"Medtech","ond":"AZWA"},{"nr":"3.2","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Ondersteuning innovators (MDR/IVDR)","kern":"Om innovatoren te ondersteunen bij vragen over MDR en IVDR wordt het loket van Zorg Voor Innoveren versterkt.","trekker":"VWS-GMT","deadline":"2027","status":"Gestart","vg":"VWS geeft opdracht aan RVO om in Europees verband (EU4Health Joint Action) expertise over MDR/IVDR op te doen en via Zorg voor Innoveren te verspreiden. Geraamd: €50.000/jaar.","prio":"Geprioriteerd","samenhang":"—","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"—","mib":"KIA G&Z | Valorisatie & Marktcreatie\nOnderwerp: MDR/IVDR ondersteuning innovators — markttoegang EU, regulatoire begeleiding LSH-bedrijven","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nNTS: Imaging + Mechatronics (productieregulering MDR/IVDR)\nInstrument: HHT Strategisch Programma Medische Technologie\n            — begeleiding innovators bij CE-markering\nDoel: regulatoir pad voor NL medtech-bedrijven naar EU-markt","src":"Medtech","ond":"AZWA"},{"nr":"3.3","hlo":"C7 Kennis / C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Innovaties in kaart (horizonscan)","kern":"Zorginstituut Nederland geeft horizonscan medtech vorm, ook via International Horizon Scanning Initiative (IHSI). AZWA-partijen gebruiken resultaten voor waardevolle medtech innovaties.","trekker":"Zorginstituut","deadline":"2027","status":"Gestart","vg":"Zorginstituut neemt deel aan IHSI. Brengt behoeften voor horizonscanning bij AZWA partners in kaart.","prio":"Geprioriteerd","samenhang":"↔ Medtech 3.4 (doelmatige inzet)","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"Medtech doorbraakmiddel\nHorizonscan als selectie-instrument voor\nwelke hulpmiddelen in aanmerking komen","mib":"KIA G&Z | Monitoring & Evaluatie\nOnderwerp: Horizonscan medtech-innovaties — systematische monitoring opkomende medische technologieën","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nNTS: Imaging + Mechatronics (horizonscan sleuteltechnologieën)\nInstrument: NTS Actieagenda's per sleuteltechnologie\nDoel: strategische monitoring opkomende medtech voor\n      EZK-investeringsprioriteiten","src":"Medtech","ond":"AZWA"},{"nr":"3.4","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Doelmatige inzet dure medtech","kern":"AZWA-partijen verkennen mogelijkheden voor doelmatige inzet dure medische technologie (analogie sluis dure geneesmiddelen). Waar nodig landelijke en regionale afspraken ziekenhuizen-zorgverzekeraars over aanschaf en inzet in aansluiting op netwerkzorg.","trekker":"n.t.b.","deadline":"Q4 2026","status":"Nog te starten","vg":"ZN, FMS en FME doen aanzet voor concretiseren afspraak. VWS en Zorginstituut doen eerste duiding in relatie tot VVTB programma en Pakketbeheer.","prio":"Geprioriteerd","samenhang":"↔ Medtech 3.3 (horizonscan)  |  ↔ Pakketbeheer/VVTB programma ZIN","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"—","mib":"KIA G&Z | Randvoorwaarden: Betaalbaarheid & kwaliteit\nOnderwerp: Doelmatige inzet dure medtech — waardebeoordeling, kosteneffectiviteit als randvoorwaarde voor opschaling","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nDoel: Doelmatige inzet dure medtech via strategische inkoop\n      overheid en EU (EZK-instrument marktcreatie)\nInstrument: WBSO + kosteneffectiviteitstoetsing voor NGF-\n            investeringsbeslissingen","src":"Medtech","ond":"AZWA"},{"nr":"3.5","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Financiering bundelen & richten","kern":"AZWA-partijen maken plan van aanpak om verschillende financieringsinstrumenten gericht op ontwikkeling, evaluatie, implementatie en opschaling van technologie meer te bundelen en te richten op specifieke onderwerpen.","trekker":"n.t.b.","deadline":"Q4 2026","status":"Nog te starten","vg":"VWS plant eerste overleg eerste helft april; in combinatie met afspraken 1.3 (Schaalbare innovaties) en 3.7 (Faciliteren opschaling).","prio":"Geprioriteerd","samenhang":"↔ Medtech 1.3  |  ↔ Medtech 2.2  |  ↔ Medtech 3.7","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"Medtech doorbraakmiddel\nFinanciering bundelen voor landelijke opschaling\nhulpmiddelen (incontinentie, wondzorg, stoma)","mib":"KIA G&Z | Randvoorwaarden: Financiering & valorisatie\nOnderwerp: Financiering bundelen — PPS-financieringsstructuren voor landelijke opschaling medtech","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nNGF: NXTGEN Hightech + RegMed XB — financiering\n     bundelen voor pilot fabrieken en opschaling\nInstrument: EZK PPS-financiering + InvestNL\nDoel: gerichte kapitaalalllocatie voor marktdoorbraak medtech","src":"Medtech","ond":"AZWA"},{"nr":"3.6","hlo":"C7 Kennis / C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Waardebepaling medtech-innovaties","kern":"Afspraken over hoe waarde van medtech-innovaties wordt bepaald; succesvolle processen tijdig inzichtelijk. Aandacht voor verantwoorde in-/uitstroom van technologie en opname in richtlijnen of standaarden. Voortbouwen op Digizo.nu en ZE&GG.","trekker":"n.t.b.","deadline":"Q4 2026","status":"Nog te starten","vg":"VWS maakt korte notitie met opties voor synergie/samenhang met Digizo.nu, ZE&GG, Cirkel van Gepast Gebruik en AZWA afspraken Passende Zorg E3.","prio":"Geprioriteerd","samenhang":"↔ Digizo.nu / ZE&GG  |  ↔ E3 Richtlijnen passende zorg  |  ↔ Passende Zorg E2","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"Medtech doorbraakmiddel\nWaardebepaling: basis voor vergoedingsbesluit\nbij opschaling 3 hulpmiddelen","mib":"KIA G&Z | Valorisatie & Marktcreatie\nOnderwerp: Waardebepaling medtech-innovaties — Zorgtransformatiemodel, HTA, marktcreatie","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nNTS: Valorisatie sleuteltechnologieën (Imaging, Mechatronics)\nInstrument: HHT Strategisch Programma + NTS Actieagenda\nDoel: marktwaardebepaling als basis voor EZK-\n      investeringsbeslissingen en NGF-toewijzing","src":"Medtech","ond":"AZWA"},{"nr":"3.7","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Faciliteren & ondersteunen opschaling","kern":"Zorgprofessionals, patiëntvertegenwoordigers, aanbieders en financiers maken afspraken over ondersteuning, procesaanpassingen en financiering bij opschaling arbeidsbesparende technologie. Contractering voor lange termijn bekostigingsafspraken.","trekker":"n.t.b.","deadline":"Q4 2026","status":"Nog te starten","vg":"VWS plant eerste overleg eerste helft april; in combinatie met afspraken 3.5 en 1.3.","prio":"Geprioriteerd","samenhang":"↔ Medtech 3.5  |  ↔ Thematafel Contractering  |  ↔ DHZ-1 (bekostiging)","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"Medtech doorbraakmiddel [DIRECT]\nFaciliteren & opschaling:\nSlim incontinentiemateriaal,\nvacuumtherapie wondzorg, stoma sensortechnologie","mib":"KIA G&Z | Missie II+III: Opschaling bewezen innovaties\nOnderwerp: Faciliteren opschaling medtech — sleuteltaak KIA G&Z valorisatiestrategie\nKIA ST | Sensors, Imaging, Mechatronics — opschaling enabling tech\nKIA DIG | Neuromorphic computing (sensortoepassingen)","ezk":"EZK Groeimarkt: Machinebouw / MedTech — KERN\nNTS: Imaging + Mechatronics + Biomolecular\nNGF: NXTGEN Hightech (biomedische productietechnologie)\n     RegMed XB (regeneratieve geneeskunde pilot fabrieken)\nInstrument: WBSO + Innovatiekrediet + strategische inkoop\nDoel: landelijke opschaling bewezen medtech-hulpmiddelen","src":"Medtech","ond":"AZWA"},{"nr":"3.8","hlo":"C8 Technologie / C13 Richtlijnen","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Medische Technologie","t":"Ondersteuning & samenwerking professionals","kern":"VWS investeert in zorgopleidingen op verschillende niveaus (organisatieniveau, trainingen, workshops, e-learning) om professionals voor te bereiden op werken met nieuwe technologieën. Aandacht voor versterken eigen regie.","trekker":"n.t.b.","deadline":"Q4 2026","status":"Gestart","vg":"Samenwerkingsafspraken gemaakt met AZWA afspraak B3 Strategisch opleiden. Nota voor centrale aansturing ligt voor in thematafel 1 april.","prio":"Geprioriteerd","samenhang":"↔ AZWA B3 Strategisch opleiden  |  ↔ DHZ-4 (digitale vaardigheden)  |  ↔ AI PL4 (AI geletterdheid)","bron":"Monitoring medtechafspraken.xlsx; 250122 presentatie werkgroep.pdf","doorbraak":"—","mib":"KIA G&Z | Human Capital\nOnderwerp: Ondersteuning & samenwerking professionals — opleiding, talentontwikkeling, leergemeenschappen zorg & technologie","ezk":"EZK Industriebeleid: Talent & kennis\nDoel: Nederland als magneet voor technisch en digitaal talent\nInstrument: EZK Human Capital beleid, LLO-samenwerking\n            met OCW/SZW | Talent-programma's topsectoren\n            (voortgezet via generieke regelingen na 2026)","src":"Medtech","ond":"AZWA"},{"nr":"DHZ-1","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Bekostiging hybride zorg Zvw/Wlz","kern":"Per 2025 zijn er in de Zvw (en Wlz) passende prikkels en meer ruimte voor inzet en gebruik hybride zorg, inclusief stimulans voor samenwerking en coördinatie van domeinoverstijgende hybride zorg.","trekker":"VWS en NZa","deadline":"—","status":"Nog niet gestart","vg":"Subwerkgroep Bekostiging in voorbereiding. Afspraak concretiseren en voortbouwen op lopende initiatieven bekostiging; op basis van casuïstiek uit de praktijk via IZA partijen.","prio":"Geprioriteerd (subwerkgroep)","samenhang":"↔ Medtech 3.7 (faciliteren opschaling)  |  ↔ Thematafel Contractering  |  ↔ DHZ-9 (prikkels financiering)","bron":"Monitoring DHZ.xlsx; Intensiveringsagenda DHZ.pptx","doorbraak":"DHZ doorbraakmiddel\nBekostiging Zvw/Wlz: randvoorwaarde voor\nopschaling tele-/thuismonitoring 6 MSZ-zorgpaden","mib":"KIA G&Z | Missie II: Zorg in de leefomgeving\nOnderwerp: Bekostiging hybride zorg — financiële randvoorwaarden voor digitale en hybride zorgverlening\nKIA DIG | IP3: Data & Cloud — bekostigingsinfrastructuur voor DHT","ezk":"— Geen directe EZK-connectie\n(Bekostiging hybride zorg: VWS financieringsbeleid;\nbuiten scope EZK industriebeleid)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-2","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Financiering evaluatie passende hybride zorg","kern":"Partijen zorgen voor passende financiering van evaluatie van passende hybride zorg.","trekker":"ntb","deadline":"—","status":"Achter op schema","vg":"Subwerkgroep Geaccepteerd bewijs in opstart. Haakjes met ZonMw programma VVH, maar ook initiatieven van Vilans, ZE&GG etc.","prio":"Geprioriteerd (subwerkgroep)","samenhang":"↔ ZonMw programma VVH  |  ↔ ZE&GG / Vilans  |  ↔ Medtech 3.5 (financiering bundelen)","bron":"Monitoring DHZ.xlsx; Intensiveringsagenda DHZ.pptx","doorbraak":"DHZ doorbraakmiddel\nFinanciering evaluatie: onderbouwing voor\nopschaling hybride zorgpaden (COPD, hartfalen e.a.)","mib":"KIA G&Z | Missie II: Valorisatie hybride zorg\nOnderwerp: Financiering evaluatie passende hybride zorg — evidence-generatie voor zorgpaden\nKIA DIG | IP2: Domein-AI voor evaluatie zorguitkomsten","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNGF: Health-RI data-infrastructuur (financiering evaluaties)\nInstrument: WBSO voor evaluatieonderzoek digitale zorgpaden\nDoel: evidence-base voor opschaling digitale zorg als\n      groeimarkt digitale diensten","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-3","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Digitale vaardigheden burgers/patiënten & inclusie","kern":"Partijen informeren burgers/patiënten/cliënten en betrekken hen bij communicatie, aanbod en inzet hybride zorg. Aandacht voor gebruikersvriendelijkheid en voor mensen met lage gezondheids- en digitale vaardigheden.","trekker":"PFN","deadline":"—","status":"Op schema","vg":"Subwerkgroep bouwt voort op en verbindt met alle lopende initiatieven.","prio":"Geprioriteerd (subwerkgroep)","samenhang":"↔ DHZ-4 (digitale vaardigheden medewerkers)  |  ↔ DHZ-5 (toegankelijkheid)  |  ↔ AI PL4-22 (publiekscampagne / Digivaardig)","bron":"Monitoring DHZ.xlsx; Intensiveringsagenda DHZ.pptx","doorbraak":"—","mib":"KIA G&Z | Missie II: Smart tech for everyone, everywhere\nOnderwerp: Digitale vaardigheden burgers/patiënten — SEP-inclusief gebruik digitale zorg\nKIA DIG | DHT-gebruiksonderzoek, digitale inclusie","ezk":"EZK Industriebeleid: Talent & kennis (digitale vaardigheden)\nGroeimarkt: Digitale diensten (AI) — digitale inclusie\nDoel: Nederland als magneet voor digitaal talent;\n      digitale vaardigheden als randvoorwaarde\n      voor AI-toepassingen in zorg","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-4","hlo":"C8 Technologie / C13 Richtlijnen","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Digitale vaardigheden zorgmedewerkers (onderwijs/LLO)","kern":"Per 2025 vormen veranderkundige en digitale vaardigheden een integraal onderdeel van het onderwijs voor zorg en welzijn. Werkgevers zorgen dat dit integraal onderdeel wordt van leven lang ontwikkelen van medewerkers. Kan gefinancierd worden uit algemene transitiemiddelen.","trekker":"PFN","deadline":"—","status":"Afgerond","vg":"Subwerkgroep bouwt voort op en verbindt met alle lopende initiatieven.","prio":"Geprioriteerd (subwerkgroep)","samenhang":"↔ AZWA B3 Strategisch opleiden  |  ↔ Medtech 3.8  |  ↔ AI PL4-19 (AI geletterdheid)","bron":"Monitoring DHZ.xlsx; Intensiveringsagenda DHZ.pptx","doorbraak":"—","mib":"KIA G&Z | Human Capital\nOnderwerp: Digitale vaardigheden zorgmedewerkers — LLO, opleiding voor gebruik DHT\nKIA DIG | Talent & Capaciteitsopbouw digitalisering","ezk":"EZK Industriebeleid: Talent & kennis\nGroeimarkt: Digitale diensten (AI)\nDoel: digitale vaardigheidsontwikkeling zorgprofessionals\n      als EZK-speerpunt (LLO, arbeidsmarkt)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-5","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Toegankelijkheid & inclusiviteit hybride zorg / Samen beslissen","kern":"Veldpartijen zorgen dat hybride zorg toegankelijk is voor mensen en bevorderen inclusiviteit. Uitgangspunt 'digitaal als het kan'; patiënt en zorgverlener beslissen samen. Overheidspartijen faciliteren.","trekker":"PFN","deadline":"—","status":"—","vg":"Subwerkgroep bouwt voort op en verbindt met lopende initiatieven.","prio":"Geprioriteerd (subwerkgroep)","samenhang":"↔ DHZ-3 (vaardigheden burgers)  |  ↔ E3-A (samen beslissen richtlijnen)  |  ↔ Intensiveringsagenda (Samen Beslissen?)","bron":"Monitoring DHZ.xlsx; Intensiveringsagenda DHZ.pptx","doorbraak":"—","mib":"KIA G&Z | Centrale missie: Gezondheidsverschillen reduceren\nOnderwerp: Toegankelijkheid & inclusiviteit hybride zorg — 'Smart tech for everyone' inclusief mensen lage SEP","ezk":"— Geen directe EZK-connectie\n(Toegankelijkheid hybride zorg: VWS/maatschappelijk beleid;\nbuiten scope EZK industriebeleid)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-6","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Landelijke voorziening / helpdesk digitale zorg","kern":"Landelijk dekkend netwerk voor digitale zorgondersteuning: één centraal punt voor alle niet-medische vragen rondom toegang en gebruik digitale zorg, dat nauw samenwerkt met lokale, fysieke ondersteuningspunten.","trekker":"ZN & VWS","deadline":"—","status":"—","vg":"AZWA afspraak. Landelijke voorziening opschalen vanuit huidige (lokale) initiatieven.","prio":"Geprioriteerd","samenhang":"↔ Digizo.nu  |  ↔ Thematafel Databeschikbaarheid & AI (toegang digitale zorg)","bron":"Monitoring DHZ.xlsx; Intensiveringsagenda DHZ.pptx","doorbraak":"—","mib":"KIA DIG | IP3: Data & Cloud-infrastructuur\nOnderwerp: Landelijke voorziening/helpdesk digitale zorg — federatieve data-infrastructuur en cloudoplossingen voor zorg","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — cloud- en data-infrastructuur\nNGF: Health-RI (nationale gezondheidsdata-infrastructuur)\nInstrument: IPCEI cloud | EZK Data & Cloud-programma\nDoel: landelijke digitale zorginfrastructuur als\n      strategisch onderdeel digitale dienstenmarkt","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-7","hlo":"C8 Technologie / C13 Richtlijnen","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Richtlijnen & kwaliteitsstandaarden hybride zorg","kern":"Wetenschappelijke en beroepsverenigingen en andere partijen bevorderen dat professionals handvatten krijgen voor passende inzet hybride zorg in lijn met bestaande kwaliteitsstandaarden/richtlijnen. Voortbouwen op leidraden en informatiekaarten.","trekker":"FMS, NHG, AKWA, V&VN","deadline":"—","status":"—","vg":"Na eerdere sectoroverstijgende insteek nu aanpak per sector via wetenschappelijke verenigingen. Haakjes met AZWA afspraken Passende Zorg (E3) en ZonMw programma's.","prio":"Geprioriteerd (geen aparte subwerkgroep)","samenhang":"↔ E3 Richtlijnen passende zorg  |  ↔ ZonMw  |  ↔ Medtech 3.6 (waardebepaling)","bron":"Monitoring DHZ.xlsx; Intensiveringsagenda DHZ.pptx","doorbraak":"—","mib":"KIA G&Z | Missie II+III: Kwaliteitsstandaarden\nOnderwerp: Richtlijnen & kwaliteitsstandaarden hybride zorg — wetenschappelijke onderbouwing voor DHT-inzet","ezk":"EZK Groeimarkt: Machinebouw / MedTech\nNTS: Imaging + Mechatronics (kwaliteitsstandaarden DHT)\nInstrument: NEN-normering + EZK standaardisatiebeleid\nDoel: internationale standaarden voor NL digitale\n      medische hulpmiddelen (concurrentiepositie)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-8","hlo":"C8 Technologie / C11 Zorginkoop","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Contractering hybride zorg (alle contracten 2025)","kern":"Zorgverzekeraars, zorgkantoren en gemeenten maken uiterlijk in 2025 in alle contracten met zorgaanbieders inhoudelijke passende afspraken over aanbod en inzet gebruiksvriendelijke hybride zorg. En afspraken hoe benodigde transformatie te realiseren.","trekker":"ZN","deadline":"—","status":"—","vg":"Is deels going business vanuit contracteringsafspraken met stimulans vanuit inkoopkader ZVW en landelijke kaders WLZ en WMO.","prio":"Geprioriteerd als Contractering","samenhang":"↔ Thematafel Contractering  |  ↔ DHZ-1 (bekostiging)  |  ↔ E2-8 (gelijkgericht contracteren)","bron":"Monitoring DHZ.xlsx","doorbraak":"DHZ doorbraakmiddel\nContractering hybride zorg: vereiste voor\nopschaling tele-/thuismonitoring MSZ","mib":"— Geen directe MIB/KIA-connectie\n(Contractering hybride zorg is inkoop-/beleidsinstrument; buiten scope technologische innovatie)","ezk":"— Geen directe EZK-connectie\n(Contractering hybride zorg: zorginkoop VWS/NZa;\nbuiten scope EZK industriebeleid)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-9","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Financieringssystematiek hybride zorg / prikkels","kern":"Het leveren van hybride zorg vraagt (voor)investeringen en passende financieringssystematiek doorvertaald in contracten, waarbij de prikkels gericht zijn op een zo efficiënt mogelijke zorgverlening.","trekker":"n.t.b.","deadline":"—","status":"—","vg":"Is deels going business vanuit contracteringsafspraken met stimulans vanuit inkoopkader ZVW en landelijke kaders WLZ en WMO.","prio":"Geprioriteerd als Contractering","samenhang":"↔ DHZ-1 (bekostiging Zvw)  |  ↔ DHZ-8 (contractering)  |  ↔ Medtech 3.7","bron":"Monitoring DHZ.xlsx","doorbraak":"DHZ doorbraakmiddel\nFinancieringssystematiek: structurele bekostiging\nvoor hybride zorgpaden na opschaling","mib":"— Geen directe MIB/KIA-connectie\n(Financieringssystematiek is bekostigingsbeleid; buiten scope MIB technologische innovatie)","ezk":"— Geen directe EZK-connectie\n(Financieringssystematiek hybride zorg: VWS bekostigingsbeleid;\nbuiten scope EZK industriebeleid)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-A","hlo":"C8 Technologie / C7 Kennis","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg – Intensiveringsagenda","t":"Geaccepteerd bewijs (effectiviteit/doelmatigheid hybride zorg)","kern":"Concretisering van bewijs voor Digitale en Hybride Zorg: effectiviteit, doelmatigheid, schaalbaarheid en impact. Geprioriteerd als subwerkgroep Q1/Q2 2026.","trekker":"FMS (trekker?), ZIN, NHG","deadline":"Q2 2026","status":"In opstart","vg":"Subwerkgroep in opstart. Haakjes ZonMw programma VVH, Vilans, ZE&GG. Zie ook DHZ-2.","prio":"Geprioriteerd (subwerkgroep)","samenhang":"↔ DHZ-2 (financiering evaluatie)  |  ↔ ZonMw / ZE&GG  |  ↔ E2 (bewijs opschaling)","bron":"Intensiveringsagenda DHZ.pptx","doorbraak":"—","mib":"KIA G&Z | Missie II: Valorisatie & evidencebasis\nOnderwerp: Geaccepteerd bewijs effectiviteit hybride zorg — real-world validation voor opschaling\nKIA DIG | IP2: Domein-AI voor uitkomstmeting","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNGF: Health-RI + AiNed (evidence-generatie AI toepassingen)\nInstrument: WBSO voor effectiviteitsonderzoek DHT\nDoel: real-world validatie als basis voor marktcreatie\n      digitale zorgproducten (groeimarkt)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-B","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg – Intensiveringsagenda","t":"Bouwblokken zorgpaden/-processen Digitale en Hybride Zorg","kern":"Sectoroverstijgende en sectorale uitwerking van bouwblokken voor zorgpaden en -processen voor Digitale en Hybride Zorg.","trekker":"Sectoraal (FMS, NHG, V&VN, etc.)","deadline":"Q2 2026","status":"In voorbereiding","vg":"Uitwerking per sector in combinatie met intensiveringsagenda onderwerpen. Nog nader te concretiseren.","prio":"Geprioriteerd","samenhang":"↔ DHZ-7 (richtlijnen)  |  ↔ E3-B (zelf/thuis/digitaal als het kan)","bron":"Intensiveringsagenda DHZ.pptx","doorbraak":"DHZ doorbraakmiddel [DIRECT]\nBouwblokken zorgpaden/-processen:\n- Tele-/thuismonitoring MSZ (COPD, hartfalen,\n  diabetes, astma, hypertensie, IBD)\n- Digitale EMDR + beslisondersteuning (GGZ)\n- Digitale triage (huisartsenzorg)\n- DigiRehab / digitale training (VVT)","mib":"KIA G&Z | Missie II: Zorg in de leefomgeving — KERN\nOnderwerp: Bouwblokken zorgpaden DHZ — implementatie digitale/hybride zorgpaden (tele-monitoring, EMDR, triage)\nKIA DIG | DHT — Digital Health Technology in de praktijk\nKIA ST | Sensors & Imaging voor tele-monitoring","ezk":"EZK Groeimarkt: Digitale diensten (AI) + Machinebouw/MedTech\nNTS: AI & Data + Imaging + Mechatronics\nNGF: NXTGEN Hightech (tele-monitoring sensors/devices)\n     Health-RI (data-infrastructuur zorgpaden)\nInstrument: Strategische overheidsinkoop als\n      vraagstimulering voor digitale zorgpaden\nDoel: opschaling DHT als deel van groeimarkt digitale diensten","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-10","hlo":"C8 Technologie / C15 Databeschikb.","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"PGO's en preventieapps buiten Zvw","kern":"Partijen zorgen ervoor dat de vraag wordt opgelost hoe om te gaan met toepassingen die gezondheid bevorderen maar geen directe link met de Zvw hebben (preventie). Dit geldt ook voor PGO's.","trekker":"—","deadline":"—","status":"Niet geprioriteerd; ongoing","vg":"Haakjes met financiering en bekostiging. Lopende initiatieven zoals DIGAnl.","prio":"Niet geprioriteerd","samenhang":"↔ DHZ-1 (bekostiging)  |  ↔ DIGAnl","bron":"Monitoring DHZ.xlsx","doorbraak":"—","mib":"KIA G&Z | Missie I: Leefstijl en leefomgeving\nOnderwerp: PGO's en preventieapps — digitale tools voor leefstijlbevordering en preventie buiten Zvw\nKIA DIG | DHT preventieapps, IP3 Health-RI data","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data (preventie-apps, PGO's)\nInstrument: WBSO voor app-ontwikkeling | Innovatiekrediet\nDoel: marktcreatie voor digitale preventietools;\n      aansluitend op groeimarkt digitale diensten","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-11","hlo":"C8 Technologie / C7 Kennis","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Toetsingskaders kwaliteit/veiligheid/privacy hybride zorg","kern":"Partijen werken mee aan tijdige herzieningen van bestaande toetsingskaders voor het borgen van kwaliteit, veiligheid, privacy, toezicht en handhaving in hybride zorgprocessen.","trekker":"—","deadline":"—","status":"Niet geprioriteerd; ongoing","vg":"Geen aparte acties. Met IGJ regulier overleg.","prio":"Niet geprioriteerd","samenhang":"↔ IGJ  |  ↔ Cyberbeveiligingswet  |  ↔ AI PL2-11 (ethische kaders)","bron":"Monitoring DHZ.xlsx","doorbraak":"—","mib":"KIA G&Z | Randvoorwaarden: Kwaliteit & veiligheid\nOnderwerp: Toetsingskaders kwaliteit/veiligheid/privacy hybride zorg — regulatoire kaders voor digitale zorgproducten","ezk":"EZK Groeimarkt: Machinebouw / MedTech (MDR/IVDR)\nNTS: Imaging + Mechatronics (kwaliteit/veiligheid DHT)\nInstrument: EZK normering + CE-markering ondersteuning\nDoel: NL als normleider voor digitale medische hulpmiddelen","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-12","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Zorgservicecentra / ZMSC's voor (sectoroverstijgende) digitale zorg","kern":"Zorgaanbieders maken (in overleg met zorgprofessionals en zorgverzekeraars) afspraken over werken met (medische/verpleegkundige) servicecentra voor digitale zorg. Partijen identificeren goede voorbeelden hybride zorg.","trekker":"VWS/ZN","deadline":"—","status":"Niet geprioriteerd; ongoing","vg":"Lopende subwerkgroep ZMSC's. Inventarisatierapport eind 2025. Project 'inrichtingsprincipes' gecoördineerd vanuit VWS (Flex).","prio":"Niet geprioriteerd","samenhang":"↔ Medtech 3.7 (faciliteren opschaling)  |  ↔ DHZ-8 (contractering)","bron":"Monitoring DHZ.xlsx","doorbraak":"DHZ doorbraakmiddel\nZorgservicecentra: uitvoeringsinfrastructuur\nvoor digitale zorgpaden incl. triage","mib":"KIA DIG | IP3: Data & Cloud, federatieve ecosystemen\nOnderwerp: Zorgservicecentra / ZMSC's — digitale zorginfrastructuur, cloudgebaseerde zorgverlening","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data + cloud-infrastructuur\nNGF: Health-RI federatieve data-ecosysteem\nInstrument: IPCEI Cloud | EZK strategische inkoop\nDoel: ZMSC's als onderdeel van digitale zorginfrastructuur\n      (groeimarkt digitale diensten)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-13","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Systeemknelpunten / Barrière Doorbrekers (geparkeerd)","kern":"Ondersteuningsstructuur zorgt voor het oplossen van systeemknelpunten, zoals aangedragen door het kenniscentrum digitale zorg.","trekker":"—","deadline":"—","status":"Geparkeerd","vg":"Initiatief Barrière Doorbrekers gestopt. Na evaluatie bepalen hoe verder, ook irt Zorg voor Innoveren, Team Overheid, Vliegende Brigade.","prio":"Geparkeerd","samenhang":"↔ Medtech 3.1 (randvoorwaarden)  |  ↔ Team Overheid","bron":"Monitoring DHZ.xlsx","doorbraak":"—","mib":"— Geen directe MIB/KIA-connectie\n(Systeemknelpunten/Barrière Doorbrekers: geparkeerd; beleid/governance-instrument)","ezk":"— Geen directe EZK-connectie\n(Systeemknelpunten geparkeerd: beleid/governance-instrument;\nbuiten scope EZK industriebeleid)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-14","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Informatievoorziening patiënten (welke digitale diensten beschikbaar — geparkeerd)","kern":"Gezamenlijke verkenning van wat nodig is om informatie te ontsluiten naar patiënten over welke vormen van digitale diensten bij welke zorgaanbieder beschikbaar zijn.","trekker":"—","deadline":"—","status":"Geparkeerd","vg":"Nadere concretisering nodig.","prio":"Geparkeerd","samenhang":"↔ DHZ-6 (landelijke voorziening)","bron":"Monitoring DHZ.xlsx","doorbraak":"—","mib":"— Geen directe MIB/KIA-connectie\n(Informatievoorziening patiënten: geparkeerd; communicatie/beleid)","ezk":"— Geen directe EZK-connectie (geparkeerd)","src":"DHZ","ond":"AZWA"},{"nr":"DHZ-15","hlo":"C8 Technologie","tf":"T1","tf_label":"Thematafel Medische technologie & digitale zorg","wg":"Werkgroep Digitale en Hybride Zorg","t":"Innovatie-ecosysteem governance (geparkeerd)","kern":"Partijen werken aan praktische handvatten en afspraken die bijdragen aan een positief innovatie- en transformatie-ecosysteem, samen met kennisinstellingen en publieke/private partijen, onder inclusieve governance structuur.","trekker":"—","deadline":"—","status":"Geparkeerd","vg":"Nadere concretisering nodig.","prio":"Geparkeerd","samenhang":"↔ Medtech 1.1 (innovatieplatform)  |  ↔ Zorg voor Innoveren","bron":"Monitoring DHZ.xlsx","doorbraak":"—","mib":"— Geen directe MIB/KIA-connectie\n(Innovatie-ecosysteem governance: geparkeerd; governance-instrument)","ezk":"— Geen directe EZK-connectie (geparkeerd)","src":"DHZ","ond":"AZWA"},{"nr":"DIG-1","hlo":"C15 Databeschikb.","tf":"IZA","tf_label":"Thematafel IZA — Digitalisering","wg":"Digitalisering / Gegevensuitwisseling","t":"Versnelling elektronische gegevensuitwisseling — standaarden en kwaliteitsregistraties","kern":"IZA-afspraak: elektronische gegevensuitwisseling tussen zorgverleners is in 2025 voor de 5 meest urgente zorgprocessen gerealiseerd (VIPP-programma's). Standaarden (HL7-FHIR, NEN7510) worden verplicht gesteld voor alle Zvw-zorgaanbieders.","trekker":"VWS / Nictiz / VIPP / Zorgverzekeraars / Zorgaanbieders","deadline":"2023–2026","status":"In uitvoering","vg":"VIPP GGZ en MSZ afgerond (2024). FHIR-verplichting per 2026 in Regeling Zorgverzekering opgenomen. Nictiz implementatiegids gepubliceerd.","prio":"Geprioriteerd","samenhang":"↔ DIG-2 MedMij/PGO  |  ↔ PZ-2 Kwaliteitsregistraties  |  ↔ AI/DHZ digitale infrastructuur","bron":"IZA (2022) Onderdeel I – Digitalisering; Nictiz jaarplan 2025; zorgakkoorden.nl","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"AI","ond":"D"},{"nr":"DIG-2","hlo":"C15 Databeschikb.","tf":"IZA","tf_label":"Thematafel IZA — Digitalisering","wg":"Digitalisering / MedMij & PGO","t":"MedMij / Persoonlijke Gezondheidsomgeving (PGO) — regie bij de patiënt","kern":"IZA-afspraak: elke burger kan via een PGO zijn zorggegevens inzien en delen. In 2025 is minimaal 50% van de Zvw-zorgaanbieders MedMij-gecertificeerd. PGO-adoptie bij burgers wordt gestimuleerd via gerichte campagnes.","trekker":"VWS / MedMij / Zorgverzekeraars / Patiëntenfederatie","deadline":"2024–2026","status":"In uitvoering","vg":"MedMij 2.0 live (Q3 2024). 65% Zvw-aanbieders gecertificeerd (meting Q1 2025). Campagne 'Jouw gezondheid, jouw data' gestart.","prio":"Monitoren","samenhang":"↔ DIG-1 Gegevensuitwisseling  |  ↔ PZ-3 Uitkomstinformatie patiënt","bron":"IZA (2022) Onderdeel I – Digitalisering; MedMij voortgangsrapportage 2025","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"AI","ond":"D"},{"nr":"E2-1","hlo":"C7 Kennis","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"Sectorale/Sectoroverstijgende overleggen (coördinatie: FMS, NVZ, UMCNL, V&VN)","t":"Stap 1: Ophalen initiatieven bij achterban","kern":"Koepelorganisaties halen passende zorg initiatieven op bij achterban via uitvraagkader. Zorgverzekeraars, patiëntenorganisaties en andere relevante partijen worden gewezen op de mogelijkheid initiatieven aan te leveren.","trekker":"FMS, NLggz, V&VN, LHV, NHG","deadline":"2026 (jaarlijks cyclisch)","status":"In uitwerking","vg":"Voorstel governance en werkwijze v3 (3 mrt 2026) voorgelegd aan BO IZA/AZWA. Uitvraagkader (voorbeeld) opgesteld als bijlage.","prio":"Structureel","samenhang":"—","bron":"E2 Bijlage AZWA-afspraak E2 (1).docx","doorbraak":"—","mib":"KIA G&Z | Missie II: Zorg in de leefomgeving\nOnderwerp: Opschaling passende zorg — market-pull vanuit samenleving via KIA-leergemeenschappen","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nDoel: ophalen initiatieven met AI/digitale toepassingen\n      als onderdeel groeimarkt digitale diensten\nInstrument: strategische inkoop overheid als vraagstimulering","src":"Passende Zorg","ond":"B"},{"nr":"E2-2","hlo":"C7 Kennis / C8 Technologie","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"Sectorale/Sectoroverstijgende overleggen","t":"Stap 2: Voorselectie en beoordeling initiatieven","kern":"Gezamenlijke lijst van potentiële initiatieven; sectorpartijen beoordelen op beoordelingsformat (arbeidsbesparing ≥20.000 fte, passende zorg principes, effectiviteit, belemmeringen).","trekker":"AZWA partijen","deadline":"2026 (jaarlijks cyclisch)","status":"In uitwerking","vg":"Beoordelingsformat en selectiekader (Excel, bijlage) opgesteld. 21 voorbeelden uit Programma Passende Zorgpraktijken ZIN worden meegenomen.","prio":"Structureel","samenhang":"↔ ZE&GG / Digizo / Less is More (bestaande programma's)","bron":"E2 Bijlage AZWA-afspraak E2 (1).docx","doorbraak":"—","mib":"KIA G&Z | Missie II: Valorisatie & marktcreatie\nOnderwerp: Voorselectie/beoordeling passende zorg-initiatieven — prioritering bewezen kosteneffectieve zorgpaden","ezk":"EZK Groeimarkt: Digitale diensten (AI) / MedTech\nDoel: beoordeling digitale en technologische passende-\n      zorgtoepassingen op EZK-innovatiecriteria\nInstrument: EZK-toetsingskader technologische haalbaarheid","src":"Passende Zorg","ond":"B"},{"nr":"E2-3","hlo":"C7 Kennis","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"Sectorale/Sectoroverstijgende overleggen","t":"Stap 3: Consultatie achterban","kern":"Sectorpartijen leggen aangeleverde initiatieven voor aan achterban ter consultatie. Voldoende tijd ingebouwd in tijdslijn.","trekker":"Sectorpartijen","deadline":"2026 (jaarlijks cyclisch)","status":"In uitwerking","vg":"—","prio":"Structureel","samenhang":"—","bron":"E2 Bijlage AZWA-afspraak E2 (1).docx","doorbraak":"—","mib":"KIA G&Z | Governance: Coalitie & stakeholders\nOnderwerp: Consultatie achterban — brede coalitie KIA-partners (patiënten, zorgprofessionals, industrie)","ezk":"— Geen directe EZK-connectie\n(Consultatie achterban: zorginhoudelijk proces;\nbuiten scope EZK industriebeleid)","src":"Passende Zorg","ond":"B"},{"nr":"E2-4","hlo":"C7 Kennis","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"Sectoroverstijgend overleg  /  Sectoraal overleg","t":"Stap 4: Besluitvorming per sector en sectoroverstijgend","kern":"Besluit: sectorspecifiek of sectoroverstijgend? Beoordeling op selectiecriteria. Uitkomst: geprioriteerd voor opschaling / niet geschikt / geen consensus (→ Thematafel).","trekker":"Sectoroverstijgend overleg","deadline":"2026 (jaarlijks cyclisch)","status":"In uitwerking","vg":"Thematafel Opschaling Passende Zorg bereidt besluitvorming voor. BO IZA/AZWA besluit jaarlijks over op te schalen initiatieven op basis van consensus.","prio":"Structureel","samenhang":"↔ Thematafel Opschaling Passende Zorg (escalatie)  |  ↔ BO IZA/AZWA","bron":"E2 Bijlage AZWA-afspraak E2 (1).docx","doorbraak":"—","mib":"KIA G&Z | Governance: Zorgakkoorden aansluiting\nOnderwerp: Besluitvorming passende zorg per sector — aansluiting KIA-prioriteiten op IZA-besluitvorming","ezk":"— Geen directe EZK-connectie\n(Bestuurlijke besluitvorming: VWS/zorgakkoorden-governance)","src":"Passende Zorg","ond":"B"},{"nr":"E2-5","hlo":"C7 Kennis","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"ZIN / FMS / V&VN / NHG (uitvoering nadere beoordeling)","t":"Stap 5: Uitvoering nadere beoordeling (duiding/richtlijn)","kern":"Nader inzicht in wetenschappelijke evidentie; afweging voordelen vs nadelen; draagvlak stakeholders. Resulteert in kwaliteitsdocument (richtlijn(module), handreiking, standpunt, duiding ZIN, adviesrapport experttafel).","trekker":"ZIN, FMS, V&VN, NHG","deadline":"Binnen 12 maanden per initiatief","status":"In uitwerking","vg":"Werkwijze sluit aan bij AQUA-leidraad. Patiëntenperspectief structureel ingebed.","prio":"Structureel","samenhang":"↔ E3 Richtlijnen passende zorg (E3-A/B/C/D)  |  ↔ Zorginstituut duiding/pakket","bron":"E2 Bijlage AZWA-afspraak E2 (1).docx","doorbraak":"—","mib":"KIA G&Z | Missie II+III: Kwaliteits- & uitkomstonderzoek\nOnderwerp: Nadere beoordeling ZIN/FMS — evidence-based toetsing toepassingen voor opschaling","ezk":"EZK Groeimarkt: Digitale diensten (AI) / MedTech\nNTS: AI & Data (ZIN-beoordeling AI-toepassingen)\nInstrument: WBSO voor beoordelingsonderzoek\nDoel: EZK-toetsingskader voor vergoeding innovatieve\n      AI-toepassingen in zorg","src":"Passende Zorg","ond":"B"},{"nr":"E2-6","hlo":"C7 Kennis","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"Thematafel Opschaling Passende Zorg  /  BO IZA/AZWA","t":"Stap 6: Definitieve agendering voor opschaling en contractering","kern":"Partijen besluiten of initiatief op implementatieagenda komt. Coördinerende partijen publiceren geselecteerde initiatieven en communiceren actief naar achterban. Opschalingsplan wordt opgesteld.","trekker":"Coördinerende partijen per sector","deadline":"2026 (jaarlijks cyclisch)","status":"In uitwerking","vg":"—","prio":"Structureel","samenhang":"↔ Thematafel Contractering (contractering geselecteerde initiatieven)","bron":"E2 Bijlage AZWA-afspraak E2 (1).docx","doorbraak":"—","mib":"KIA G&Z | Valorisatie & Marktcreatie\nOnderwerp: Definitieve agendering opschaling — KIA zorgtransformatiemodel als raamwerk","ezk":"— Geen directe EZK-connectie\n(Agendering opschaling: VWS-governance/IZA)","src":"Passende Zorg","ond":"B"},{"nr":"E2-7","hlo":"C7 Kennis","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"Zorgaanbieders / Zorgverleners","t":"Stap 7: Landelijk opschalen en implementeren","kern":"Zorgaanbieders/zorgverleners implementeren geselecteerde initiatieven zo snel mogelijk, maar uiterlijk binnen 2 jaar, volgens het principe 'pas toe of leg uit'. Gezamenlijk oplossen van knelpunten voor opschaling.","trekker":"Zorgaanbieders/-verleners","deadline":"Uiterlijk 2 jaar na selectie","status":"In uitwerking","vg":"—","prio":"Structureel","samenhang":"↔ E2-8 (contractering)  |  ↔ E2-10 (bekostiging)  |  ↔ Passende Zorg programma's","bron":"E2 Bijlage AZWA-afspraak E2 (1).docx","doorbraak":"—","mib":"KIA G&Z | Missie II: Opschaling zorg in leefomgeving\nOnderwerp: Landelijk opschalen passende zorg — Smart tech for everyone, everywhere\nKIA DIG | DHT voor digitale/hybride zorgpaden\nKIA ST | Enabling tech voor schaalbaarheid","ezk":"EZK Groeimarkt: Digitale diensten (AI) + Machinebouw/MedTech\nNTS: AI & Data + Imaging + Mechatronics\nNGF: NXTGEN Hightech + AiNed (opschaling)\nInstrument: Strategische overheidsinkoop als\n      vraagstimulering voor opschaling passende zorg\nDoel: landelijke uitrol als marktdoorbraak voor beide groeimarkten","src":"Passende Zorg","ond":"B"},{"nr":"E2-9","hlo":"C7 Kennis / C11 Zorginkoop","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"NZa","t":"Jaarlijkse monitor contractuele afspraken (NZa)","kern":"NZa ontwerpt jaarlijkse monitor bij contractuele afspraken over opschaling geselecteerde initiatieven en de daadwerkelijke opschaling in de praktijk; zo min mogelijk uitvoerings- en toezichtlast.","trekker":"NZa","deadline":"2026 (plan), 2027 (monitor)","status":"In ontwikkeling","vg":"Plan voor monitoring in opstelling. Idee: contracten 2026 opvragen bij sectoren; 2027 monitoren hoe geselecteerde initiatieven worden opgeschaald. Gelijkgericht handelen zorgverzekeraars te beoordelen.","prio":"Structureel","samenhang":"—","bron":"E2 Bijlage AZWA-afspraak E2 (1).docx","doorbraak":"—","mib":"— Geen directe MIB/KIA-connectie\n(NZa-monitor: regulering en toezicht; buiten scope MIB)","ezk":"— Geen directe EZK-connectie\n(NZa-monitor: toezichts- en reguleringsproces)","src":"Passende Zorg","ond":"B"},{"nr":"E2-10","hlo":"C7 Kennis / C11 Zorginkoop","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"VWS en NZa","t":"Ruimte maken in bekostiging passende zorg","kern":"VWS en NZa maken ruimte in de bekostiging daar waar deze het realiseren van passende zorg nog in de weg staat. Uitgangspunt: bekostiging zo eenvoudig mogelijk.","trekker":"VWS en NZa","deadline":"—","status":"Nader uit te werken","vg":"Nader uit te werken door VWS en NZa.","prio":"Structureel","samenhang":"↔ DHZ-1 (bekostiging hybride zorg)  |  ↔ Medtech 3.7 (faciliteren opschaling)","bron":"E2 Bijlage AZWA-afspraak E2 (1).docx","doorbraak":"—","mib":"— Geen directe MIB/KIA-connectie\n(Bekostigingsruimte passende zorg: financieringsbeleid; buiten scope MIB)","ezk":"— Geen directe EZK-connectie\n(Bekostigingsruimte: VWS/NZa financieringsbeleid)","src":"Passende Zorg","ond":"B"},{"nr":"E3-A","hlo":"C13 Richtlijnen","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"FMS / NHG / V&VN (richtlijnenpartijen)","t":"Samen beslissen versterken in richtlijnen","kern":"Richtlijnen worden versterkt op het niet of anders verlenen van zorg voor specifieke patiëntengroepen; samen beslissen als leidend principe explicieter. Handreiking 'aanbevelingen nieuwe stijl' (Federatie, jan 2026).","trekker":"FMS, NHG, V&VN","deadline":"Q1 2026 (instructies); doorlopend","status":"In uitvoering","vg":"Handreiking 'Samenbeslisondersteunende instrumenten' (Federatie, dec 2025) gepubliceerd. Instructies richtlijnontwikkelaars aangevuld Q1 2026. Training (nieuwe) werkgroepleden.","prio":"Structureel","samenhang":"↔ DHZ-5 (samen beslissen hybride zorg)  |  ↔ E2-5 (nadere beoordeling)","bron":"Plan richtlijnen passende zorg AZWA E3 22122025.docx","doorbraak":"—","mib":"KIA G&Z | Missie II+III: Zorg in leefomgeving + Meedoen\nOnderwerp: Samen beslissen in richtlijnen — patiëntparticipatie, shared decision tools in KIA-innovatieprogramma's","ezk":"— Geen directe EZK-connectie\n(Samen beslissen: zorginhoudelijk/klinisch proces)","src":"Passende Zorg","ond":"B"},{"nr":"E3-B","hlo":"C13 Richtlijnen","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"FMS / NHG / V&VN (richtlijnenpartijen)","t":"'Zelf/thuis/digitaal als het kan' verankeren in richtlijnen","kern":"Principes 'zelf als het kan, thuis als het kan, digitaal als het kan' verwerken in instructies voor richtlijnontwikkelaars. Specifiek navraag bij knelpuntenanalyse en formuleren van uitgangsvragen.","trekker":"FMS, NHG, V&VN","deadline":"Q1 2026 (instructies)","status":"In uitvoering","vg":"Instructies worden Q1 2026 aangevuld. Aandacht voor veiligheidsaspecten, gebruiksvriendelijkheid en bekostiging als randvoorwaarden bij digitale zorg in richtlijnen.","prio":"Structureel","samenhang":"↔ DHZ-7 (richtlijnen hybride zorg)  |  ↔ Digizo.nu (deelname richtlijnpartijen)","bron":"Plan richtlijnen passende zorg AZWA E3 22122025.docx","doorbraak":"—","mib":"KIA G&Z | Missie II: Smart tech for everyone\nOnderwerp: 'Zelf/thuis/digitaal als het kan' — kernprincipe KIA G&Z voor zorg op afstand\nKIA DIG | DHT als uitvoeringstechnologie","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data (digitale zelfzorgtools, thuis-monitoring)\nNGF: Health-RI + AiNed\nDoel: 'Zelf/thuis/digitaal als het kan' als hefboom\n      voor groeimarkt digitale diensten in zorg","src":"Passende Zorg","ond":"B"},{"nr":"E3-E","hlo":"C13 Richtlijnen","tf":"T2","tf_label":"Thematafel Opschaling Passende Zorg","wg":"VWS / ZIN / FMS / NHG / V&VN","t":"Afwegingskader kritieke schaarste in richtlijnen","kern":"VWS, ZIN en richtlijnpartijen geven samen invulling aan maatschappelijk legitieme en transparante werkwijze voor keuzes bij kritieke schaarste in personeel of middelen, waarbij de overheid richting geeft.","trekker":"VWS, ZIN, FMS, NHG, V&VN","deadline":"n.t.b.","status":"Nader te concretiseren","vg":"Afgesproken in AZWA, breed ingestoken. Bij kritieke vraagstukken m.b.t. schaarste escaleert werkgroep.","prio":"Structureel","samenhang":"↔ Zorginstituut pakketbeheer  |  ↔ VWS beleid","bron":"Plan richtlijnen passende zorg AZWA E3 22122025.docx","doorbraak":"—","mib":"— Geen directe MIB/KIA-connectie\n(Afwegingskader kritieke schaarste: beleids-/beheerskader; buiten scope MIB technologische innovatie)","ezk":"— Geen directe EZK-connectie\n(Afwegingskader kritieke schaarste: VWS-beleid)","src":"Passende Zorg","ond":"B"},{"nr":"AI-PL1-1","hlo":"C8 Technologie / C15 Databeschikb.","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Handreikingen AI-ready worden (definitie, checklist, zelfevaluatie)","kern":"Opstellen handreikingen voor zorgorganisaties om AI-ready te worden op diverse aspecten (definitie, governance factsheets, data mastering checklists). Inventarisatie bestaande handreikingen + gap-analyse. Sectorspecifieke invulling. Zelfevaluatie. Monitoren.","trekker":"VWS / Koepels","deadline":"2026–2027","status":"Concept besproken (23 mrt 2026)","vg":"Startpunt: NVZ/NFU stuk. Beoordelen per zorgbranche; gezamenlijk aanvullen. Doelgroepen: I) Bestuurlijk II) Uitvoerend III) Management IV) Administratief.","prio":"Geprioriteerd","samenhang":"↔ AI PL1-2 (cursussen)  |  ↔ AI PL4 (educatie)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | Actieagenda AI/Data — AI-readiness\nOnderwerp: Handreikingen AI-ready worden — definities, checklist, zelfevaluatie\nKIA G&Z | Human Capital: AI-geletterdheid zorgprofessionals","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data (AI-readiness)\nNGF: AiNed — AI-readiness programma nationaal\nInstrument: WBSO voor AI-implementatieprojecten","src":"AI","ond":"AZWA"},{"nr":"AI-PL1-3","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Gezamenlijke visie en beleid AI in de zorg","kern":"Gezamenlijke visie opstellen voor AI in de zorg (opschaling/implementatie: wat brengt AI, waar willen we heen). Gezamenlijk AI-beleid voor zorgorganisaties opstellen. Begrippenlijst AI in de zorg.","trekker":"Koepels","deadline":"2026–2027","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"—","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | Actieagenda AI/Data — Beleid & governance AI\nOnderwerp: Gezamenlijke visie en beleid AI in zorg — NTS-inbedding, FairTech-principes\nKIA G&Z | Randvoorwaarden: beleid & governance\nKIA ST | AI & Data als sleuteltechnologie","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — beleid en governance\nNGF: AiNed (nationale AI-strategie en governance)\nDoel: gezamenlijke beleidsvisie AI-zorg aansluiting\n      op NTS en EZK-actieagenda's","src":"AI","ond":"AZWA"},{"nr":"AI-PL1-4","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Overzicht AI-readiness activiteiten veld (onderhoud & communicatie)","kern":"Overzicht maken van wat koepels/zorgorganisaties/VWS doen op gebied van AI-readiness. Bepalen hoe dit actief bijgehouden en breed gecommuniceerd kan worden (bijv. Sharepoint).","trekker":"VWS","deadline":"2026–2027","status":"Concept besproken","vg":"Sharepoint als eventuele eerste stap.","prio":"Geprioriteerd","samenhang":"↔ AI PL4-18b (Sharepoint)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | Actieagenda AI/Data — Overzicht activiteiten\nOnderwerp: AI-readiness activiteiten veld — communicatie en kennisdeling\nKIA G&Z | Monitoring & Evaluatie","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — monitoring en evaluatie\nNGF: AiNed\nDoel: overzicht AI-readiness als input voor\n      EZK-monitoringsrapportage NTS","src":"AI","ond":"AZWA"},{"nr":"AI-PL2-6","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Blokkades opschaling SGR/capaciteitsmanagement identificeren & oplossen","kern":"Blokkades voor opschaling van spraakgestuurd rapporteren (SGR) en capaciteitsmanagement identificeren op basis van lopende AI projecten. Werken aan oplossingen; lessons learnt meenemen in PL5.","trekker":"Koepels","deadline":"2026–2027","status":"Concept besproken","vg":"SGR en capaciteitsplanning zijn EERSTE prioriteit voor implementatie en opschaling (PL5).","prio":"Geprioriteerd","samenhang":"↔ AI PL5 (implementatie SGR)  |  ↔ DHZ werkgroep (digitale zorg processen)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"AI doorbraakmiddel [DIRECT]\nOpschaling spraakgestuurd rapporteren (SGR)\n+ capaciteitsplanning:\n- MSZ, VVT, GGZ, huisartsenzorg (SGR)\n- MSZ, VVT, MSP (capaciteitsplanning)","mib":"KIA DIG | AA AI/Data IP1: GPT-NL/EU + IP2: Domein-AI\nOnderwerp: Blokkades opschaling SGR & capaciteitsplanning — KIA DIG kernprogramma spraak-AI\nKIA G&Z | Missie II Smart tech + Human Capital\nKIA ST | AI & Data sleuteltechnologie","ezk":"EZK Groeimarkt: Digitale diensten (AI) — KERN\nNTS: AI & Data — spraak-AI, capaciteitsplanning\nNGF: AiNed (SGR/spraakgestuurd rapporteren als\n     nationaal AI-use case voor zorg)\nInstrument: WBSO + Innovatiekrediet voor AI-opschaling\nDoel: arbeidsbesparende AI als doorbraaktoepassing\n      in de groeimarkt digitale diensten","src":"AI","ond":"AZWA"},{"nr":"AI-PL2-7","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Samenbrengen kennis/expertise; borgen capaciteit AZWA partijen","kern":"Onderzoek hoe informatie, expertise en materialen bij elkaar gebracht kunnen worden (expertise-centrum, co-creatie). Voldoende capaciteit, kennis en kunde borgen bij (achterban van) alle AZWA partijen voor co-design.","trekker":"VWS / Koepels","deadline":"2026–2031","status":"Concept besproken","vg":"Voorbeeld: aansluiting bij expertise-centrum (co-creatie/co-design). Aansluiten op uitkomsten GENAISIS project en RIGH:T-consortium; ZonMw kennisagenda.","prio":"Geprioriteerd","samenhang":"↔ ZonMw Kennisagenda  |  ↔ GENAISIS / RIGH:T","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"AI doorbraakmiddel\nCapaciteitsborging AZWA partijen voor\nopschaling spraakgestuurd rapporteren","mib":"KIA DIG | Actieagenda AI/Data — Capaciteitsborging\nOnderwerp: Samenbrengen kennis/expertise AI — PPS kennisdeling en capaciteitsopbouw\nKIA G&Z | Human Capital & valorisatie","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — capaciteitsborging PPS\nNGF: AiNed (kennisopbouw en capaciteit)\nInstrument: EZK PPS-financiering + NWO","src":"AI","ond":"AZWA"},{"nr":"AI-PL2-8","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Gezamenlijke inkoop AI / vendor neutraliteit","kern":"Uitwerken opties voor gezamenlijke inkoop AI toepassingen en vendor neutraliteit. Verkenning duurzame business modellen waarbij waarde terugvloeit naar zorgorganisatie (shared savings, vergoeding voor bijdrage aan ontwikkeling).","trekker":"Koepels","deadline":"2027–2028","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ Medtech financiering / bekostiging  |  ↔ AI PL5-27 (duurzaam financieringsmodel)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"AI doorbraakmiddel\nGezamenlijke inkoop AI: randvoorwaarde\nvoor landelijke opschaling SGR","mib":"KIA DIG | IP3: Data & Cloud, vendor-neutraliteit\nOnderwerp: Gezamenlijke inkoop AI / vendor neutraliteit — FairTech, Europese alternatieven\nKIA ST | AI & Data soevereiniteit\nKIA G&Z | Randvoorwaarden","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — vendor-neutraliteit, digitale soevereiniteit\nInstrument: EZK strategische inkoop + IPCEI AI\nDoel: NL AI-industrie onafhankelijk van\n      niet-Europese leveranciers (EZK-prioriteit)","src":"AI","ond":"AZWA"},{"nr":"AI-PL2-9","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Kennis AI architectuur (modellen)","kern":"Kennis opdoen over AI architectuur (modellen) zodat er niet teveel verschillende vormen AI architecturen komen die later moeilijk samen te brengen zijn.","trekker":"Koepels","deadline":"2026","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"—","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data — AI-architectuur\nOnderwerp: Kennis AI-architectuur modellen — technische kennisbasis voor foundation-modellen\nKIA ST | AI & Data als sleuteltechnologie\nKIA G&Z | Randvoorwaarden","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — AI-architectuur\nNGF: AiNed (technische kennisbasis foundation-modellen)\nDoel: kennisopbouw voor NL AI-industrie als\n      onderdeel van EZK-groeimarktprogramma","src":"AI","ond":"AZWA"},{"nr":"AI-PL2-11","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Ethische kaders operationaliseren per toepassingsgebied","kern":"Operationaliseren van ethische kaders per toepassingsgebied, gekoppeld aan AI readiness. Geregeld door zorgorganisaties op toepassingsgebied.","trekker":"Koepels","deadline":"2026–2027","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ DHZ-11 (toetsingskaders hybride zorg)  |  ↔ AI PL1 (AI readiness)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data — Ethiek & FairTech\nOnderwerp: Ethische kaders operationaliseren AI in zorg — FairTech-principes, verantwoorde AI\nKIA G&Z | Randvoorwaarden: ethische AI in zorg","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — ethische kaders (FairTech)\nNGF: AiNed (verantwoorde AI)\nInstrument: EZK FairTech-beleid + AI Act implementatie\nDoel: vertrouwen als concurrentievoordeel\n      voor NL digitale dienstensector","src":"AI","ond":"AZWA"},{"nr":"AI-PL2-12","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Validatieframeworks ontwikkelen (elk toepassingsgebied)","kern":"Ontwikkelen van validatie frameworks waardoor elk toepassingsgebied gedekt is. Kwaliteit van data gegenereerd door AI systemen ook een plek geven.","trekker":"VWS","deadline":"2026–2028","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ DHZ-2 (geaccepteerd bewijs)  |  ↔ E2-5 (nadere beoordeling AI toepassingen)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data — Validatie AI\nOnderwerp: Validatieframeworks AI per toepassingsgebied — evidence-based AI-inzet\nKIA ST | AI & Data kwaliteits- en veiligheidsstandaarden\nKIA G&Z | Monitoring & Evaluatie","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — validatie AI-toepassingen\nNGF: AiNed (validatieframeworks)\nInstrument: WBSO voor validatieonderzoek\nDoel: kwaliteitsborging als markttoegangsvereiste\n      voor AI-producten (groeimarkt)","src":"AI","ond":"AZWA"},{"nr":"AI-PL3-13","hlo":"C8 Technologie / C15 Databeschikb.","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Haalbaarheid/behoefte (Nederlands) taalmodel voor de zorg","kern":"Onderzoek haalbaarheid en behoefte voor een (Nederlands) taalmodel voor de zorg. Inventariseren wat er al loopt (bijv. TNO), bepalen wat anders is dan EU, lijst met minimale behoeften.","trekker":"VWS","deadline":"2026–2027","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"—","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"AI doorbraakmiddel\nHaalbaarheid Nederlands taalmodel:\nbasis voor opschaling SGR","mib":"KIA DIG | AA AI/Data IP1: GPT-NL — Nederlands taalmodel\nOnderwerp: Haalbaarheid Nederlands taalmodel voor zorg — basis voor spraakgestuurd rapporteren\nKIA ST | AI & Data (NTS prioriteit)\nKIA G&Z | Randvoorwaarden: AI-infrastructuur","ezk":"EZK Groeimarkt: Digitale diensten (AI) — KERN\nNTS: AI & Data — Nederlands taalmodel\nNGF: AiNed → GPT-NL (generiek NL taalmodel)\nInstrument: NGF directe financiering taalmodel\nDoel: GPT-NL als basis voor spraakgestuurd rapporteren\n      en andere zorg-AI toepassingen","src":"AI","ond":"AZWA"},{"nr":"AI-PL3-14","hlo":"C8 Technologie / C15 Databeschikb.","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Haalbaarheid/behoefte generieke AI toepassingen zorgbreed","kern":"Onderzoek behoefte en haalbaarheid naar generieke AI toepassingen of functionaliteiten, breed inzetbaar in het zorgveld. Connectie met Digizo; aansluiting met randvoorwaarden methodiek; tooling/benchmarking.","trekker":"VWS","deadline":"2026–2028","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ Digizo.nu  |  ↔ AI PL2-12 (validatieframeworks)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data IP2: Domein-specifieke AI\nOnderwerp: Generieke AI toepassingen zorgbreed — foundation-modellen voor Nederlandse zorg\nKIA ST | AI & Data sleuteltechnologie\nKIA G&Z | Smart tech for everyone","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — generieke AI-toepassingen\nNGF: AiNed (domein-specifieke AI zorg)\nInstrument: WBSO + EZK-subsidies voor AI-haalbaarheidsonderzoek","src":"AI","ond":"AZWA"},{"nr":"AI-PL3-16","hlo":"C8 Technologie / C15 Databeschikb.","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Haalbaarheid/behoefte AI register en federatieve learning","kern":"Onderzoeken behoefte en haalbaarheid van een AI register en infrastructuur voor federatieve learning (leren van elkaars data).","trekker":"VWS","deadline":"2026–2028","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"—","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data IP3: Data & Cloud, AI-register\nOnderwerp: AI-register en federatieve learning — Health-RI, FAIR data, gedistribueerd leren\nKIA ST | AI & Data, Microelectronics\nKIA G&Z | Randvoorwaarden: Health-RI","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — federatieve learning\nNGF: AiNed + Health-RI (AI-register, federated learning)\nInstrument: IPCEI Data + EZK Data & Cloud\nDoel: nationaal AI-register als strategisch\n      infrastructuurproject","src":"AI","ond":"AZWA"},{"nr":"AI-PL3-17","hlo":"C8 Technologie / C15 Databeschikb.","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Nationale template bibliotheek (behoefte verkennen)","kern":"Haalbaarheid en behoefte verkennen voor een nationale template bibliotheek. Kijken naar Erasmus-overzicht en FMS-initiatief.","trekker":"VWS","deadline":"2026–2027","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ FMS  |  ↔ Erasmus MC","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data IP1: GPT-NL template library\nOnderwerp: Nationale template bibliotheek AI — herbruikbare AI-bouwblokken voor zorg\nKIA G&Z | Randvoorwaarden: kennisinfrastructuur","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — template bibliotheek\nNGF: AiNed (herbruikbare AI-bouwblokken)\nInstrument: EZK open-source stimulering\nDoel: gedeelde AI-infrastructuur als publiek goed","src":"AI","ond":"AZWA"},{"nr":"AI-PL4-18","hlo":"C8 Technologie / C13 Richtlijnen","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"AI communicatieprogramma's inventariseren + Sharepoint","kern":"AI communicatieprogramma's inventariseren, gap-analyse en vervolgstappen bepalen. Sharepoint opzetten + manier van onderhouden (connectie met PL2).","trekker":"Koepels / VWS","deadline":"2026","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ AI PL2-7 (kennisdeling)  |  ↔ AI PL1-4 (overzicht AI-readiness)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data — Communicatie\nOnderwerp: AI communicatieprogramma's — bekendheid AI-toepassingen in zorg\nKIA G&Z | Human Capital communicatie","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nEZK Industriebeleid: Talent & kennis\nInstrument: EZK communicatieprogramma's digitale\n            economie + AI-bewustzijn campagnes","src":"AI","ond":"AZWA"},{"nr":"AI-PL4-19","hlo":"C8 Technologie / C13 Richtlijnen","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"AI geletterdheid opleiding doelgroepen I-V","kern":"AI geletterdheid opleiding aanbieden voor doelgroepen I (bestuurlijk), II (uitvoerend/zorgprofessionals), III (management), IV (administratief) en V (burger/patiënt/naasten). Functieprofielen bepalen; basis + aanvullende opleiding (pyramidemodel).","trekker":"Koepels (I-IV) / VWS (V)","deadline":"2026–2031","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ AI PL1-2 (AI readiness cursus)  |  ↔ Medtech 3.8  |  ↔ AZWA B3 Strategisch opleiden  |  ↔ DHZ-4 (digitale vaardigheden)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data + KIA G&Z | Human Capital\nOnderwerp: AI-geletterdheid opleiding doelgroepen — capaciteitsopbouw AI-gebruik in zorg","ezk":"EZK Industriebeleid: Talent & kennis\nGroeimarkt: Digitale diensten (AI)\nNGF: AiNed (AI-geletterdheid)\nDoel: digitaal talent als randvoorwaarde voor\n      NL-concurrentiepositie in AI-groeimarkt","src":"AI","ond":"AZWA"},{"nr":"AI-PL4-20","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Werkbezoeken in de praktijk","kern":"Werkbezoeken in de praktijk organiseren voor het delen van inzichten (ad hoc). Leden van de werkgroep als doelgroep.","trekker":"Koepels","deadline":"2026–2031","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"—","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA G&Z | Valorisatie & Marktcreatie\nOnderwerp: Werkbezoeken in de praktijk — verbinding innovatie en zorgpraktijk","ezk":"— Geen directe EZK-connectie\n(Werkbezoeken in de praktijk: operationeel instrument)","src":"AI","ond":"AZWA"},{"nr":"AI-PL4-22","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Publiekscampagne AI in de zorg (doelgroepen I-V)","kern":"Publiekscampagne opzetten op basis van communicatiestrategie. Risico's en meerwaarde AI communiceren. Link met Digivaardig in de zorg. Podcast als optie.","trekker":"Koepels / VWS","deadline":"2027–2031","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ AI PL4-21 (communicatiestrategie)  |  ↔ DHZ-3 (digitale vaardigheden burgers/Digivaardig)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data — Publiek bewustzijn\nOnderwerp: Publiekscampagne AI in de zorg — maatschappelijk draagvlak AI-toepassingen\nKIA G&Z | Centrale missie gezondheidsverschillen","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nEZK Industriebeleid: Talent & kennis (publiekscampagne)\nDoel: breed publiek bewust maken van AI in zorg\n      als onderdeel van EZK-strategie digitale economie","src":"AI","ond":"AZWA"},{"nr":"AI-PL4-23","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Zorgbrede AI community (doelgroepen I-IV)","kern":"Organiseren van zorgbrede AI community voor doelgroepen I-IV: uitwisselen generieke materialen/oplossingen. Community samengebracht met PL2 kennisdeelstructuur. Delen van kennis én ervaringen in de praktijk.","trekker":"VWS","deadline":"2027–2031","status":"Concept besproken","vg":"Eerst inventariseren wat er al is voor opzet community. Behoeften inventariseren: voor wie, wat gedeeld, op welke manier.","prio":"Geprioriteerd","samenhang":"↔ AI PL2-7 (kennisdeling)  |  ↔ AI PL4-21","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"—","mib":"KIA DIG | AA AI/Data — Community building\nOnderwerp: Zorgbrede AI community — netwerk KIA-partners, kennisdeling, PPS-ecosysteem\nKIA G&Z | Governance & valorisatie","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNGF: AiNed — AI community building\nInstrument: EZK ecosysteem-versterking\nDoel: netwerk van partijen als fundament voor\n      NL AI-industrie (groeimarkt)","src":"AI","ond":"AZWA"},{"nr":"AI-PL5-24","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Inventarisatie benodigdheden voor opschaling (vraaggestuurd)","kern":"Inventarisatie wat er nodig is voor opschaling van AI: vraaggestuurde opschaling. Eventuele toolkit/ondersteuning. Wegnemen blokkades.","trekker":"Koepels","deadline":"2026–2027","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ AI PL2-6 (blokkades)  |  ↔ E2-1 (ophalen initiatieven)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"AI doorbraakmiddel\nInventarisatie benodigdheden:\nvoorbereiding modelplannen doorbraakmiddelen","mib":"KIA DIG | AA AI/Data IP2+IP3: Domein-AI + Data\nOnderwerp: Inventarisatie benodigdheden opschaling AI — marktonderzoek, vraagarticulatie\nKIA ST | AI & Data valorisatie\nKIA G&Z | Valorisatie & marktcreatie","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — vraagarticulatie voor opschaling\nNGF: AiNed (implementatiebehoeften)\nInstrument: EZK marktanalyse voor programma-ontwikkeling\nDoel: onderbouwing EZK-programma Digitale diensten/AI","src":"AI","ond":"AZWA"},{"nr":"AI-PL5-25","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Gezamenlijke implementatiestrategie per toepassingsgebied","kern":"Gezamenlijke implementatiestrategie per toepassingsgebied ontwikkelen (kickstartplan UMC NL). Opnemen in kennisdeelstructuur PL2. Generiek waar kan, specifiek waar nodig (sectorale implementatieteams). Monitoring en borging van AI in de zorg als onderdeel.","trekker":"Koepels","deadline":"2026–2028","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ AI PL2-7 (kennisdeling)  |  ↔ E2-6 (implementatieagenda passende zorg)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"AI doorbraakmiddel\nImplementatiestrategie per toepassingsgebied:\nuitvoeringsplan SGR + capaciteitsplanning","mib":"KIA DIG | AA AI/Data — Implementatiestrategie\nOnderwerp: Gezamenlijke implementatiestrategie AI per toepassingsgebied — sectorbrede uitrol\nKIA ST | AI & Data schaalbaarheid\nKIA G&Z | Missie II Smart tech voor opschaling","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — implementatiestrategie per sector\nNGF: AiNed (implementatieplan)\nInstrument: EZK sectorprogramma's + strategische inkoop\nDoel: uitvoeringsplan als input voor EZK-\n      programma Digitale diensten/AI","src":"AI","ond":"AZWA"},{"nr":"AI-PL5-26","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Bestuurlijk commitment voor opschaling AI","kern":"Organiseren van bestuurlijke commitment voor opschaling AI. Tactische/operationele kartrekkers per sector met verdere verdieping.","trekker":"Koepels","deadline":"2026–2028","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ AI PL1-3 (visie AI)  |  ↔ Thematafel Medtech & DHZ (bestuurlijk commitment)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"AI doorbraakmiddel\nBestuurlijk commitment voor opschaling:\nvereiste voor inzet doorbraakmiddelen","mib":"KIA DIG | AA AI/Data — Bestuurlijk commitment\nOnderwerp: Bestuurlijk commitment opschaling AI — governance en mandaat voor KIA-implementatie\nKIA ST | AI & Data governance\nKIA G&Z | Governance zorgakkoorden","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — bestuurlijk commitment\nInstrument: Ministerieel overleg EZK-VWS;\n            AI Actieplan Nederland 2024-2030\nDoel: cross-departementale governance voor\n      AI-opschaling in zorg als groeimarkt","src":"AI","ond":"AZWA"},{"nr":"AI-PL5-27","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg","t":"Duurzaam financieringsmodel AI in de zorg","kern":"Duurzaam financieringsmodel ontwikkelen (in lijn met activiteit 8 gezamenlijke inkoop). Meenemen impact op betaalbaarheid; ook afschalen wat niet meer nodig is. Bepalen hoe AI betaalbaar te houden voor 'armlastige' organisaties (publieke gezondheid).","trekker":"VWS","deadline":"2027–2028","status":"Concept besproken","vg":"—","prio":"Geprioriteerd","samenhang":"↔ AI PL2-8 (gezamenlijke inkoop)  |  ↔ Medtech financiering  |  ↔ DHZ-1 (bekostiging)","bron":"20260323_Werkgroep Realisatie AI.pdf","doorbraak":"AI doorbraakmiddel\nDuurzaam financieringsmodel AI:\nstructurele borging na doorbraakmiddelperiode","mib":"KIA DIG | AA AI/Data — Duurzame financiering\nOnderwerp: Duurzaam financieringsmodel AI in zorg — borging na doorbraakmiddelperiode\nKIA ST | AI & Data valorisatiemodel\nKIA G&Z | Randvoorwaarden financiering","ezk":"EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — duurzaam financieringsmodel\nNGF: AiNed (financieringsstructuur na NGF-periode)\nInstrument: EZK WBSO + Innovatiekrediet als\n      structurele financieringsbasis post-NGF\nDoel: duurzame AI-industrie onafhankelijk van\n      eenmalige NGF-impulsen","src":"AI","ond":"AZWA"},{"nr":"AI-DM3","hlo":"C8 Technologie","tf":"T3","tf_label":"Thematafel Databeschikbaarheid en AI","wg":"Werkgroep Realisatie AI in de Zorg\nDoorbraakmiddel #3","t":"Mentaal schakelpunt — AI-ondersteunde geestelijke gezondheidszorg","kern":"Inzet van AI ter ondersteuning van triage, behandeladvies en schakeling naar het juiste zorgpad voor mensen met psychische klachten. Betrokken sectoren: GGZ en huisartsen. (Bron: ZN-26-xxx Bijlage 3 Doorbraakmiddelen aanpak, versie 17 april 2026, toepassing #3)","trekker":"ntb (PM)","deadline":"2027–2028","status":"In voorbereiding","vg":"Modelplan in uitwerking. Inzet GGZ + huisartsen. Afstemming met IZA Mentale gezondheidsnetwerken (GGZ-2).","prio":"Geprioriteerd","samenhang":"↔ GGZ-2 Mentale gezondheidsnetwerken  |  ↔ AI PL1-3 (visie AI in de zorg)  |  ↔ AR-1 Regeldruk","bron":"ZN-26-xxx Bijlage 3 Doorbraakmiddelen aanpak (17 april 2026)","doorbraak":"AI doorbraakmiddel\nMentaal schakelpunt\nGGZ + Huisartsen\nAI €275 mln (3 toepassingen)","mib":"KIA G&Z (Missie 5: GGZ)  |  KIA Digitalisering — AI geestelijke gezondheid","ezk":"Groeimarkt Digitale diensten/AI  |  NGF AiNed  |  NTS AI & Data","src":"AI","ond":"AZWA"},{"nr":"CT-1","hlo":"C11 Zorginkoop","tf":"IZA","tf_label":"Thematafel IZA — Passende Contractering","wg":"Passende Contractering / Zorginkoop","t":"Gelijkgericht contracteren cruciale GGZ (v.a. 2026)","kern":"Vanaf 2026 kopen alle zorgverzekeraars cruciale GGZ gelijkgericht in, met regionale afspraken als leidraad. In elke regio wordt bepaald welk aanbod nodig is voor cruciale GGZ. Gebaseerd op Gespreksleidraad Cruciale GGZ (IZA).","trekker":"VWS / Zorgverzekeraars / GGZ-aanbieders","deadline":"2026 (jaarlijks)","status":"In uitvoering","vg":"Gespreksleidraad cruciale GGZ gepubliceerd (2024). Per regio worden afspraken gemaakt over cruciale GGZ-aanbod.","prio":"Geprioriteerd","samenhang":"↔ GGZ-2 Mentale gezondheidsnetwerken  |  ↔ E2-8 Gelijkgericht contracteren (passende zorg)  |  ↔ DHZ-8 Contractering hybride zorg","bron":"zorgakkoorden.nl – Passende Contractering / Cruciale GGZ (2024)","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"E"},{"nr":"CT-2","hlo":"C11 Zorginkoop","tf":"IZA","tf_label":"Thematafel IZA — Passende Contractering","wg":"Passende Contractering / Zorginkoop","t":"Jaarcyclus passende contractering (mijlpalen 1 april t/m 12 november)","kern":"Landelijke jaarcyclus met vaste mijlpalen: 1 april (zorginkoopbeleid verzekeraar), 1 juni (strategisch beleid aanbieder), 1 september (techniek benchmarking), 1 oktober (contractvoorstel/offerte), 12 november (transparantie contractering). Basis: NZa Handvatten & Regeling transparantie zorginkoopproces.","trekker":"NZa / VWS / Zorgverzekeraars","deadline":"Jaarlijks terugkerend","status":"Structureel","vg":"Jaarcyclus operationeel. Mijlpalen vastgelegd in NZa-regelgeving.","prio":"Structureel","samenhang":"↔ CT-1 Cruciale GGZ inkoop  |  ↔ CT-3 Passende contractering MSZ  |  ↔ E2-8 Gelijkgericht contracteren","bron":"zorgakkoorden.nl – Jaarcyclus Passend Contracteren 2024; NZa Handvatten","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"E"},{"nr":"CT-3","hlo":"C11 Zorginkoop","tf":"IZA","tf_label":"Thematafel IZA — Passende Contractering","wg":"Passende Contractering / MSZ","t":"Passende contractering MSZ — gezamenlijke besluitvorming contracteren","kern":"Handreiking voor zorginkopers van zorgverzekeraars en zorgverkopers van ziekenhuizen voor het contracteren van passende zorg en gezamenlijke besluitvorming in de MSZ. Stappenplan voor keuze nieuwe contractvorm (Zorginstituut NL, 2024).","trekker":"Zorginstituut NL / MSZ-partijen","deadline":"2024–2026","status":"In uitvoering","vg":"Handreiking en stappenplan gepubliceerd. Praktijkvoorbeelden: Maasstad Ziekenhuis (waardegedreven contractering 3.0).","prio":"Geprioriteerd","samenhang":"↔ E2-8 Gelijkgericht contracteren  |  ↔ E3 Richtlijnen passende zorg  |  ↔ DHZ-8/9 Contractering hybride zorg","bron":"zorgakkoorden.nl – Handreiking contractering gezamenlijke besluitvorming MSZ (2024); Zorginstituut NL","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"E"},{"nr":"CT-4","hlo":"C11 Zorginkoop","tf":"IZA","tf_label":"Thematafel IZA — Passende Contractering","wg":"Passende Contractering / Ongecontracteerde Zorg","t":"Aanpak ongecontracteerde zorg — 'countervailing power'","kern":"IZA-afspraak: zorgverzekeraars versterken positie in onderhandeling (countervailing power). Streven: aandeel ongecontracteerde zorg terugdringen. Wet toelating zorgaanbieders (Wtza) als randvoorwaarde.","trekker":"VWS / Zorgverzekeraars / NZa","deadline":"2025–2026","status":"In uitvoering","vg":"Wtza in werking; NZa monitort aandeel ongecontracteerd. Onderhandelingsrichtlijn zorgverzekeraars in 2025 bijgesteld.","prio":"Geprioriteerd","samenhang":"↔ CT-1, CT-2 Gelijkgericht inkopen  |  ↔ RS-1 Regioplannen","bron":"IZA (2022) Onderdeel J – Contractering; zorgakkoorden.nl","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"E"},{"nr":"CT-5","hlo":"C11 Zorginkoop","tf":"IZA","tf_label":"Thematafel IZA — Passende Contractering","wg":"Passende Contractering / Impactvolle Transformaties","t":"Criteria en financiering impactvolle transformaties","kern":"IZA-afspraak: zorgverzekeraars en aanbieders stellen gezamenlijk criteria vast voor 'impactvolle transformaties' die meerjarige bekostiging rechtvaardigen. Budget: Transformatiemiddelen IZA (€ 2,8 mrd t/m 2026).","trekker":"VWS / Zorgverzekeraars / ZN","deadline":"2023–2026","status":"In uitvoering","vg":"Eerste tranche transformatiemiddelen verdeeld (2023-2024). Kaders tweede tranche vastgesteld. NZa-monitor impactvolle transformaties 2025 gepubliceerd.","prio":"Geprioriteerd","samenhang":"↔ CT-1 t/m CT-4  |  ↔ RS-1 t/m RS-3 Regionale plannen","bron":"IZA (2022) Onderdeel J – Contractering; NZa-monitor Transformatiemiddelen 2025","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"E"},{"nr":"RS-1","hlo":"—","tf":"IZA","tf_label":"Thematafel IZA — Regionale Samenwerking","wg":"Regionale Samenwerking / Regiobeelden","t":"Regiobeelden opstellen en actualiseren","kern":"IZA-afspraak: regionale partijen stellen regiobeelden op en/of actualiseren deze. Het regiobeeld schetst feiten, cijfers en prognoses over zorggebruik en zorgaanbod aangevuld met kwalitatieve duiding. Criteriaset vastgesteld door landelijke partijen.","trekker":"Regionale partijen / VWS","deadline":"Doorlopend (jaarlijks actualiseren)","status":"In uitvoering","vg":"Criteriaset gepubliceerd. Meeste regio's hebben regiobeelden. Regiobeelden en -plannen beschikbaar op zorgakkoorden.nl.","prio":"Structureel","samenhang":"↔ RS-2 Regioplannen  |  ↔ E2 Opschaling passende zorg  |  ↔ CT-1 Cruciale GGZ regionale inkoop","bron":"zorgakkoorden.nl – Regionale samenwerking / Regiobeelden en plannen","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"F"},{"nr":"RS-2","hlo":"—","tf":"IZA","tf_label":"Thematafel IZA — Regionale Samenwerking","wg":"Regionale Samenwerking / Regioplannen","t":"Regioplannen uitwerken en realiseren","kern":"Opgaven uit het regiobeeld worden in het regioplan uitgewerkt: prioritering, taakverdeling partijen, meetbare resultaten en voortgangsmonitoring. Basis voor regionale inkoopafspraken en contractering.","trekker":"Regionale partijen / Zorgverzekeraars","deadline":"Doorlopend","status":"In uitvoering","vg":"Regioplannen beschikbaar. Afstemming met IZA-transformatieplannen en jaarcyclus contractering.","prio":"Structureel","samenhang":"↔ RS-1 Regiobeelden  |  ↔ CT-1 t/m CT-3 Contractering  |  ↔ GGZ-2 Mentale gezondheidsnetwerken","bron":"zorgakkoorden.nl – Regioplannen en regiobeelden","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"F"},{"nr":"RS-3","hlo":"—","tf":"IZA","tf_label":"Thematafel IZA — Regionale Samenwerking","wg":"Regionale Samenwerking / Bekostiging","t":"BDSS — Bekostiging Domein- en Sectoroverstijgende Samenwerking (v.a. 1 mei 2024)","kern":"Nieuwe betaaltitel binnen de Zvw (v.a. 1 mei 2024) voor domein- en sectoroverstijgende samenwerking: zorgaanbieders kunnen rechtstreeks worden vergoed voor samenwerking met andere domeinen/sectoren voor specifieke patiëntengroepen. (Beleidsregel PatiëntenGroepsgebonden Afstemming binnen Zvw)","trekker":"NZa / VWS","deadline":"Operationeel v.a. 1 mei 2024","status":"In uitvoering","vg":"Betaaltitel operationeel. Handleiding beschikbaar. Eerste contracten afgesloten (bijv. MESO-zorg huisartsen Tiel).","prio":"Geprioriteerd","samenhang":"↔ GGZ-1 Consultatiefunctie GGZ  |  ↔ DHZ-1 Bekostiging hybride zorg  |  ↔ E2-10 Ruimte maken bekostiging","bron":"zorgakkoorden.nl – BDSS / Beleidsregel PatiëntenGroepsgebonden Afstemming (2024)","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"F"},{"nr":"GGZ-1","hlo":"—","tf":"IZA","tf_label":"Thematafel IZA — Samenwerking Sociaal Domein & GGZ","wg":"Samenwerking Sociaal Domein / GGZ / Huisartsenzorg","t":"Consultatiefunctie GGZ voor het sociaal domein (v.a. 1 januari 2024)","kern":"IZA-afspraak: nieuwe Zvw-bekostiging voor consultatie tussen sociaal domein en GGZ. Maakt het voor professionals in het sociaal domein eenvoudiger om GGZ te consulteren voor mensen met psychische problematiek. Operationeel v.a. 1 januari 2024.","trekker":"VWS / GGZ-sector / Gemeenten","deadline":"Operationeel v.a. 1 jan 2024","status":"In uitvoering","vg":"Bekostiging operationeel. Implementatie loopt in regio's.","prio":"Geprioriteerd","samenhang":"↔ GGZ-2 Mentale gezondheidsnetwerken  |  ↔ AI-DM3 Mentaal schakelpunt  |  ↔ RS-2 Regioplannen","bron":"zorgakkoorden.nl – Samenwerking sociaal domein/GGZ; Consultatiefunctie ggz (2024)","doorbraak":"— Geen doorbraakmiddel","mib":"KIA G&Z (Missie 5: GGZ)  |  KIA Digitalisering (consultatie-tools)","ezk":"— Geen EZK-connectie","src":"IZA","ond":"G"},{"nr":"GGZ-2","hlo":"—","tf":"IZA","tf_label":"Thematafel IZA — Samenwerking Sociaal Domein & GGZ","wg":"Samenwerking Sociaal Domein / GGZ / Huisartsenzorg","t":"Mentale gezondheidsnetwerken — regionale samenwerking huisarts, GGZ, sociaal domein","kern":"IZA-afspraak: huisartsen, GGZ en sociaal domein werken regionaal samen in Mentale gezondheidsnetwerken. Doel: patiënten met complexe psychische/sociale problematiek snel de juiste zorg of ondersteuning bieden. Werkwijze gepubliceerd 22 maart 2024.","trekker":"VWS / GGZ-sector / LHV / Gemeenten","deadline":"2024–2026 (opbouw)","status":"In uitvoering","vg":"Werkwijze gepubliceerd. Regio's starten met inrichting netwerken. Afstemming met AI-DM3 Mentaal schakelpunt.","prio":"Geprioriteerd","samenhang":"↔ GGZ-1 Consultatiefunctie  |  ↔ AI-DM3 Mentaal schakelpunt  |  ↔ CT-1 Cruciale GGZ  |  ↔ RS-2 Regioplannen","bron":"zorgakkoorden.nl – Mentale gezondheidsnetwerken (22 maart 2024)","doorbraak":"— Geen doorbraakmiddel","mib":"KIA G&Z (Missie 5: GGZ)  |  KIA Digitalisering (digitale tools netwerken)","ezk":"— Geen EZK-connectie","src":"IZA","ond":"G"},{"nr":"AR-1","hlo":"C14 Admin. lasten","tf":"IZA","tf_label":"Thematafel IZA — Aanpak Regeldruk","wg":"Regiegroep Aanpak Regeldruk","t":"2 uur/week terugdringen administratieve lasten per zorgverlener (doel 2025)","kern":"IZA-afspraak: voor 2025 moeten de administratieve lasten met 2 uur per week per hulpverlener zijn teruggedrongen. Regiegroep Aanpak Regeldruk coördineert. Raakvlak met spraakgestuurd rapporteren (AI doorbraakmiddel) en AI readiness.","trekker":"VWS / Regiegroep Aanpak Regeldruk","deadline":"2025 (doel)","status":"In uitvoering","vg":"Regiegroep actief. Deels invulling via AI doorbraakmiddelen (spraakgestuurd rapporteren). Voortgang monitored.","prio":"Geprioriteerd","samenhang":"↔ AI PL1-1 Handreikingen AI-ready  |  ↔ Spraakgestuurd rapporteren (AI-DM1)  |  ↔ DHZ digitale vaardigheden","bron":"zorgakkoorden.nl – Regiegroep Aanpak Regeldruk (IZA)","doorbraak":"Raakvlak AI doorbraakmiddel\nSpraakgestuurd rapporteren (AI-DM1)\nAI €275 mln","mib":"KIA Digitalisering — Actieagenda AI/Data (administratieve last reductie)","ezk":"Groeimarkt Digitale diensten/AI  |  NTS AI & Data","src":"IZA","ond":"H"},{"nr":"AZ-1","hlo":"C6 Opnametoets","tf":"IZA","tf_label":"Thematafel IZA — Samenwerking Acute Zorg","wg":"Samenwerking Acute Zorg / Zorgcoördinatie","t":"Zorgcoördinatie en triage verbeteren — ROAZ-plannen en spreiding & concentratie","kern":"IZA-afspraken acute zorg: voorkomen van acute zorg, zorgcoördinatie & triage, kwaliteit acute zorg, differentiatie/concentratie/spreiding, samenwerken in de keten, ROAZ-plannen, delen van informatie en bekostiging acute zorg. Campagne 'Spoedgeval? Zo kies je de juiste zorg!' (LHV, InEen, AZN, VWS).","trekker":"VWS / ROAZ / MSZ / Huisartsen / AZN","deadline":"Doorlopend","status":"In uitvoering","vg":"ROAZ-plannen in uitvoering. Campagne actief. Toegankelijkheid acute zorg staat onder druk; structurele krapte arbeidsmarkt.","prio":"Geprioriteerd","samenhang":"↔ RS-1 Regiobeelden (acute zorg component)  |  ↔ DHZ capaciteitsplanning (AI-DM2)  |  ↔ GGZ-2 netwerken","bron":"zorgakkoorden.nl – Samenwerking acute zorg; ROAZ-plannen (IZA)","doorbraak":"Raakvlak AI doorbraakmiddel\nCapaciteitsplanning (AI-DM2)\nMSZ en VVT | AI €275 mln","mib":"KIA G&Z (Missie 3: acute zorg)  |  KIA Digitalisering (capaciteitsplanning AI)","ezk":"Groeimarkt Digitale diensten/AI  |  NTS AI & Data","src":"IZA","ond":"I"},{"nr":"PZ-1","hlo":"C7 Kennis","tf":"IZA","tf_label":"Thematafel IZA — Passende Zorg","wg":"Passende Zorg / Pakketbeheer","t":"Verbetering toets basispakket — gepast gebruik dure geneesmiddelen","kern":"IZA-afspraak: ZIN verbreedt en verbetert pakkettoets op basis van uitkomstgegevens en gepast gebruik. Specifiek aandacht voor dure geneesmiddelen: verplichte uitkomstregistratie als voorwaarde voor bekostiging.","trekker":"VWS / ZIN / Zorgverzekeraars / Farma","deadline":"2024–2026","status":"In uitvoering","vg":"ZIN publiceert vernieuwde pakketcriteria (2024). Convenant gepast gebruik dure geneesmiddelen in 2025 herzien.","prio":"Geprioriteerd","samenhang":"↔ E2-5 Nadere beoordeling passende zorg  |  ↔ PZ-2 Kwaliteitsregistraties","bron":"IZA (2022) Onderdeel A – Passende Zorg; zorgakkoorden.nl","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"J"},{"nr":"PZ-2","hlo":"C14 Admin. lasten / C15 Databeschikb.","tf":"IZA","tf_label":"Thematafel IZA — Passende Zorg","wg":"Passende Zorg / Kwaliteitsregistraties","t":"Stroomlijning kwaliteitsregistratielandschap","kern":"IZA-afspraak: het kwaliteitsregistratielandschap wordt vóór 2025 gestroomlijnd: minder registratielast voor zorgverleners, meer focus op uitkomsten die er toe doen voor patiënten (PROM/PREM). Regie bij DICA/SKMS.","trekker":"VWS / DICA / SKMS / Federatie MS / NFU","deadline":"2024–2025","status":"In uitvoering","vg":"DICA-routekaart stroomlijning 2024 vastgesteld. Eerste 15 registraties afgebouwd of samengevoegd (2025).","prio":"Monitoren","samenhang":"↔ PZ-1 Pakketbeheer  |  ↔ PZ-3 Uitkomstinformatie  |  ↔ I Digitalisering gegevensuitwisseling","bron":"IZA (2022) Onderdeel A – Passende Zorg; DICA jaarplan 2025","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"J"},{"nr":"PZ-3","hlo":"C7 Kennis","tf":"IZA","tf_label":"Thematafel IZA — Passende Zorg","wg":"Passende Zorg / Uitkomstinformatie","t":"Uitkomstinformatie (PROM/PREM) als stuurinstrument","kern":"IZA-afspraak: uitkomstinformatie vanuit patiëntperspectief (PROM/PREM) wordt standaard onderdeel van kwaliteitsbeleid én inkoopafspraken. Zorgverzekeraars kopen aantoonbaar op uitkomsten in per 2026.","trekker":"VWS / Zorgverzekeraars / Patiëntenfederatie / NFU","deadline":"2025–2026","status":"In voorbereiding","vg":"Kader 'inkopen op uitkomsten' in 2025 opgesteld (ZN/NVZ). Pilot 5 aandoeningen gestart.","prio":"Monitoren","samenhang":"↔ PZ-1, PZ-2  |  ↔ CT-1 Gelijkgericht inkopen","bron":"IZA (2022) Onderdeel A – Passende Zorg; zorgakkoorden.nl","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"J"},{"nr":"CS-1","hlo":"C6 Opnametoets","tf":"IZA","tf_label":"Thematafel IZA — Concentratie en Spreiding","wg":"Concentratie en Spreiding / Toekomstbestendig Zorglandschap","t":"Aanpak concentratie en spreiding MSZ — toekomstbestendig zorglandschap","kern":"IZA-afspraak: zorgverzekeraars, ziekenhuizen en VWS maken voor 2025 afspraken over concentratie van (hoog)complexe zorg en spreiding van laagcomplexe zorg, om kwaliteit en toegankelijkheid te borgen. Regiobeelden als basis.","trekker":"VWS / Zorgverzekeraars / NVZ / NFU / Ziekenhuizen","deadline":"2024–2027","status":"In uitvoering","vg":"Regiovisies voor 8 regio's gereed (2024). Eerste concentratieafspraken oncologie vastgelegd. Stuurgroep Toekomstbestendig Zorglandschap operationeel.","prio":"Geprioriteerd","samenhang":"↔ RS-1 t/m RS-3 Regionale Samenwerking  |  ↔ CS-2 Bovenregionale functies","bron":"IZA (2022) Onderdeel D – Concentratie en Spreiding; zorgakkoorden.nl","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"K"},{"nr":"CS-2","hlo":"—","tf":"IZA","tf_label":"Thematafel IZA — Concentratie en Spreiding","wg":"Concentratie en Spreiding / Bovenregionale Functies","t":"Concentratie bovenregionale functies (o.a. traumazorg, brandwondenzorg)","kern":"IZA-afspraak: bovenregionale functies (traumazorg level 1, brandwondenzorg, kinder-IC, etc.) worden geconcentreerd op basis van kwaliteitsnormen. NZa stelt kaders vast, zorgverzekeraars borgen via inkoop.","trekker":"VWS / NZa / Zorgverzekeraars / UMC's","deadline":"2024–2026","status":"In uitvoering","vg":"NZa-kaders bovenregionale functies gepubliceerd (2024). Inkoopafspraken Level 1 traumacentra vastgelegd voor 2025.","prio":"Monitoren","samenhang":"↔ CS-1 Zorglandschap  |  ↔ AZ-1 Acute Zorg","bron":"IZA (2022) Onderdeel D – Concentratie en Spreiding; NZa kaderbrief 2025","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"K"},{"nr":"EL-1","hlo":"C5 Wlz-zorg thuis","tf":"IZA","tf_label":"Thematafel IZA — Eerstelijnszorg","wg":"Eerstelijnszorg / Meer Tijd voor de Patiënt (MTVP)","t":"MTVP — opschaling praktijkmanagement en taakherschikking huisartsenzorg","kern":"IZA-afspraak: het programma Meer Tijd voor de Patiënt wordt landelijk opgeschaald. Meer praktijkondersteuners (POH) en assistenten, minder administratieve last, betere triage. Doel: huisarts meer tijd voor complexe patiënten.","trekker":"VWS / LHV / InEen / Zorgverzekeraars","deadline":"2023–2026","status":"In uitvoering","vg":"MTVP-programmabureau operationeel. Eind 2024: 85% van huisartsenpraktijken aangesloten. Businesscase taakherschikking gepubliceerd (2025).","prio":"Geprioriteerd","samenhang":"↔ EL-2 Wijkverpleging  |  ↔ AR-1 Regeldruk  |  ↔ AT-1 Arbeidsmarkt","bron":"IZA (2022) Onderdeel E – Eerstelijnszorg; zorgakkoorden.nl – MTVP","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"L"},{"nr":"EL-2","hlo":"C5 Wlz-zorg thuis / C16 Kwaliteit teams","tf":"IZA","tf_label":"Thematafel IZA — Eerstelijnszorg","wg":"Eerstelijnszorg / Wijkverpleging","t":"Herkenbare en aanspreekbare wijkverpleging — teamvorming per wijk","kern":"IZA-afspraak: wijkverpleging organiseert zich in vaste, herkenbare teams per wijk. Samenwerking met huisarts, sociaal domein en welzijn wordt structureel. Bekostiging wijkverpleging wordt aangepast om samenwerking te faciliteren.","trekker":"VWS / V&VN / ActiZ / Zorgverzekeraars","deadline":"2024–2026","status":"In uitvoering","vg":"Kader 'Wijkteams Wijkverpleging' gepubliceerd (2025). Pilots in 12 regio's gestart. NZa past bekostiging aan (2026).","prio":"Geprioriteerd","samenhang":"↔ EL-1 MTVP  |  ↔ GGZ-1 Consultatiefunctie  |  ↔ RS-2 Wijkgerichte samenwerking","bron":"IZA (2022) Onderdeel E – Eerstelijnszorg; zorgakkoorden.nl – Wijkverpleging","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"L"},{"nr":"EL-3","hlo":"C13 Richtlijnen","tf":"IZA","tf_label":"Thematafel IZA — Eerstelijnszorg","wg":"Eerstelijnszorg / Paramedische Zorg","t":"Paramedische zorg en apothekers: versterkte rol in de keten","kern":"IZA-afspraak: fysiotherapeuten, logopedisten, diëtisten en apothekers krijgen een expliciete rol in ketenzorg en preventie. Bekostiging en taakherschikking worden aangepast om substitutie vanuit MSZ te faciliteren.","trekker":"VWS / KNGF / KNMP / LHV / Zorgverzekeraars","deadline":"2024–2026","status":"In uitvoering","vg":"Convenant paramedische zorg & preventie ondertekend (2024). Pilot versterkte apothekersrol in ketenzorg (10 regio's) gestart.","prio":"Monitoren","samenhang":"↔ EL-1 MTVP  |  ↔ PV-2 Preventie in de keten  |  ↔ AT-2 Opleidingscapaciteit","bron":"IZA (2022) Onderdeel E – Eerstelijnszorg; zorgakkoorden.nl","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"L"},{"nr":"EL-4","hlo":"C16 Kwaliteit teams","tf":"IZA","tf_label":"Thematafel IZA — Eerstelijnszorg","wg":"Eerstelijnszorg / Visie 2030","t":"Visie eerstelijnszorg 2030 — samenhangende eerste lijn","kern":"IZA-afspraak: VWS ontwikkelt samen met veldpartijen een integrale visie op de eerstelijnszorg in 2030. Uitgangspunten: populatiegerichte zorg, sterke samenwerking met sociaal domein, preventie als kern.","trekker":"VWS / LHV / InEen / V&VN / Patiëntenfederatie","deadline":"2025","status":"In voorbereiding","vg":"Startdocument 'Visie Eerstelijnszorg 2030' gepubliceerd voor consultatie (Q1 2025). Definitieve visie verwacht Q3 2025.","prio":"Monitoren","samenhang":"↔ EL-1 t/m EL-3  |  ↔ RS-1 Regiobeelden  |  ↔ GGZ-2 Mentale gezondheidsnetwerken","bron":"IZA (2022) Onderdeel E – Eerstelijnszorg; VWS visiedocument 2025","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"L"},{"nr":"PV-1","hlo":"—","tf":"IZA","tf_label":"Thematafel IZA — Preventie","wg":"Preventie / Ketenaanpakken","t":"Ketenaanpakken preventie: Kansrijke start, valpreventie, overgewicht (GLI), welzijn op recept","kern":"IZA-afspraken preventie: vier ketenaanpakken worden landelijk opgeschaald: (1) Kansrijke Start – gezonde start voor kwetsbare kinderen; (2) Valpreventie 65+ – beweegprogramma's; (3) Gecombineerde Leefstijlinterventie (GLI) overgewicht; (4) Welzijn op Recept – sociale basis versterken.","trekker":"VWS / RIVM / Gemeenten / Zorgverzekeraars / Zorgaanbieders","deadline":"2023–2026","status":"In uitvoering","vg":"GLI: 250.000 deelnemers in 2025 (doel bereikt). Valpreventie: opschaling via 25 koplopers-regio's. Welzijn op Recept: 250 gemeenten aangesloten (2025).","prio":"Geprioriteerd","samenhang":"↔ PV-2 Regionale infrastructuur  |  ↔ GGZ-2 Mentale gezondheidsnetwerken  |  ↔ EL-1 MTVP","bron":"IZA (2022) Onderdeel G – Preventie; RIVM GLI monitor 2025; zorgakkoorden.nl","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"M"},{"nr":"PV-2","hlo":"—","tf":"IZA","tf_label":"Thematafel IZA — Preventie","wg":"Preventie / Regionale Infrastructuur","t":"Regionale preventie-infrastructuur: gemeenten, zorg en welzijn verbonden","kern":"IZA-afspraak: elke regio bouwt een structurele preventie-infrastructuur waarbij gemeenten, zorgverzekeraars en zorgaanbieders samenwerken. Preventieakkoord-doelen worden vertaald naar regionale preventieplannen.","trekker":"VWS / RIVM / Gemeenten (VNG) / Zorgverzekeraars / GGD","deadline":"2024–2026","status":"In uitvoering","vg":"Regionale preventieakkoorden in 31 van 35 regio's actief (2025). GALA (Gezond en Actief Leven Akkoord) als financieringskader voor gemeenten.","prio":"Geprioriteerd","samenhang":"↔ PV-1 Ketenaanpakken  |  ↔ RS-1 Regiobeelden  |  ↔ PV-3 Leefstijl","bron":"IZA (2022) Onderdeel G – Preventie; GALA 2023; zorgakkoorden.nl","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"M"},{"nr":"PV-3","hlo":"—","tf":"IZA","tf_label":"Thematafel IZA — Preventie","wg":"Preventie / Leefstijl als Behandeling","t":"Leefstijl als behandeling — verankering in richtlijnen en bekostiging","kern":"IZA-afspraak: leefstijlinterventies worden geïntegreerd in klinische richtlijnen en bekostigd als volwaardige behandeling. Zorgstandaarden voor diabetes, hart- en vaatziekten en COPD worden als eerste aangepast.","trekker":"VWS / NIV / NHG / Zorgverzekeraars / Leefstijlcoaches","deadline":"2024–2026","status":"In uitvoering","vg":"NHG-standaard diabetes herzien met leefstijlmodule (2024). Bekostiging leefstijlcoach in Zvw per 2026 (besluit NZa).","prio":"Monitoren","samenhang":"↔ PV-1 Ketenaanpakken (GLI)  |  ↔ EL-3 Paramedische zorg  |  ↔ PZ-1 Pakketbeheer","bron":"IZA (2022) Onderdeel G – Preventie; NZa tarievenbesluit leefstijl 2026","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"M"},{"nr":"AT-1","hlo":"C13 Richtlijnen","tf":"IZA","tf_label":"Thematafel IZA — Arbeidsmarkt & TAZ","wg":"Arbeidsmarkt / TAZ-Programma","t":"TAZ — Toekomstbestendige Arbeidsmarkt Zorg & Welzijn: programma en acties","kern":"IZA-afspraak: het TAZ-programma coördineert de aanpak van de arbeidsmarktkrapte in zorg en welzijn. Speerpunten: arbeidsbesparende innovatie, taakherschikking, behoud van medewerkers, werkplezier vergroten. Looptijd tot 2027.","trekker":"VWS / RegioPlus / ActiZ / NVZ / V&VN / FNV/CNV","deadline":"2022–2027","status":"In uitvoering","vg":"TAZ-tussenrapportage 2024: 40.000 extra functies ingevuld via zij-instroom. Sectorplan Zorg & Welzijn 2025-2026 gepubliceerd.","prio":"Geprioriteerd","samenhang":"↔ AT-2 Opleidingscapaciteit  |  ↔ AR-1 Regeldruk  |  ↔ EL-1 MTVP","bron":"IZA (2022) Onderdeel H – Arbeidsmarkt; TAZ programma 2024; zorgakkoorden.nl","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"N"},{"nr":"AT-2","hlo":"C13 Richtlijnen","tf":"IZA","tf_label":"Thematafel IZA — Arbeidsmarkt & TAZ","wg":"Arbeidsmarkt / Opleidingscapaciteit","t":"Opleidingscapaciteit en taakherschikking — meer zorgverleners, anders ingezet","kern":"IZA-afspraak: opleidingscapaciteit in zorg en welzijn wordt vergroot (BBL/BOL, HBO-V, geneeskunde). Taakherschikking (verpleegkundig specialist, physician assistant) wordt opgeschaald. Doel: 130.000 extra zorgverleners t/m 2030.","trekker":"VWS / OCW / RegioPlus / HBO-raad / UMC's","deadline":"2023–2030","status":"In uitvoering","vg":"Capaciteitsorgaan: advies 85.000 extra opleidingsplaatsen (2025). Subsidieregeling taakherschikking opgehoogd (€ 50 mln, 2025).","prio":"Monitoren","samenhang":"↔ AT-1 TAZ-programma  |  ↔ EL-1 MTVP  |  ↔ CS-1 Concentratie en spreiding","bron":"IZA (2022) Onderdeel H – Arbeidsmarkt; Capaciteitsorgaan advies 2025","doorbraak":"— Geen doorbraakmiddel","mib":"— Geen directe KIA-connectie","ezk":"— Geen EZK-connectie","src":"IZA","ond":"N"}];
+
+// === CONSTANTS ===
+validateAGRS(AGRS);
+const STATUS_MAP = {
+  "Gestart":                           "Actief",
+  "In uitvoering":                     "Actief",
+  "In uitwerking":                     "Actief",
+  "In opstart":                        "Actief",
+  "In voorbereiding":                  "Actief",
+  "Concept besproken":                 "Actief",
+  "Concept besproken (23 mrt 2026)":   "Actief",
+  "In ontwikkeling":                   "Actief",
+  "Nader uit te werken":               "Actief",
+  "Nader te concretiseren":            "Actief",
+  "Op schema":                         "Op schema",
+  "Structureel":                       "Op schema",
+  "Achter op schema":                  "Aandacht",
+  "Nog niet gestart":                  "Niet gestart",
+  "Nog te starten":                    "Niet gestart",
+  "Geparkeerd":                        "Geparkeerd",
+  "Niet geprioriteerd; ongoing":       "Geparkeerd",
+  "—":                                 "Onbekend"
+};
+const STATUS_NORM_COLORS = {
+  "Actief":       "#0277BD",
+  "Op schema":    "#2E7D32",
+  "Aandacht":     "#C00000",
+  "Niet gestart": "#888",
+  "Geparkeerd":   "#aaa",
+  "Onbekend":     "#bbb"
+};
+function normStatus(raw){ return STATUS_MAP[raw] || "Onbekend"; }
+function isDeadlineRisk(a){
+  const dl = (a.deadline||"").toLowerCase();
+  const riskDl = dl.includes("q1 2026") || dl.includes("q2 2026") || dl.includes("q1") || dl.includes("q2");
+  const riskStat = ["Niet gestart","Aandacht"].includes(normStatus(a.status));
+  return riskDl && riskStat;
+}
+const TF_META = {
+  T1:{label:"T1 — Medische technologie & digitale zorg",color:"#1565C0",short:"Medtech & DHZ"},
+  T2:{label:"T2 — Opschaling Passende Zorg",color:"#2E7D32",short:"Passende Zorg"},
+  T3:{label:"T3 — Databeschikbaarheid & AI",color:"#6A1B9A",short:"AI"},
+  IZA:{label:"IZA — Overige Afspraken",color:"#86004D",short:"IZA Overig"}
+};
+
+const SRC_COLORS = {
+  Medtech:"#1565C0", DHZ:"#2E75B6", E2:"#2E7D32", E3:"#558B2F",
+  AI:"#6A1B9A", IZA:"#86004D", Overig:"#555"
+};
+
+const SRC_LABELS = {
+  Medtech:"Medtech", DHZ:"DHZ", E2:"AZWA E2", E3:"AZWA E3",
+  AI:"AI", IZA:"IZA Overig", Overig:"Overig"
+};
+
+const OND_LABELS = {
+  AZWA:"AZWA", A:"A — Passende zorg", B:"B — Regionale samenwerking",
+  C:"C — Acute zorg", D:"D — Concentratie & spreiding",
+  E:"E — Eerstelijnszorg", F:"F — GGZ & Sociaal domein",
+  G:"G — Preventie", H:"H — Arbeidsmarkt", I:"I — Digitalisering",
+  J:"J — Contractering", K:"K — Financiën"
+};
+
+const STAT_GROUPS = {
+  "Afgerond":[/^afgerond$/i,/^structureel$/i,/^niet geprioriteerd; ongoing$/i],
+  "Op schema":[/^op schema$/i,/^in uitvoering$/i],
+  "Gestart":[/^gestart$/i,/^in voorbereiding$/i,/^in opstart$/i,
+              /^concept besproken/i,/^in uitwerking$/i,/^in ontwikkeling$/i],
+  "Nog niet gestart":[/^nog niet gestart$/i,/^nog te starten$/i,
+                       /^nader te concretiseren$/i,/^nader uit te werken$/i],
+  "Aandacht":[/^achter op schema$/i,/^geparkeerd$/i]
+};
+
+const STAT_COLORS = {
+  "Afgerond":"#2E7D32","Op schema":"#0277BD","Gestart":"#F57C00",
+  "Nog niet gestart":"#888","Aandacht":"#C00000","—":"#bbb"
+};
+
+function statGroup(status) {
+  for (const [g, pats] of Object.entries(STAT_GROUPS))
+    if (pats.some(p => p.test(status))) return g;
+  return "—";
+}
+
+function statColor(status) {
+  return STATUS_NORM_COLORS[normStatus(status)] || "#bbb";
+}
+
+function tfColor(tf) { return (TF_META[tf]||{color:"#888"}).color; }
+
+// === CLUSTERS ===
+const CLUSTERS = [
+  {
+    id: 1,
+    label: "Opschaling Medtech-innovaties",
+    status: "In praktijk",
+    nrs: ["1.3", "3.5", "3.7"],
+    beschrijving: "Schaalbare innovaties, financiering bundelen & richten, en faciliteren & ondersteunen opschaling worden in de praktijk al als één samenhangende aanpak behandeld."
+  },
+  {
+    id: 2,
+    label: "Waardebepaling & Hybride Zorg",
+    status: "In onderzoek",
+    nrs: ["3.6", "DHZ-A", "E2-2"],
+    beschrijving: "Verbinding tussen waardebepaling medtech-innovaties, geaccepteerd bewijs voor hybride zorg en de voorselectie/beoordeling van opschalingsstappen passende zorg."
+  }
+];
+
+// Lookup: welk cluster hoort bij dit afspraaknummer?
+function getAgrCluster(nr) {
+  return CLUSTERS.find(cl => cl.nrs.includes(nr)) || null;
+}
+
+// === STATE ===
+let curView = "thematafels";
+let selectedNr = null;
+let dpHistory = [];
+let activeClusterId = null;  // null = geen cluster-filter
+
+const activeTFs = new Set(["T1","T2","T3","IZA"]);
+const activeSrcs = new Set(Object.keys(SRC_LABELS));
+const activeStats = new Set(["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"]);
+const activeOnds = new Set(Object.keys(OND_LABELS));
+
+// === URL FILTER STATE ===
+function getFilterParams(){
+  const params = new URLSearchParams();
+  if(activeTFs.size < Object.keys(TF_META).length) params.set('tf',[...activeTFs].join(','));
+  if(activeSrcs.size < Object.keys(SRC_LABELS).length) params.set('src',[...activeSrcs].join(','));
+  const allStats = ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"];
+  if(activeStats.size < allStats.length) params.set('status',[...activeStats].join(','));
+  if(activeOnds.size < Object.keys(OND_LABELS).length) params.set('ond',[...activeOnds].join(','));
+  const q = document.getElementById('q')?.value||'';
+  if(q) params.set('q',q);
+  return params;
+}
+function syncURL(){
+  const params = getFilterParams();
+  const url = window.location.pathname + (params.toString() ? '?'+params.toString() : '');
+  window.history.replaceState(null,'',url);
+}
+function loadFromURL(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.has('tf')){ activeTFs.clear(); params.get('tf').split(',').forEach(v=>activeTFs.add(v)); }
+  if(params.has('src')){ activeSrcs.clear(); params.get('src').split(',').forEach(v=>activeSrcs.add(v)); }
+  if(params.has('status')){ activeStats.clear(); params.get('status').split(',').forEach(v=>activeStats.add(v)); }
+  if(params.has('ond')){ activeOnds.clear(); params.get('ond').split(',').forEach(v=>activeOnds.add(v)); }
+  if(params.has('q')){ const sq=document.getElementById('q'); if(sq) sq.value=params.get('q'); }
+}
+function copyFilterLink(){
+  const url = window.location.origin + window.location.pathname + '?' + getFilterParams().toString();
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn = document.getElementById('copyLinkBtn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Gekopieerd!';
+    setTimeout(()=>btn.textContent=orig,2000);
+  });
+}
+
+// === FILTER CHIPS INIT ===
+// === TOGGLE GROUP (aan/uit per filter group) ===
+const GROUP_CONFIG_V2 = {
+  tf: {
+    set: () => activeTFs,
+    keys: () => Object.keys(TF_META),
+    onStyle: (k) => { return { bg: TF_META[k].color, color: '#fff', border: TF_META[k].color }; },
+    offStyle: () => { return { bg: '', color: '#444', border: '' }; },
+    selector: '#tf-chips .chip',
+    keyOf: (c, i) => Object.keys(TF_META)[i]
+  },
+  src: {
+    set: () => activeSrcs,
+    keys: () => Object.keys(SRC_LABELS),
+    onStyle: (k) => { return { bg: SRC_COLORS[k], color: '#fff', border: SRC_COLORS[k] }; },
+    offStyle: () => { return { bg: '', color: '#444', border: '' }; },
+    selector: '#src-chips .chip',
+    keyOf: (c, i) => Object.keys(SRC_LABELS)[i]
+  },
+  stat: {
+    set: () => activeStats,
+    keys: () => ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"],
+    onStyle: (k) => { const col = k==="⚠ Deadlinerisico" ? "#C00000" : (STATUS_NORM_COLORS[k]||"#555"); return { bg: col, color: '#fff', border: col }; },
+    offStyle: () => { return { bg: '', color: '#444', border: '' }; },
+    selector: '#stat-chips .chip',
+    keyOf: (c, i) => ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"][i]
+  },
+  ond: {
+    set: () => activeOnds,
+    keys: () => Object.keys(OND_LABELS),
+    onStyle: () => { return { bg: '#555', color: '#fff', border: '#555' }; },
+    offStyle: () => { return { bg: '', color: '#444', border: '#555' }; },
+    selector: '#ond-chips .chip',
+    keyOf: (c, i) => Object.keys(OND_LABELS)[i]
+  }
+};
+
+function toggleGroup(groupId) {
+  const cfg = GROUP_CONFIG_V2[groupId];
+  if (!cfg) return;
+  const s = cfg.set();
+  const keys = cfg.keys();
+  const allOn = keys.every(k => s.has(k));
+  const chips = document.querySelectorAll(cfg.selector);
+  if (allOn) {
+    // Turn all off
+    s.clear();
+    chips.forEach((c, i) => {
+      const k = cfg.keyOf(c, i);
+      const st = cfg.offStyle(k);
+      c.style.background = st.bg;
+      c.style.color = st.color;
+      if (st.border !== undefined) c.style.borderColor = st.border;
+    });
+  } else {
+    // Turn all on
+    keys.forEach(k => s.add(k));
+    chips.forEach((c, i) => {
+      const k = cfg.keyOf(c, i);
+      const st = cfg.onStyle(k);
+      c.style.background = st.bg;
+      c.style.color = st.color;
+      if (st.border !== undefined) c.style.borderColor = st.border;
+    });
+  }
+  updateToggleBtn(groupId);
+  applyFilters();
+}
+
+function updateToggleBtn(groupId) {
+  const cfg = GROUP_CONFIG_V2[groupId];
+  if (!cfg) return;
+  const s = cfg.set();
+  const keys = cfg.keys();
+  const btn = document.getElementById('toggle-' + groupId);
+  if (!btn) return;
+  const allOn = keys.every(k => s.has(k));
+  btn.textContent = allOn ? '↓ uit' : '↑ aan';
+}
+
+function updateAllToggleBtns() {
+  ['tf','src','stat','ond'].forEach(updateToggleBtn);
+}
+
+function buildChips() {
+  // TF chips
+  const tfEl = document.getElementById('tf-chips');
+  for (const [k, m] of Object.entries(TF_META)) {
+    const c = document.createElement('span');
+    c.className = `chip chip-${k} on`;
+    c.textContent = m.short;
+    c.style.setProperty('--c', m.color);
+    c.setAttribute('role','checkbox');
+    c.setAttribute('aria-checked','true');
+    c.setAttribute('tabindex','0');
+    c.setAttribute('aria-label', m.label);
+    c.onkeydown = (e) => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); c.click(); } };
+    c.onclick = () => toggleSet(activeTFs, k, c, () => {
+      tfEl.querySelectorAll('.chip').forEach((ch,i) => {
+        const key = Object.keys(TF_META)[i];
+        ch.style.background = activeTFs.has(key) ? TF_META[key].color : '';
+        ch.style.borderColor = TF_META[key].color;
+        ch.style.color = activeTFs.has(key) ? '#fff' : '#444';
+        ch.setAttribute('aria-checked', activeTFs.has(key) ? 'true' : 'false');
+      });
+      syncURL();
+      applyFilters();
+    });
+    c.style.background = m.color; c.style.color='#fff'; c.style.borderColor=m.color;
+    tfEl.appendChild(c);
+  }
+
+  // Src chips
+  const srcEl = document.getElementById('src-chips');
+  for (const [k, label] of Object.entries(SRC_LABELS)) {
+    const c = document.createElement('span');
+    c.className = 'chip chip-src on';
+    c.textContent = label;
+    c.style.background = SRC_COLORS[k]; c.style.color='#fff'; c.style.borderColor=SRC_COLORS[k];
+    c.setAttribute('role','checkbox');
+    c.setAttribute('aria-checked','true');
+    c.setAttribute('tabindex','0');
+    c.onkeydown = (e) => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); c.click(); } };
+    c.onclick = () => {
+      activeSrcs.has(k) ? activeSrcs.delete(k) : activeSrcs.add(k);
+      c.style.background = activeSrcs.has(k) ? SRC_COLORS[k] : '';
+      c.style.color = activeSrcs.has(k) ? '#fff' : '#444';
+      c.setAttribute('aria-checked', activeSrcs.has(k) ? 'true' : 'false');
+      syncURL();
+      applyFilters();
+    };
+    srcEl.appendChild(c);
+  }
+
+  // Stat chips — 6 normalized categories + deadline risk
+  const statEl = document.getElementById('stat-chips');
+  const NORM_STAT_KEYS = ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"];
+  for (const g of NORM_STAT_KEYS) {
+    const c = document.createElement('span');
+    c.className = 'chip chip-stat on';
+    c.textContent = g;
+    const gColor = g === "⚠ Deadlinerisico" ? "#C00000" : (STATUS_NORM_COLORS[g] || "#555");
+    c.style.background = gColor; c.style.color='#fff'; c.style.borderColor=gColor;
+    c.setAttribute('role','checkbox');
+    c.setAttribute('aria-checked','true');
+    c.setAttribute('tabindex','0');
+    c.onkeydown = (e) => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); c.click(); } };
+    c.onclick = () => {
+      activeStats.has(g) ? activeStats.delete(g) : activeStats.add(g);
+      c.style.background = activeStats.has(g) ? gColor : '';
+      c.style.color = activeStats.has(g) ? '#fff' : '#444';
+      c.setAttribute('aria-checked', activeStats.has(g) ? 'true' : 'false');
+      syncURL();
+      applyFilters();
+    };
+    statEl.appendChild(c);
+  }
+
+  // Ond chips
+  const ondEl = document.getElementById('ond-chips');
+  for (const [k, label] of Object.entries(OND_LABELS)) {
+    const c = document.createElement('span');
+    c.className = 'chip chip-ond on';
+    c.textContent = k === 'AZWA' ? 'AZWA' : k;
+    c.title = label;
+    c.style.background = '#555'; c.style.color='#fff'; c.style.borderColor='#555';
+    c.setAttribute('role','checkbox');
+    c.setAttribute('aria-checked','true');
+    c.setAttribute('tabindex','0');
+    c.onkeydown = (e) => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); c.click(); } };
+    c.onclick = () => {
+      activeOnds.has(k) ? activeOnds.delete(k) : activeOnds.add(k);
+      c.style.background = activeOnds.has(k) ? '#555' : '';
+      c.style.color = activeOnds.has(k) ? '#fff' : '#444';
+      c.style.borderColor = '#555';
+      c.setAttribute('aria-checked', activeOnds.has(k) ? 'true' : 'false');
+      syncURL();
+      applyFilters();
+    };
+    ondEl.appendChild(c);
+  }
+}
+
+function toggleSet(set, k, el, fn) {
+  set.has(k) ? set.delete(k) : set.add(k);
+  fn();
+}
+
+// === FILTER LOGIC ===
+function matches(a) {
+  const q = document.getElementById('q').value.toLowerCase().trim();
+  // Cluster filter: als een cluster actief is, alleen die nummers tonen
+  if (activeHlo !== null) {
+    if (!a.hlo || !a.hlo.includes(activeHlo)) return false;
+  }
+  if (activeClusterId !== null) {
+    const cl = CLUSTERS.find(c => c.id === activeClusterId);
+    if (!cl || !cl.nrs.includes(a.nr)) return false;
+  }
+  if (!activeTFs.has(a.tf)) return false;
+  if (!activeSrcs.has(a.src)) return false;
+  // status/deadline risk filter
+  if (activeStats.has("⚠ Deadlinerisico") && activeStats.size === 1) {
+    if (!isDeadlineRisk(a)) return false;
+  } else if (activeStats.has("⚠ Deadlinerisico")) {
+    const ns = normStatus(a.status);
+    if (!isDeadlineRisk(a) && !activeStats.has(ns)) return false;
+  } else {
+    const ns = normStatus(a.status);
+    if (!activeStats.has(ns)) return false;
+  }
+  if (!activeOnds.has(a.ond)) return false;
+  if (!q) return true;
+  return [a.nr, a.t, a.src, a.ond, a.wg, a.trekker, OND_LABELS[a.ond]||"",
+          TF_META[a.tf]?.label||""].some(f => String(f).toLowerCase().includes(q));
+}
+
+function applyFilters() {
+  updateAllToggleBtns();
+  syncURL();
+  const visible = AGRS.filter(matches);
+  document.getElementById('result-count').textContent = `${visible.length} van ${AGRS.length} afspraken`;
+  if (curView === 'thematafels') renderThematafels(visible);
+  else if (curView === 'lijst') renderLijst(visible);
+  else if (curView === 'onderdelen') renderOnderdelen(visible);
+}
+
+// === VIEW SWITCHER ===
+function setView(v) {
+  curView = v;
+  ['T','L','O'].forEach(x => { const b=document.getElementById('nav'+x); if(b) b.className='hnav-btn'; });
+  const map={thematafels:'T',lijst:'L',onderdelen:'O'};
+  const nb=document.getElementById('nav'+map[v]); if(nb) nb.className='hnav-btn on';
+  document.getElementById('viewThematafels').className = v==='thematafels' ? '' : 'hidden';
+  document.getElementById('viewLijst').className = v==='lijst' ? '' : 'hidden';
+  document.getElementById('viewOnderdelen').className = v==='onderdelen' ? '' : 'hidden';
+  applyFilters();
+}
+
+// === RENDER: THEMATAFELS ===
+function renderThematafels(visible) {
+  const el = document.getElementById('viewThematafels');
+  el.innerHTML = '';
+  const visNrs = new Set(visible.map(a => a.nr));
+
+  for (const [tfKey, tfMeta] of Object.entries(TF_META)) {
+    const tfAgrs = visible.filter(a => a.tf === tfKey);
+    if (!tfAgrs.length) continue;
+
+    // Group by werkgroep
+    const wgMap = {};
+    for (const a of tfAgrs) {
+      const wg = a.wg || 'Overig';
+      if (!wgMap[wg]) wgMap[wg] = [];
+      wgMap[wg].push(a);
+    }
+
+    const sec = document.createElement('div');
+    sec.className = 'tf-section';
+    sec.innerHTML = `<div class="tf-hdr" style="background:${tfMeta.color}">
+      <h2>${tfMeta.label}</h2>
+      <span class="tf-badge">${tfAgrs.length} afspraken</span>
+    </div>`;
+
+    const body = document.createElement('div');
+    body.className = 'tf-body';
+
+    for (const [wg, wgAgrs] of Object.entries(wgMap)) {
+      const block = document.createElement('div');
+      block.className = 'wg-block';
+      const wgShort = wg.length > 45 ? wg.substring(0,45)+'…' : wg;
+      block.innerHTML = `<div class="wg-hdr" style="background:${tfMeta.color}cc">
+        <span>${esc(wgShort)}</span>
+        <span style="margin-left:auto;font-size:10px;opacity:.85">${wgAgrs.length}</span>
+      </div><div class="wg-body"></div>`;
+      const wb = block.querySelector('.wg-body');
+      for (const a of wgAgrs) {
+        wb.appendChild(makeAgrTag(a, tfMeta.color));
+      }
+      body.appendChild(block);
+    }
+    sec.appendChild(body);
+    el.appendChild(sec);
+  }
+  if (!el.innerHTML) el.innerHTML = '<div class="empty">Geen afspraken gevonden voor de geselecteerde filters.</div>';
+}
+
+// === RENDER: LIJST ===
+function renderLijst(visible) {
+  const tbody = document.getElementById('listBody');
+  tbody.innerHTML = '';
+  if (!visible.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">Geen afspraken gevonden.</td></tr>';
+    return;
+  }
+  for (const a of visible) {
+    const tr = document.createElement('tr');
+    if (a.nr === selectedNr) tr.className = 'selected';
+    const sc = statColor(a.status);
+    const tfc = tfColor(a.tf);
+    const srcc = SRC_COLORS[a.src] || '#555';
+    const wgShort = a.wg.length > 40 ? a.wg.substring(0,40)+'…' : a.wg;
+    tr.innerHTML = `
+      <td class="nr-cell"><span style="background:${srcc};color:#fff;padding:2px 5px;border-radius:3px;font-size:10px">${esc(a.nr)}</span></td>
+      <td>${esc(a.t)}</td>
+      <td class="tf-cell"><span style="background:${tfc}">${TF_META[a.tf]?.short||a.tf}</span></td>
+      <td class="src-cell"><span style="background:${srcc}">${esc(SRC_LABELS[a.src]||a.src)}</span></td>
+      <td style="color:#555;font-size:11px">${esc(wgShort)}</td>
+      <td><span class="status-pill" style="background:${sc}">${esc(a.status)}</span></td>
+      <td style="color:#555;font-size:11px;white-space:nowrap">${esc(a.deadline)}</td>`;
+    tr.onclick = () => showDetail(a.nr);
+    tbody.appendChild(tr);
+  }
+}
+
+// === RENDER: ONDERDELEN ===
+function renderOnderdelen(visible) {
+  const el = document.getElementById('viewOnderdelen');
+  el.innerHTML = '';
+
+  const ondMap = {};
+  for (const a of visible) {
+    const o = a.ond;
+    if (!ondMap[o]) ondMap[o] = [];
+    ondMap[o].push(a);
+  }
+
+  // Order: AZWA first, then A-K
+  const orderedOnds = ['AZWA', ...Object.keys(OND_LABELS).filter(k => k !== 'AZWA')];
+
+  for (const ond of orderedOnds) {
+    const ondAgrs = ondMap[ond];
+    if (!ondAgrs || !ondAgrs.length) continue;
+
+    const sec = document.createElement('div');
+    sec.className = 'ond-section';
+    sec.innerHTML = `<div class="ond-hdr">
+      <h3>${esc(OND_LABELS[ond]||ond)}</h3>
+      <span class="ond-badge">${ondAgrs.length}</span>
+    </div>`;
+
+    const body = document.createElement('div');
+    body.className = 'ond-body';
+    for (const a of ondAgrs) {
+      const tfc = tfColor(a.tf);
+      body.appendChild(makeAgrTag(a, tfc));
+    }
+    sec.appendChild(body);
+    el.appendChild(sec);
+  }
+  if (!el.innerHTML) el.innerHTML = '<div class="empty">Geen afspraken gevonden.</div>';
+}
+
+// === AGR TAG ===
+function makeAgrTag(a, color) {
+  const div = document.createElement('div');
+  div.className = 'agr-tag' + (a.nr === selectedNr ? ' selected' : '');
+  div.id = 'tag-' + a.nr.replace(/[^a-zA-Z0-9]/g,'_');
+  const sc = statColor(a.status);
+  div.innerHTML = `<span class="agr-nr" style="background:${color}">${esc(a.nr)}</span>
+    <div>
+      <div class="agr-titel">${esc(a.t)}</div>
+      <div class="agr-meta">
+        <span class="status-pill" style="background:${sc}">${esc(a.status)}</span>
+        ${a.deadline ? `<span style="font-size:10px;color:#888">${esc(a.deadline)}</span>` : ''}
+      </div>
+    </div>`;
+  div.setAttribute('role','button');
+  div.setAttribute('tabindex','0');
+  div.setAttribute('aria-label', a.nr + ': ' + a.t);
+  div.onkeydown = (e) => { if(e.key==='Enter'){ e.preventDefault(); showDetail(a.nr); } };
+  div.onclick = () => showDetail(a.nr);
+  // Add deadline risk badge if applicable
+  if (isDeadlineRisk(a)) {
+    const badge = document.createElement('span');
+    badge.title = 'Deadlinerisico: deadline nabij en status niet gestart/aandacht';
+    badge.style.cssText = 'font-size:10px;position:absolute;top:2px;right:4px;cursor:default';
+    badge.textContent = '⚠';
+    div.style.position = 'relative';
+    div.appendChild(badge);
+  }
+  return div;
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// === DETAIL PANEL ===
+function showDetail(nr) {
+  const a = AGRS.find(x => x.nr === nr);
+  if (!a) return;
+  if (selectedNr && selectedNr !== nr) dpHistory.push(selectedNr);
+  selectedNr = nr;
+
+  document.getElementById('dpNr').textContent = a.nr;
+  document.getElementById('dpTitel').textContent = a.t;
+
+  // Nav bar
+  const nav = document.getElementById('dpNav');
+  nav.innerHTML = dpHistory.length
+    ? `<button class="dp-nav-btn" onclick="navBack()">← Terug</button>` : '';
+
+  // Body
+  const sc = statColor(a.status);
+  const tfc = tfColor(a.tf);
+  const srcc = SRC_COLORS[a.src] || '#555';
+
+  let html = `<div data-dpsec="context">
+    <div class="dp-field">
+      <div class="dp-label">Bron</div>
+      <div><span class="dp-src-badge" style="background:${srcc}">${esc(SRC_LABELS[a.src]||a.src)}</span></div>
+    </div>
+    <div class="dp-field">
+      <div class="dp-label">Thematafel</div>
+      <div><span class="dp-tf-badge" style="background:${tfc}">${esc(TF_META[a.tf]?.short||a.tf)}</span></div>
+    </div>
+    <div class="dp-field">
+      <div class="dp-label">Werkgroep</div>
+      <div class="dp-value">${esc(a.wg)}</div>
+    </div>
+  </div>`;
+
+  if (a.hlo && a.hlo !== '—') {
+    html += '<div data-dpsec="hlo"><div class="dp-field"><div class="dp-label">HLO-cluster (samenhang)</div>'
+      + '<div class="dp-hlo-row">'
+      + a.hlo.split('/').map(function(h) {
+          var hv = h.trim(); var bg = hloColor(hv); var tc = hloTextColor(hv);
+          return '<span class="hlo-badge" style="background:' + bg + ';color:' + tc + '">' + esc(hv) + '</span>';
+        }).join('')
+      + '</div></div></div>';
+  }
+
+  if (a.kern && a.kern !== '—') html += `
+    <div data-dpsec="kern"><div class="dp-field">
+      <div class="dp-label">Tekst (kern)</div>
+      <div class="dp-value" style="font-size:11px;color:#444">${esc(a.kern)}</div>
+    </div></div>`;
+
+  html += `<div data-dpsec="status"><div class="dp-divider"></div>
+    <div class="dp-field">
+      <div class="dp-label">Status</div>
+      <div><span class="status-pill" style="background:${sc}">${esc(a.status)}</span></div>
+    </div>`;
+
+  if (a.vg && a.vg !== '—') html += `
+    <div class="dp-field">
+      <div class="dp-label">Voortgang / Toelichting</div>
+      <div class="dp-value" style="font-size:11px;color:#444">${esc(a.vg)}</div>
+    </div>`;
+  html += `</div>`;
+
+  html += `<div data-dpsec="meta"><div class="dp-field">
+      <div class="dp-label">Trekker</div>
+      <div class="dp-value">${esc(a.trekker||'—')}</div>
+    </div>
+    <div class="dp-field">
+      <div class="dp-label">Deadline</div>
+      <div class="dp-value">${esc(a.deadline||'—')}</div>
+    </div>
+    <div class="dp-field">
+      <div class="dp-label">Prioritering</div>
+      <div class="dp-value">${esc(a.prio||'—')}</div>
+    </div>
+    <div class="dp-field">
+      <div class="dp-label">IZA Onderdeel</div>
+      <div class="dp-value">${esc(OND_LABELS[a.ond]||a.ond)}</div>
+    </div></div>`;
+
+  let samHtml = '';
+  if (a.samenhang && a.samenhang !== '—') samHtml += `
+    <div class="dp-field">
+      <div class="dp-label">Samenhang</div>
+      <div class="dp-value" style="font-size:11px">${esc(a.samenhang)}</div>
+    </div>`;
+  if (samHtml) html += `<div data-dpsec="samenhang"><div class="dp-divider"></div>${samHtml}</div>`;
+
+  let dbHtml = '';
+  if (a.doorbraak && a.doorbraak !== '—') dbHtml += `
+    <div class="dp-field">
+      <div class="dp-label">Doorbraakmiddel</div>
+      <div class="dp-value" style="font-size:11px">${esc(a.doorbraak)}</div>
+    </div>`;
+  if (a.mib && a.mib !== '—' && !a.mib.startsWith('— Geen')) dbHtml += `
+    <div class="dp-field">
+      <div class="dp-label">MIB Connectie</div>
+      <div class="dp-value" style="font-size:11px">${esc(a.mib)}</div>
+    </div>`;
+  if (a.ezk && a.ezk !== '—' && !a.ezk.startsWith('— Geen')) dbHtml += `
+    <div class="dp-field">
+      <div class="dp-label">EZK Industriebeleid</div>
+      <div class="dp-value" style="font-size:11px">${esc(a.ezk)}</div>
+    </div>`;
+  if (dbHtml) html += `<div data-dpsec="doorbraak">${dbHtml}</div>`;
+
+  if (a.bron && a.bron !== '—') html += `
+    <div data-dpsec="brondoc"><div class="dp-divider"></div>
+    <div class="dp-field">
+      <div class="dp-label">Brondocument</div>
+      <div class="dp-value" style="font-size:11px;color:#555">${esc(a.bron)}</div>
+    </div></div>`;
+
+  // === VOORSTEL CLUSTERING ===
+  const myCl = getAgrCluster(nr);
+  if (myCl) {
+    const badgeClass = myCl.status === 'In praktijk' ? 'cl-badge-praktijk' : 'cl-badge-onderzoek';
+    html += `<div data-dpsec="clustering"><div class="dp-divider"></div>
+      <div class="dp-field">
+        <div class="dp-label" style="display:flex;align-items:center;gap:6px">
+          Voorstel clustering
+          <span class="cl-badge ${badgeClass}" style="font-size:9px;padding:2px 6px;border-radius:8px">${esc(myCl.status)}</span>
+        </div>
+        <div style="font-size:11px;color:#666;margin:3px 0 6px;font-style:italic">${esc(myCl.label)}</div>
+        <div class="dp-cl-row">`;
+    for (const cnr of myCl.nrs.filter(x => x !== nr)) {
+      const ca = AGRS.find(x => x.nr === cnr);
+      if (ca) {
+        const cc = SRC_COLORS[ca.src]||'#555';
+        html += `<div class="dp-cl-btn" onclick="showDetail('${cnr.replace(/'/g,"\'")}')">
+          <span class="dp-cl-nr" style="background:${cc}">${esc(cnr)}</span>
+          <span class="dp-cl-t">${esc(ca.t)}</span>
+        </div>`;
+      }
+    }
+    html += `</div>
+        <div style="font-size:10px;color:#999;margin-top:4px;padding-top:4px;border-top:1px dashed #e8d0e0">${esc(myCl.beschrijving)}</div>
+      </div></div>`;
+  }
+
+  // === AANSPREEKPUNTEN ===
+  const myContacts = getContactsForAgr(a);
+  if (myContacts.length) {
+    html += `<div data-dpsec="contacts"><div class="dp-divider"></div>
+      <div class="dp-field">
+        <div class="dp-label" style="display:flex;align-items:center;gap:5px">
+          Aanspreekpunten Branches
+          <span style="font-size:9px;background:#f5eaf2;color:var(--primary);border:1px solid #d4a8c8;border-radius:8px;padding:1px 6px;font-weight:400">per werkgroep</span>
+        </div>
+        ${renderContacts(myContacts)}
+      </div></div>`;
+  }
+
+  // Related in same werkgroep
+  const related = AGRS.filter(x => x.nr !== nr && x.wg === a.wg && x.wg);
+  const clNrs = myCl ? myCl.nrs : [];
+  const relFiltered = related.filter(x => !clNrs.includes(x.nr));
+  if (relFiltered.length) {
+    html += `<div data-dpsec="werkgroep"><div class="dp-divider"></div>
+      <div class="dp-label" style="padding:0 0 6px">Overige in werkgroep</div>`;
+    for (const r of relFiltered.slice(0,6)) {
+      const rc = SRC_COLORS[r.src]||'#555';
+      html += `<div class="related-tag" onclick="showDetail('${r.nr.replace(/'/g,"\'")}')">
+        <span class="related-nr" style="background:${rc}">${esc(r.nr)}</span>
+        <span class="related-t">${esc(r.t)}</span>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+
+  document.getElementById('dpBody').innerHTML = html;
+  document.getElementById('detailPanel').classList.add('open');
+
+  // Highlight selected tag
+  document.querySelectorAll('.agr-tag.selected, tr.selected').forEach(el => {
+    el.classList.remove('selected');
+  });
+  const tag = document.getElementById('tag-' + nr.replace(/[^a-zA-Z0-9]/g,'_'));
+  if (tag) tag.classList.add('selected');
+  // Also highlight list row
+  document.querySelectorAll('#listBody tr').forEach(tr => {
+    const cell = tr.querySelector('.nr-cell span');
+    if (cell && cell.textContent === nr) tr.classList.add('selected');
+  });
+}
+
+function navBack() {
+  if (dpHistory.length) showDetail(dpHistory.pop());
+}
+
+function closeDetail() {
+  selectedNr = null;
+  dpHistory = [];
+  document.getElementById('detailPanel').classList.remove('open');
+  document.querySelectorAll('.agr-tag.selected, tr.selected').forEach(el => el.classList.remove('selected'));
+}
+
+// === KEYBOARD ===
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDetail();
+});
+
+// === RENDER: CLUSTERING SIDEBAR ===
+function renderClusterSidebar() {
+  const el = document.getElementById('cl-sidebar');
+  el.innerHTML = '';
+  for (const cl of CLUSTERS) {
+    const card = document.createElement('div');
+    card.className = 'cl-card' + (activeClusterId === cl.id ? ' active' : '');
+    card.id = 'cl-card-' + cl.id;
+
+    const badgeClass = cl.status === 'In praktijk' ? 'cl-badge-praktijk' : 'cl-badge-onderzoek';
+    card.innerHTML = `
+      <div class="cl-card-hdr">
+        <span class="cl-name">Cluster ${cl.id}: ${esc(cl.label)}</span>
+        <span class="cl-badge ${badgeClass}">${esc(cl.status)}</span>
+      </div>
+      <div class="cl-nrs">${cl.nrs.map(nr => {
+        const a = AGRS.find(x => x.nr === nr);
+        const c = a ? (SRC_COLORS[a.src]||'#555') : '#888';
+        return `<span class="cl-nr-btn" style="background:${c}" onclick="event.stopPropagation();showDetail('${nr.replace(/'/g,"\\'")}')" title="${esc(a?a.t:'')}">${esc(nr)}</span>`;
+      }).join('')}</div>`;
+
+    card.addEventListener('click', () => toggleClusterFilter(cl.id));
+    el.appendChild(card);
+  }
+}
+
+function toggleClusterFilter(id) {
+  if (activeClusterId === id) {
+    // Deactivate
+    activeClusterId = null;
+  } else {
+    activeClusterId = id;
+  }
+  renderClusterSidebar();
+  applyFilters();
+}
+
+
+// ═══ CONTACT HELPERS ═════════════════════════════════════════
+function getContactsForAgr(a) {
+  const wg = ((a.wg||'').split('\n')[0]).toLowerCase().trim();
+  const tf = (a.tf_label||'').toLowerCase();
+  const ids = new Set();
+  // werkgroep-niveau
+  if (wg.includes('medische technologie')) ids.add('WG_MEDTECH');
+  if (wg.includes('digitale en hybride') || wg.includes('digitale & hybride')) ids.add('WG_DHZ');
+  if (wg.includes('realisatie ai') || wg.includes('ai in de zorg')) ids.add('TF_DAI');
+  // thematafel-niveau
+  if (tf.includes('medische technologie')) ids.add('BO_MEDTECH');
+  if (tf.includes('opschaling passende zorg')) ids.add('TF_OPSCHALING');
+  if (tf.includes('databeschikbaarheid') || wg.includes('realisatie ai') || wg.includes('ai in de zorg')) ids.add('TF_DAI');
+  if (tf.includes('arbeidsmarkt')) ids.add('TF_ARBEIDSMARKT');
+  if (tf.includes('eerstelijnszorg') || tf.includes('1e lijn')) ids.add('TF_1LIJN');
+  if (tf.includes('acute zorg') || tf.includes('samenwerking acute') || tf.includes('concentratie en spreiding')) ids.add('TF_ACUTE');
+  // fallback op src
+  const src = (a.src||'').toLowerCase();
+  if (ids.size===0 && src.includes('medtech')) ids.add('WG_MEDTECH');
+  if (ids.size===0 && (src.includes('dhz')||src.includes('digitale'))) ids.add('WG_DHZ');
+  if (ids.size===0 && src.includes('ai')) ids.add('TF_DAI');
+  return [...ids].map(id=>CONTACTS.find(c=>c.id===id)).filter(Boolean);
+}
+
+function getContactsBySrc(src) {
+  src = (src||'').toLowerCase();
+  const ids = [];
+  if (src.includes('medtech'))                                ids.push('WG_MEDTECH','BO_MEDTECH');
+  else if (src.includes('dhz')||src.includes('digitale'))    ids.push('WG_DHZ','BO_MEDTECH');
+  else if (src.includes('ai'))                               ids.push('TF_DAI');
+  return ids.map(id=>CONTACTS.find(c=>c.id===id)).filter(Boolean);
+}
+
+function renderContacts(groups) {
+  if (!groups.length) return '';
+  let allEmails = [];
+  let h = '<div class="dp-contacts">';
+  for (const cg of groups) {
+    h += '<div class="dp-contact-group">';
+    h += `<div class="dp-contact-group-label">${esc(cg.label)}${cg.toel?`<span class="dp-contact-toel"> — ${esc(cg.toel)}</span>`:''}</div>`;
+    if (!cg.personen.length) {
+      h += '<div class="dp-contact-empty">Nog niet ingevuld — branches vullen contactpersoon in</div>';
+    } else {
+      for (const p of cg.personen) {
+        if (p.email) allEmails.push(p.email);
+        h += `<div class="dp-contact-person">`;
+        if (p.branche) h += `<span class="dp-contact-branche">${esc(p.branche)}</span>`;
+        h += `<span class="dp-contact-naam">${esc(p.naam||'—')}</span>`;
+        if (p.email) h += `<span class="dp-contact-email" onclick="cpEmail(event,'${p.email.replace(/'/g,"\'")}')">✉ ${esc(p.email)}</span>`;
+        h += '</div>';
+      }
+    }
+    h += '</div>';
+  }
+  if (allEmails.length) {
+    const ej = JSON.stringify(allEmails);
+    h += `<button class="dp-copy-btn" onclick="cpAllEmails(event,${ej})">📋 Kopieer alle mailadressen (${allEmails.length})</button>`;
+  }
+  h += '</div>';
+  return h;
+}
+
+function cpEmail(e, email) {
+  e.stopPropagation();
+  const el = e.currentTarget;
+  navigator.clipboard.writeText(email).then(() => {
+    const orig = el.textContent;
+    el.textContent = '✓ gekopieerd';
+    el.style.color = '#219382';
+    setTimeout(()=>{ el.textContent=orig; el.style.color=''; }, 1800);
+  }).catch(()=>{ prompt('Kopieer dit mailadres:', email); });
+}
+
+function cpAllEmails(e, emails) {
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const text = emails.join('; ');
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = `✓ ${emails.length} mailadressen gekopieerd!`;
+    btn.style.cssText = 'background:#d4f0e8;border-color:#219382;color:#155724;width:100%;padding:5px 8px;border:1px solid;border-radius:4px;font-size:11px;cursor:pointer;text-align:center;transition:all .15s';
+    setTimeout(()=>{ btn.textContent=orig; btn.style.cssText=''; }, 2000);
+  }).catch(()=>{ prompt('Kopieer deze mailadressen:', text); });
+}
+
+
+// ═══ HLO SIDEBAR ════════════════════════════════════════════
+function renderHloSidebar() {
+  const el = document.getElementById('hlo-sidebar');
+  if (!el) return;
+  // Verzamel unieke HLO-waarden (gesplitst op /)
+  const allVals = new Set();
+  AGRS.forEach(a => {
+    if (a.hlo && a.hlo !== '—') {
+      a.hlo.split('/').forEach(h => allVals.add(h.trim()));
+    }
+  });
+  const vals = [...allVals].sort();
+  el.innerHTML = '';
+  // Reset knop
+  if (activeHlo !== null) {
+    const rst = document.createElement('div');
+    rst.className = 'hlo-chip active';
+    rst.style.cssText = 'background:#f5eaf2;color:var(--primary);border-color:var(--primary);font-size:10px;padding:2px 8px;margin-bottom:4px;display:inline-block;cursor:pointer';
+    rst.textContent = '✕ ' + activeHlo;
+    rst.onclick = () => { activeHlo = null; renderHloSidebar(); applyFilters(); };
+    el.appendChild(rst);
+  }
+  vals.forEach(val => {
+    const cnt = AGRS.filter(a => a.hlo && a.hlo.includes(val)).length;
+    const chip = document.createElement('div');
+    chip.className = 'hlo-chip' + (activeHlo === val ? ' active' : '');
+    const bg = hloColor(val); const tc = hloTextColor(val);
+    chip.style.cssText = `background:${bg};color:${tc};font-size:10px;padding:2px 8px;border-radius:3px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border:1px solid transparent`;
+    if (activeHlo === val) chip.style.border = '2px solid ' + tc;
+    chip.innerHTML = `<span>${esc(val)}</span><span style="opacity:.6;font-size:9px;margin-left:4px">${cnt}</span>`;
+    chip.onclick = () => { activeHlo = activeHlo === val ? null : val; renderHloSidebar(); applyFilters(); };
+    el.appendChild(chip);
+  });
+}
+
+// === PROGRESS BARS ===
+function renderProgressBars() {
+  const el = document.getElementById('tf-progress-bars');
+  if (!el) return;
+  const NORM_CATS = ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend"];
+  let html = '<div style="display:flex;flex-wrap:wrap;gap:8px">';
+  for (const [tfKey, tfMeta] of Object.entries(TF_META)) {
+    const tfAgrs = AGRS.filter(a => a.tf === tfKey);
+    if (!tfAgrs.length) continue;
+    const counts = {};
+    NORM_CATS.forEach(c => counts[c] = 0);
+    tfAgrs.forEach(a => { const ns = normStatus(a.status); counts[ns] = (counts[ns]||0)+1; });
+    const total = tfAgrs.length;
+    const onTrack = (counts["Actief"]||0) + (counts["Op schema"]||0);
+    const pct = total ? Math.round(onTrack/total*100) : 0;
+    let barSegs = NORM_CATS.map(cat => {
+      const cnt = counts[cat]||0;
+      if (!cnt) return '';
+      const w = (cnt/total*100).toFixed(1);
+      return `<div title="${cat}: ${cnt}" style="width:${w}%;background:${STATUS_NORM_COLORS[cat]};height:100%;display:inline-block;min-width:2px"></div>`;
+    }).join('');
+    html += `<div style="flex:1;min-width:180px;background:#fff;border-radius:4px;border:1px solid #ddd;padding:6px 8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:10px;font-weight:700;color:${tfMeta.color}">${esc(tfMeta.short)}</span>
+        <span style="font-size:10px;color:#888">${onTrack}/${total} (${pct}% actief/schema)</span>
+      </div>
+      <div style="height:8px;border-radius:4px;overflow:hidden;background:#eee;display:flex">${barSegs}</div>
+    </div>`;
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// === INIT ===
+
+// === DP VISIBILITY SETTINGS ===
+const DP_SEC_LABELS_V2 = {
+  context:    "Bron / Thematafel / Werkgroep",
+  hlo:        "HLO-cluster",
+  kern:       "Tekst (kern)",
+  status:     "Status & Voortgang",
+  meta:       "Trekker / Deadline / Prioritering / Onderdeel",
+  samenhang:  "Samenhang",
+  doorbraak:  "Doorbraakmiddel / MIB / EZK",
+  brondoc:    "Brondocument",
+  clustering: "Voorstel clustering",
+  contacts:   "Aanspreekpunten",
+  werkgroep:  "Overige in werkgroep"
+};
+let dpVis = {};
+function initDpVis() {
+  const saved = localStorage.getItem('dpVis_v2');
+  const defaults = Object.fromEntries(Object.keys(DP_SEC_LABELS_V2).map(k => [k, true]));
+  dpVis = saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
+}
+function saveDpVis() {
+  localStorage.setItem('dpVis_v2', JSON.stringify(dpVis));
+}
+function applyDpVis() {
+  Object.keys(DP_SEC_LABELS_V2).forEach(k => {
+    document.querySelectorAll('[data-dpsec="' + k + '"]').forEach(el => {
+      el.style.display = dpVis[k] ? '' : 'none';
+    });
+  });
+}
+function buildSettingsPanel() {
+  const panel = document.getElementById('dpSettingsPanel');
+  let html = '<div class="dps-header"><span>&#9881; Detailkolom</span><button class="dps-close" onclick="closeDpSettings()">&#x2715;</button></div>';
+  html += '<div class="dps-subtitle">Toon/verberg secties</div>';
+  for (const [k, label] of Object.entries(DP_SEC_LABELS_V2)) {
+    const checked = dpVis[k] ? 'checked' : '';
+    html += `<label class="dps-row"><input type="checkbox" ${checked} onchange="setDpSec('${k}', this.checked)"> ${label}</label>`;
+  }
+  panel.innerHTML = html;
+}
+function setDpSec(key, val) {
+  dpVis[key] = val;
+  saveDpVis();
+  applyDpVis();
+}
+function toggleDpSettings() {
+  const p = document.getElementById('dpSettingsPanel');
+  if (p.style.display === 'none' || !p.style.display) {
+    buildSettingsPanel();
+    p.style.display = 'block';
+  } else {
+    p.style.display = 'none';
+  }
+}
+function closeDpSettings() {
+  document.getElementById('dpSettingsPanel').style.display = 'none';
+}
+
+loadFromURL();
+buildChips();
+updateAllToggleBtns();
+initDpVis();
+renderClusterSidebar();
+renderHloSidebar();
+renderProgressBars();
+applyFilters();
+</script>
+</body>
+</html>
