@@ -44,8 +44,15 @@ header .meta{font-size:10px;opacity:.7;white-space:nowrap}
 .sidebar-left{
   width:var(--sidebar-w);flex-shrink:0;background:#fff;
   border-right:2px solid #bbb;overflow-y:auto;
-  display:flex;flex-direction:column;gap:0
+  display:flex;flex-direction:column;gap:0;
+  transition:width .2s ease
 }
+.sidebar-left.collapsed{width:0;overflow:hidden;border-right:none}
+.sb-toggle{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+           color:#fff;width:28px;height:28px;border-radius:4px;cursor:pointer;
+           font-size:14px;display:flex;align-items:center;justify-content:center;
+           flex-shrink:0;transition:background .15s}
+.sb-toggle:hover{background:rgba(255,255,255,.28)}
 .sb-section{padding:11px 12px 10px;border-bottom:1px solid #ececec}
 .sb-title{
   font-size:9.5px;font-weight:700;color:var(--primary);
@@ -230,6 +237,7 @@ table.main-tbl{border-collapse:collapse;width:100%;min-width:820px}
 
 <!-- ═══ HEADER ═══════════════════════════════════════════ -->
 <header>
+  <button class="sb-toggle" id="sbToggleBtn" onclick="toggleSidebar()" title="Sidebar tonen/verbergen" aria-label="Sidebar tonen/verbergen">&#9776;</button>
   <div style="flex:1;min-width:0">
     <h1>AZWA / IZA / HLO &mdash; Clustering Dashboard</h1>
     <div class="meta">93 afspraken &nbsp;·&nbsp; 12 gecombineerde werkgroepen &nbsp;·&nbsp; Concept Dennis Japink · ZN · Mei 2026</div>
@@ -1298,8 +1306,17 @@ function copyFilterLink(){
     setTimeout(()=>btn.textContent=orig,2000);
   });
 }
+function toggleSidebar(){
+  const sb = document.querySelector('.sidebar-left');
+  const btn = document.getElementById('sbToggleBtn');
+  const collapsed = sb.classList.toggle('collapsed');
+  btn.innerHTML = collapsed ? '&#9654;' : '&#9776;';
+  btn.title = collapsed ? 'Sidebar tonen' : 'Sidebar verbergen';
+  try { localStorage.setItem('sbCollapsed_cv', collapsed ? '1' : '0'); } catch(e){}
+}
 // ═══ BOOT ════════════════════════════════════════════════
 loadFromURL();initDpVis();initUI();updateAllToggleBtnsCV();renderProgressBars();applyFilters();
+try { if(localStorage.getItem('sbCollapsed_cv')==='1') toggleSidebar(); } catch(e){}
 </script>
 </body>
 </html>
