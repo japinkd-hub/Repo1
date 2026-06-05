@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>DigiDex v5 — Digizo.nu</title>
+<title>DigiDex v4 — Digizo.nu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
@@ -35,8 +35,7 @@
 .source-bar{max-width:920px;margin:0 auto 16px;display:flex;gap:8px;flex-wrap:wrap}
 .src-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:2px solid var(--dz-border);background:#fff;font-size:.8rem;font-weight:600;color:var(--dz-muted);cursor:pointer;transition:all .15s}
 .src-btn:hover{border-color:var(--dz-purple-light);color:var(--dz-purple)}
-.src-btn.active { background:var(--dz-navy); color:#fff; }
-
+.src-btn.active { background:var(--dz-navy,#1b1e4c); color:#fff; }
 .src-btn.active .src-count{background:var(--dz-purple);color:#fff}
 .machine-wrap{max-width:920px;margin:0 auto;display:flex;gap:16px;align-items:flex-start;position:relative}
 .machine{width:100%;max-width:760px;flex-shrink:0;background:#fff;border-radius:18px;border:1.5px solid var(--dz-border);box-shadow:0 4px 24px rgba(27,30,76,.07);position:relative}
@@ -48,7 +47,7 @@
 .nav-counter{color:rgba(255,255,255,.7);font-size:.72rem;font-weight:500}
 .pips{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:480px}
 .pip{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .15s;flex-shrink:0}
-.pip.active { background:var(--dz-purple); transform:scale(1.3); }
+.pip.active { background:var(--dz-purple,#5c2d91); transform:scale(1.3); }
 .pip:hover{background:rgba(255,255,255,.5)}
 .card-slot{min-height:440px}
 .card{display:none;flex-direction:column}
@@ -155,7 +154,7 @@
 .sec-tab{padding:7px 12px;border-radius:10px;border:1.5px solid var(--dz-border);background:#fff;font-size:.72rem;font-weight:700;cursor:pointer;text-align:left;color:var(--dz-muted);transition:all .15s;white-space:nowrap}
 .sec-tab:hover{border-color:var(--dz-purple-light);color:var(--dz-purple)}
 .sec-tab.active{color:#fff;border-color:transparent}
-.sec-tab.active .tab-count { background:var(--dz-purple); color:#fff; }
+.sec-tab.active .tab-count { background:var(--dz-purple,#5c2d91); color:#fff; }
 .sec-tab:not(.active) .tab-count{background:var(--dz-border);color:var(--dz-muted)}
 .stoz-routes{ padding: 8px 0 4px; }
 .stoz-route-row{
@@ -498,83 +497,78 @@
 }
 .drawer-route-strat{ background: #e8eaf6; color: #283593; border-color: #9fa8da !important; }
 @media(max-width:600px){
-  .machine-wrap, .machine { max-width:100% !important; }
-  .nav-arrow { width:32px; height:32px; font-size:16px; }
-  .stoz-route-tag-row, .zm-orgs-row { flex-direction:column; }
-  .card { min-width:100%; }
+  .machine{ border-radius:8px }
+  .nav-arrow{ width:32px!important; height:32px!important; font-size:16px!important }
 }
 </style>
 </head>
 <body>
 
 <div class="page-header">
-  <div class="page-title">DigiDex v5</div>
-  <div class="page-sub">Digizo.nu · ZonMw Versnellingsimpuls VVH · <span id="ddx-proc-count">42</span> processen</div>
+  <div class="page-title">DigiDex v4</div>
+  <div class="page-sub">Digizo.nu · ZonMw Versnellingsimpuls VVH · 42 processen</div>
 </div>
 
 <div class="source-bar">
-  <button class="src-btn active" data-bron="all" onclick="ddxFilterBron('all')">Alle processen <span class="src-count" id="ddx-cnt-all">42</span></button>
-  <button class="src-btn" data-bron="stoz" onclick="ddxFilterBron('stoz')">STOZ <span class="src-count" id="ddx-cnt-stoz">0</span></button>
-  <button class="src-btn" data-bron="zonmw" onclick="ddxFilterBron('zonmw')">ZonMw VVH <span class="src-count" id="ddx-cnt-zonmw">0</span></button>
-  <button class="src-btn" data-bron="both" onclick="ddxFilterBron('both')">Beide bronnen <span class="src-count" id="ddx-cnt-both">0</span></button>
-  <button id="ddx-copy-link" onclick="copyStateLink()" style="padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid #ccc;background:#fff;margin-left:8px;white-space:nowrap">🔗 Kopieer link</button>
+  <button class="src-btn active" data-bron="all" onclick="filterBron('all')">Alle processen <span class="src-count" id="cnt-all">42</span></button>
+  <button class="src-btn" data-bron="stoz" onclick="filterBron('stoz')">STOZ <span class="src-count" id="cnt-stoz">0</span></button>
+  <button class="src-btn" data-bron="zonmw" onclick="filterBron('zonmw')">ZonMw VVH <span class="src-count" id="cnt-zonmw">0</span></button>
+  <button class="src-btn" data-bron="both" onclick="filterBron('both')">Beide bronnen <span class="src-count" id="cnt-both">0</span></button>
+  <button id="copy-link-btn" onclick="copyStateLink()" style="padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid #ccc;background:#fff;margin-left:8px;white-space:nowrap;flex-shrink:0">🔗 Kopieer link</button>
 </div>
 
 <div class="machine-wrap">
-  <div class="machine" id="ddx-machine">
+  <div class="machine" id="machine">
     <div class="nav-bar">
-      <button class="nav-arrow" id="ddx-btn-prev" onclick="ddxNavigate(-1)">&#8592;</button>
+      <button class="nav-arrow" id="btn-prev" onclick="navigate(-1)">&#8592;</button>
       <div class="nav-center">
-        <div class="nav-counter" id="ddx-nav-counter">1 / 42</div>
-        <div class="pips" id="ddx-pips"></div>
+        <div class="nav-counter" id="nav-counter">1 / 42</div>
+        <div class="pips" id="pips"></div>
       </div>
-      <button class="nav-arrow" id="ddx-btn-next" onclick="ddxNavigate(1)">&#8594;</button>
+      <button class="nav-arrow" id="btn-next" onclick="navigate(1)">&#8594;</button>
     </div>
-    <div class="card-slot" id="ddx-card-slot">
+    <div class="card-slot" id="card-slot">
       <!-- cards injected by JS -->
     </div>
-    <div class="drawer-overlay" id="ddx-drawer-overlay" onclick="ddxCloseDrawer()"></div>
-    <div class="drawer" id="ddx-drawer">
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+    <div class="drawer" id="drawer">
       <div class="drawer-head">
-        <div class="drawer-icon" id="ddx-d-icon">🔬</div>
+        <div class="drawer-icon" id="d-icon">🔬</div>
         <div class="drawer-head-text">
-          <div class="drawer-title" id="ddx-d-title"></div>
-          <div class="drawer-sub" id="ddx-d-sub"></div>
+          <div class="drawer-title" id="d-title"></div>
+          <div class="drawer-sub" id="d-sub"></div>
         </div>
-        <button class="drawer-close" onclick="ddxCloseDrawer()">✕</button>
+        <button class="drawer-close" onclick="closeDrawer()">✕</button>
       </div>
-      <div class="drawer-body" id="ddx-d-body"></div>
+      <div class="drawer-body" id="d-body"></div>
     </div>
-  <!-- Inschuifpaneel van onderen: aanvragers per technologie -->
-  <div class="impl-drawer" id="ddx-impl-drawer">
-    <div class="impl-drawer-head">
-      <div class="impl-drawer-head-left">
-        <span class="impl-drawer-tech-icon">⚙</span>
-        <div>
-          <div class="impl-drawer-title" id="ddx-impl-drawer-title"></div>
-          <div class="impl-drawer-count" id="ddx-impl-drawer-count"></div>
+    <!-- Inschuifpaneel van onderen: aanvragers per technologie -->
+    <div class="impl-drawer" id="impl-drawer">
+      <div class="impl-drawer-head">
+        <div class="impl-drawer-head-left">
+          <span class="impl-drawer-tech-icon">⚙</span>
+          <div>
+            <div class="impl-drawer-title" id="impl-drawer-title"></div>
+            <div class="impl-drawer-count" id="impl-drawer-count"></div>
+          </div>
         </div>
+        <button class="impl-drawer-close" onclick="closeImplDrawer()">✕</button>
       </div>
-      <button class="impl-drawer-close" onclick="ddxCloseImplDrawer()">✕</button>
+      <div class="impl-drawer-sub">Klik op een zorgaanbieder voor aanvraagdetails</div>
+      <div class="impl-drawer-pills" id="impl-drawer-pills"></div>
     </div>
-    <div class="impl-drawer-sub">Klik op een zorgaanbieder voor aanvraagdetails</div>
-    <div class="impl-drawer-pills" id="ddx-impl-drawer-pills"></div>
-  </div>
-  <div class="impl-drawer-overlay" onclick="ddxCloseImplDrawer()"></div>
-
-  <!-- Inschuifpaneel van rechts: aanvraagdetails -->
-  <div class="impl-detail" id="ddx-impl-detail">
-    <div class="impl-detail-head">
-      <button class="impl-drawer-close" onclick="ddxCloseImplDetail()">← Terug</button>
+    <div class="impl-drawer-overlay" onclick="closeImplDrawer()"></div>
+    <!-- Inschuifpaneel van rechts: aanvraagdetails -->
+    <div class="impl-detail" id="impl-detail">
+      <div class="impl-detail-head">
+        <button class="impl-drawer-close" onclick="closeImplDetail()">← Terug</button>
+      </div>
+      <div class="impl-detail-body drawer-body"></div>
     </div>
-    <div class="impl-detail-body drawer-body"></div>
   </div>
-  </div>
-  <div class="sector-tabs" id="ddx-sector-tabs"></div>
+  <div class="sector-tabs" id="sector-tabs"></div>
 
 </div>
-
-
 
 <script>
 window.DDX_CONFIG = window.DDX_CONFIG || {
@@ -582,10 +576,7 @@ window.DDX_CONFIG = window.DDX_CONFIG || {
   stozvUrl: 'https://www.rvo.nl/subsidies-financiering/stoz',
   zonmwUrl: 'https://zonmw.nl/versnellingsimpuls'
 };
-(function(){
-'use strict';
-const CFG = window.DDX_CONFIG;
-
+var CFG = window.DDX_CONFIG;
 // ─────────────────────────────────────────────
 // DATA
 // ─────────────────────────────────────────────
@@ -984,27 +975,27 @@ let filteredIndices = []; // indices into DIGIZO_PROCESSEN
 let currentIdx = 0; // index into filteredIndices
 
 function getStateParams(){
-  const p = new URLSearchParams();
+  var p = new URLSearchParams();
   if(currentBron !== 'all') p.set('bron', currentBron);
   if(currentSector !== 'all') p.set('sector', currentSector);
   if(currentIdx > 0) p.set('kaart', currentIdx);
   return p;
 }
 function syncURL(){
-  const params = getStateParams();
+  var params = getStateParams();
   history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params.toString() : ''));
 }
 function loadFromURL(){
-  const p = new URLSearchParams(location.search);
+  var p = new URLSearchParams(location.search);
   if(p.has('bron')) currentBron = p.get('bron');
   if(p.has('sector')) currentSector = p.get('sector');
   if(p.has('kaart')) currentIdx = parseInt(p.get('kaart')) || 0;
 }
 function copyStateLink(){
-  const url = location.origin + location.pathname + '?' + getStateParams().toString();
-  navigator.clipboard.writeText(url).then(()=>{
-    const btn = document.getElementById('ddx-copy-link');
-    if(btn){ const orig=btn.textContent; btn.textContent='✓ Gekopieerd!'; setTimeout(()=>btn.textContent=orig,2000); }
+  var url = location.href.split('?')[0] + '?' + getStateParams().toString();
+  navigator.clipboard.writeText(url).then(function(){
+    var btn = document.getElementById('copy-link-btn');
+    if(btn){ var orig=btn.textContent; btn.textContent='✓ Gekopieerd!'; setTimeout(function(){ btn.textContent=orig; },2000); }
   });
 }
 
@@ -1701,16 +1692,16 @@ let implDrawerTech = null;
 function openImplDrawer(techNaam, aanvrs){
   implDrawerTech = techNaam;
 
-  const panel = document.getElementById('ddx-impl-drawer');
+  const panel = document.getElementById('impl-drawer');
   if(!panel) return;
 
   // Vul de tech-titel
-  document.getElementById('ddx-impl-drawer-title').textContent = techNaam;
-  document.getElementById('ddx-impl-drawer-count').textContent =
+  document.getElementById('impl-drawer-title').textContent = techNaam;
+  document.getElementById('impl-drawer-count').textContent =
     aanvrs.length + ' aanbieder' + (aanvrs.length!==1?'s':'');
 
   // Bouw pills
-  const pillContainer = document.getElementById('ddx-impl-drawer-pills');
+  const pillContainer = document.getElementById('impl-drawer-pills');
   pillContainer.innerHTML = '';
   aanvrs.forEach(a => {
     const pill = e('span','impl-aanvr-pill');
@@ -1729,9 +1720,9 @@ function openImplDrawer(techNaam, aanvrs){
 }
 
 function closeImplDrawer(){
-  const panel = document.getElementById('ddx-impl-drawer');
+  const panel = document.getElementById('impl-drawer');
   if(panel) panel.classList.remove('open');
-  const detail = document.getElementById('ddx-impl-detail');
+  const detail = document.getElementById('impl-detail');
   if(detail) detail.classList.remove('open');
   const ov = document.querySelector('.impl-drawer-overlay');
   if(ov) ov.classList.remove('open');
@@ -1739,7 +1730,7 @@ function closeImplDrawer(){
 
 // ── Inschuifpaneel VAN RECHTS: details over één aanvrager ─────────────────
 function openImplDetail(entry){
-  const detail = document.getElementById('ddx-impl-detail');
+  const detail = document.getElementById('impl-detail');
   if(!detail) return;
 
   const body = detail.querySelector('.impl-detail-body');
@@ -1794,6 +1785,7 @@ function openImplDetail(entry){
   link.textContent = '↗ STOZ op RVO.nl';
   link.href = CFG.stozvUrl;
   link.target = '_blank';
+  link.rel = 'noopener noreferrer';
   link.style.marginTop = '12px';
   body.appendChild(link);
 
@@ -1801,7 +1793,7 @@ function openImplDetail(entry){
 }
 
 function closeImplDetail(){
-  const detail = document.getElementById('ddx-impl-detail');
+  const detail = document.getElementById('impl-detail');
   if(detail) detail.classList.remove('open');
 }
 
@@ -1858,7 +1850,7 @@ function buildStozInfoKaart(proc){
     <div class="stoz-info-table-wrap">
       <table class="stoz-info-table">
         <thead><tr><th>Digizo.nu-proces</th><th class="tc">Impl.+Strat.</th><th class="tc">Opschaling</th><th class="tc">Evaluatie ✶</th><th class="tc">Totaal</th></tr></thead>
-        <tbody id="ddx-stoz-info-tbody"></tbody>
+        <tbody id="stoz-info-tbody"></tbody>
       </table>
     </div>`;
   card.appendChild(totBand);
@@ -1871,7 +1863,7 @@ function buildStozInfoKaart(proc){
 
   // Vul tabel na render
   setTimeout(() => {
-    const tbody = document.getElementById('ddx-stoz-info-tbody');
+    const tbody = document.getElementById('stoz-info-tbody');
     if(!tbody) return;
     const rows = Object.entries(STOZ_ROUTE_DATA)
       .sort((a,b) => b[1].total - a[1].total);
@@ -1905,6 +1897,7 @@ function buildCard(procIdx){
   const link = e('a','card-proc-link', proc.naam);
   link.href = `${CFG.baseUrl}/proces/${proc.slug}/`;
   link.target = '_blank';
+  link.rel = 'noopener noreferrer';
   headLeft.appendChild(link);
 
   const pills = e('div','card-pills');
@@ -1976,11 +1969,11 @@ function openContactDrawer(key){
   const c = CONTACT[key];
   if(!c){ console.warn('No contact data for',key); return; }
 
-  document.getElementById('ddx-d-icon').textContent = c.icon || '📋';
-  document.getElementById('ddx-d-title').textContent = c.title;
-  document.getElementById('ddx-d-sub').textContent = c.sub || '';
+  document.getElementById('d-icon').textContent = c.icon || '📋';
+  document.getElementById('d-title').textContent = c.title;
+  document.getElementById('d-sub').textContent = c.sub || '';
 
-  const body = document.getElementById('ddx-d-body');
+  const body = document.getElementById('d-body');
   body.innerHTML = '';
 
   // Details section
@@ -2042,20 +2035,21 @@ function openContactDrawer(key){
   const a1 = e('a','drawer-btn primary','Bekijk op ZonMw →');
   a1.href = CFG.zonmwUrl;
   a1.target = '_blank';
+  a1.rel = 'noopener noreferrer';
   body.appendChild(a1);
 
-  document.getElementById('ddx-drawer-overlay').classList.add('open');
-  document.getElementById('ddx-drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
 }
 
 function openStozDrawer(proc, aanvr){
   const d  = hasStoz(proc) ? STOZ_ROUTE_DATA[proc.stoz] : null;
   const vd = STOZ_VWS_DATA[proc.stoz] || STOZ_VWS_DATA[proc.naam] || null;
-  document.getElementById('ddx-d-icon').textContent = '📊';
-  document.getElementById('ddx-d-title').textContent = proc.stoz || proc.naam;
-  document.getElementById('ddx-d-sub').textContent = `STOZ Routekaart · ${(proc.sectoren||[]).join(', ')}`;
+  document.getElementById('d-icon').textContent = '📊';
+  document.getElementById('d-title').textContent = proc.stoz || proc.naam;
+  document.getElementById('d-sub').textContent = `STOZ Routekaart · ${(proc.sectoren||[]).join(', ')}`;
 
-  const body = document.getElementById('ddx-d-body');
+  const body = document.getElementById('d-body');
   body.innerHTML = '';
 
   // ── Aanvrager detail (als geklikt op een org-tag) ──────────────────
@@ -2159,33 +2153,30 @@ Tech: ${a.l.join(', ')}` : '');
   const infoRef = e('div','drawer-info-ref');
   infoRef.innerHTML = `<span class="drawer-info-icon">ℹ</span>
     Route-aantallen en subsidie-uitleg staan op de
-    <a href="#" class="drawer-info-link" onclick="event.preventDefault();ddxShowInfoKaart()">STOZ-infokaart ↗</a>`;
+    <a href="#" class="drawer-info-link" onclick="event.preventDefault();showInfoKaart()">STOZ-infokaart ↗</a>`;
   body.appendChild(infoRef);
 
     const a1 = e('a','drawer-btn secondary','Bekijk op digizo.nu →');
   a1.href = `${CFG.baseUrl}/proces/${proc.slug}/`;
   a1.target = '_blank';
+  a1.rel = 'noopener noreferrer';
   body.appendChild(a1);
 
   const a2 = e('a','drawer-btn secondary','STOZ informatie (RVO) →');
   a2.href = CFG.stozvUrl;
   a2.target = '_blank';
+  a2.rel = 'noopener noreferrer';
   body.appendChild(a2);
 
-  document.getElementById('ddx-drawer-overlay').classList.add('open');
-  document.getElementById('ddx-drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
 }
 
 function closeDrawer(){
-  document.getElementById('ddx-drawer-overlay').classList.remove('open');
-  document.getElementById('ddx-drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
 }
 
-
-function validateData(){
-  const missing = DIGIZO_PROCESSEN.filter(p => p.stoz && !STOZ_ROUTE_DATA[p.stoz]);
-  if(missing.length) console.warn('Processen zonder STOZ-data:', missing.map(p=>p.naam));
-}
 // ─────────────────────────────────────────────
 // NAVIGATION & FILTERING
 // ─────────────────────────────────────────────
@@ -2201,9 +2192,9 @@ function showCard(pos){
   pips.forEach((p,i)=>p.classList.toggle('active', i===pos));
 
   if(filteredIndices.length === 0){
-    document.getElementById('ddx-nav-counter').textContent = '0 / 0';
-    document.getElementById('ddx-btn-prev').disabled = true;
-    document.getElementById('ddx-btn-next').disabled = true;
+    document.getElementById('nav-counter').textContent = '0 / 0';
+    document.getElementById('btn-prev').disabled = true;
+    document.getElementById('btn-next').disabled = true;
     return;
   }
 
@@ -2212,16 +2203,16 @@ function showCard(pos){
   const card = document.querySelector(`.card[data-proc-idx="${procIdx}"]`);
   if(card) card.classList.add('visible');
 
-  document.getElementById('ddx-nav-counter').textContent = `${currentIdx+1} / ${filteredIndices.length}`;
-  document.getElementById('ddx-btn-prev').disabled = currentIdx === 0;
-  document.getElementById('ddx-btn-next').disabled = currentIdx === filteredIndices.length-1;
+  document.getElementById('nav-counter').textContent = `${currentIdx+1} / ${filteredIndices.length}`;
+  document.getElementById('btn-prev').disabled = currentIdx === 0;
+  document.getElementById('btn-next').disabled = currentIdx === filteredIndices.length-1;
 
   closeDrawer();
   syncURL();
 }
 
 function buildPips(){
-  const pipsEl = document.getElementById('ddx-pips');
+  const pipsEl = document.getElementById('pips');
   pipsEl.innerHTML = '';
   filteredIndices.forEach((procIdx, pos) => {
     const pip = e('div','pip');
@@ -2244,7 +2235,7 @@ function showInfoKaart(){
     if(pos > -1) showCard(pos);
   } else {
     // Fallback: open RVO-pagina
-    window.open(`${CFG.stozvUrl}/aanvraagproces`,'_blank');
+    window.open(CFG.stozvUrl+'/aanvraagproces','_blank');
   }
 }
 
@@ -2266,8 +2257,8 @@ function filterSector(sec){
   computeFiltered();
   buildPips();
   showCard(0);
-  syncURL();
   buildSectorTabs();
+  syncURL();
 }
 
 // ─────────────────────────────────────────────
@@ -2276,7 +2267,7 @@ function filterSector(sec){
 const ALL_SECTORS = ['VVT','GGZ','HA','HAP','MSZ','SD'];
 
 function buildSectorTabs(){
-  const container = document.getElementById('ddx-sector-tabs');
+  const container = document.getElementById('sector-tabs');
   container.innerHTML = '';
 
   const allCount = DIGIZO_PROCESSEN.filter(p=>bronMatch(p,currentBron)).length;
@@ -2308,43 +2299,37 @@ function updateSourceCounts(){
   const stoz = DIGIZO_PROCESSEN.filter(p=>hasStoz(p)).length;
   const zonmw = DIGIZO_PROCESSEN.filter(p=>hasZonmw(p)).length;
   const both = DIGIZO_PROCESSEN.filter(p=>hasStoz(p)&&hasZonmw(p)).length;
-  document.getElementById('ddx-cnt-all').textContent = all;
-  document.getElementById('ddx-cnt-stoz').textContent = stoz;
-  document.getElementById('ddx-cnt-zonmw').textContent = zonmw;
-  document.getElementById('ddx-cnt-both').textContent = both;
+  document.getElementById('cnt-all').textContent = all;
+  document.getElementById('cnt-stoz').textContent = stoz;
+  document.getElementById('cnt-zonmw').textContent = zonmw;
+  document.getElementById('cnt-both').textContent = both;
 }
 
 // ─────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────
-const regelmatig = DIGIZO_PROCESSEN.filter(p=>!p._infokaart&&!p._implkaart).length;
 function init(){
   loadFromURL();
   // Build all cards into slot
-  const slot = document.getElementById('ddx-card-slot');
+  const slot = document.getElementById('card-slot');
   DIGIZO_PROCESSEN.forEach((_,i)=>{
     slot.appendChild(buildCard(i));
   });
 
   updateSourceCounts();
-  const cntEl = document.getElementById('ddx-proc-count');
-  if(cntEl) cntEl.textContent = regelmatig;
   computeFiltered();
   buildPips();
   buildSectorTabs();
   showCard(0);
 }
 
-window.ddxFilterBron = filterBron;
-window.ddxFilterSector = filterSector;
-window.ddxNavigate = navigate;
-window.ddxCloseDrawer = closeDrawer;
-window.ddxCloseImplDrawer = closeImplDrawer;
-window.ddxCloseImplDetail = closeImplDetail;
-window.copyStateLink = copyStateLink;
-window.ddxShowInfoKaart = showInfoKaart;
-})();
-</script>
+function validateData(){
+  var missing = DIGIZO_PROCESSEN.filter(function(p){ return p.stoz && !STOZ_ROUTE_DATA[p.stoz]; });
+  if(missing.length) console.warn('Processen zonder STOZ-data:', missing.map(function(p){ return p.naam; }));
+}
+validateData();
 
+init();
+</script>
 </body>
 </html>
