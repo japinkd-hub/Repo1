@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>DigiDex v4 — Digizo.nu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --dz-navy:#1b1e4c;--dz-purple:#7a00df;--dz-purple-mid:#8448a2;
+  --dz-purple-light:#c1a3d0;--dz-purple-pale:#f5f0fb;
+  --dz-teal:#5ad1c4;--dz-teal-light:#ace8e1;--dz-teal-pale:#eaf9f7;
+  --dz-text:#2a2a2a;--dz-muted:#6b6b6b;--dz-border:#ddd6e8;--dz-bg:#f7f5fc;
+  --s-vvt:#1b1e4c;--s-vvt-bg:#e8e9f0;
+  --s-ggz:#7a00df;--s-ggz-bg:#f3edf8;--s-ggz-mid:#9e3ee8;
+  --s-ha:#0a6e50;--s-ha-bg:#e1f5ee;--s-ha-mid:#1a9870;
+  --s-hap:#375454;--s-hap-bg:#e6f0f0;
+  --s-msz:#2d4a6e;--s-msz-bg:#e4ecf5;--s-msz-mid:#4a72a0;
+  --s-sd:#0a8a80;--s-sd-bg:#e0f5f3;--s-sd-mid:#12b0a4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--dz-bg);color:var(--dz-text);min-height:100vh;padding:24px 16px 48px}
+
+/* ── Page header ── */
+.page-header{max-width:920px;margin:0 auto 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.page-logo{height:36px}
+.page-title{font-size:1.25rem;font-weight:700;color:var(--dz-navy)}
+.page-sub{font-size:.8rem;color:var(--dz-muted);margin-left:auto}
+
+/* ── Source bar ── */
+.source-bar{max-width:920px;margin:0 auto 16px;display:flex;gap:8px;flex-wrap:wrap}
+.src-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:2px solid var(--dz-border);background:#fff;font-size:.8rem;font-weight:600;color:var(--dz-muted);cursor:pointer;transition:all .15s}
+.src-btn:hover{border-color:var(--dz-purple-light);color:var(--dz-purple)}
+.src-btn.active{border-color:var(--dz-purple);background:var(--dz-purple-pale);color:var(--dz-purple)}
+.src-count{background:var(--dz-border);color:var(--dz-muted);border-radius:10px;padding:1px 7px;font-size:.72rem;font-weight:700}
+.src-btn.active .src-count{background:var(--dz-purple);color:#fff}
+
+/* ── Outer machine ── */
+.machine-wrap{max-width:920px;margin:0 auto;display:flex;gap:16px;align-items:flex-start}
+.machine{width:760px;flex-shrink:0;background:#fff;border-radius:18px;border:1.5px solid var(--dz-border);box-shadow:0 4px 24px rgba(27,30,76,.07);overflow:hidden;position:relative}
+
+/* ── Nav bar ── */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--dz-navy);border-bottom:2px solid rgba(255,255,255,.08)}
+.nav-arrow{background:rgba(255,255,255,.12);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0}
+.nav-arrow:hover{background:rgba(255,255,255,.25)}
+.nav-arrow:disabled{opacity:.3;cursor:default}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;padding:0 12px}
+.nav-counter{color:rgba(255,255,255,.7);font-size:.72rem;font-weight:500}
+.pips{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:480px}
+.pip{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .15s;flex-shrink:0}
+.pip.active{background:var(--dz-teal);transform:scale(1.3)}
+.pip:hover{background:rgba(255,255,255,.5)}
+
+/* ── Card slot ── */
+.card-slot{min-height:440px}
+.card{display:none;flex-direction:column}
+.card.visible{display:flex}
+
+/* ── Card header ── */
+.card-head{padding:16px 20px 12px;border-bottom:1px solid var(--dz-border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.card-head-left{display:flex;flex-direction:column;gap:6px}
+.card-proc-link{font-size:1rem;font-weight:700;color:var(--dz-navy);text-decoration:none;line-height:1.3}
+.card-proc-link:hover{color:var(--dz-purple);text-decoration:underline}
+.card-pills{display:flex;gap:5px;flex-wrap:wrap}
+.pill{padding:2px 9px;border-radius:10px;font-size:.7rem;font-weight:700;letter-spacing:.02em}
+.card-badge-row{display:flex;gap:6px;align-items:center}
+.src-badge{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:8px;letter-spacing:.04em}
+.src-badge.stoz{background:#e8e9f0;color:#1b1e4c}
+.src-badge.zonmw{background:var(--dz-purple-pale);color:var(--dz-purple)}
+
+/* ── Band (shared) ── */
+.band{padding:14px 18px}
+.band+.band{border-top:1px solid var(--dz-border)}
+.band-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.band-label .band-tag{padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:700}
+.band-ph{background:var(--dz-bg);border:1.5px dashed var(--dz-border);border-radius:10px;padding:14px 16px;text-align:center;color:var(--dz-muted);font-size:.78rem}
+
+/* ── Timeline ── */
+.tl-wrap{position:relative;margin-bottom:6px}
+.tl-bar{display:flex;border-radius:6px;overflow:hidden;height:28px;position:relative}
+.tl-seg{display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;overflow:hidden;white-space:nowrap;padding:0 4px;cursor:default;transition:filter .15s}
+.tl-seg:hover{filter:brightness(1.1)}
+.tl-nu{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--dz-teal);border-radius:2px;pointer-events:none;z-index:10}
+.tl-nu::after{content:'nu';position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:.58rem;font-weight:700;color:var(--dz-teal);white-space:nowrap}
+.tl-axis{display:flex;position:relative;height:16px;margin-top:3px}
+.tl-tick{position:absolute;font-size:.6rem;color:var(--dz-muted);transform:translateX(-50%)}
+.tl-tick.right{transform:translateX(-100%)}
+
+/* ── STOZ route ── */
+.stoz-route-pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.route-pill{display:flex;align-items:center;gap:4px;padding:3px 9px;border-radius:10px;font-size:.68rem;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s}
+.route-pill:hover{opacity:.85}
+.route-pill .rp-count{font-weight:800}
+
+/* STOZ segment colors */
+.seg-strat{background:#3d3f9e;color:#fff}
+.seg-impl{background:#d97706;color:#fff}
+.seg-opsch{background:#059669;color:#fff}
+.seg-eval{background:#2563eb;color:#fff}
+
+.rp-strat{background:#e8e9f6;color:#3d3f9e;border-color:#3d3f9e30}
+.rp-impl{background:#fef3c7;color:#d97706;border-color:#d9770630}
+.rp-opsch{background:#d1fae5;color:#059669;border-color:#05966930}
+.rp-eval{background:#dbeafe;color:#2563eb;border-color:#2563eb30}
+
+/* ── Kennis section ── */
+.kennis-section{margin-top:10px;background:var(--dz-teal-pale);border-radius:8px;padding:10px 12px}
+.kennis-title{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--dz-navy);margin-bottom:6px}
+.kennis-text{font-size:.72rem;color:var(--dz-text);line-height:1.5}
+
+/* ── ZonMw band ── */
+.zm-meta{font-size:.7rem;color:var(--dz-muted);margin-bottom:8px}
+.zm-tl-wrap{position:relative;margin-bottom:6px}
+.zm-orgs-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.zm-org-group{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
+.zm-org-group-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--dz-muted);margin-bottom:2px}
+.org-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;font-size:.7rem;font-weight:600;cursor:pointer;background:var(--dz-purple-pale);color:var(--dz-purple);border:1.5px solid var(--dz-purple-light);transition:all .15s;margin-bottom:3px}
+.org-tag:hover{background:var(--dz-purple);color:#fff}
+.voucher-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:7px;font-size:.67rem;font-weight:600;cursor:pointer;background:#fff;color:var(--dz-muted);border:1.5px solid var(--dz-border);transition:all .15s;margin-bottom:3px}
+.voucher-tag:hover{border-color:var(--dz-purple);color:var(--dz-purple)}
+.stoz-cross-ref{margin-top:8px;padding-top:7px;border-top:1px dashed var(--dz-border)}
+.stoz-org-pill{font-size:.67rem;padding:3px 10px;border-radius:20px;font-weight:600;display:inline-flex;align-items:center;gap:5px;border:1px solid;cursor:pointer;background:#fff8e1;color:#e65100;border-color:#ffcc02;transition:filter .15s;margin:2px}
+.stoz-org-pill:hover{filter:brightness(0.9)}
+.stoz-badge{font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:10px;background:#e8a000;color:#fff}
+.route-indicator-mini{font-size:.55rem;padding:1px 4px;border-radius:8px;font-weight:700}
+.route-opsch{background:#e8f5e9;color:#2e7d32}
+.route-eval{background:#e3f2fd;color:#1565c0}
+.route-impl{background:#fff3e0;color:#e65100}
+.route-strat{background:#e8eaf6;color:#3949ab}
+.kennis-empty{font-size:.67rem;padding:3px 10px;border-radius:20px;font-weight:600;display:inline-flex;align-items:center;gap:5px;background:#f5f5f5;color:#9e9e9e;border:1px solid #e0e0e0;cursor:default;font-style:italic;opacity:.7}
+.v-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dz-muted);width:100%;display:flex;align-items:center;gap:6px;margin-bottom:4px}
+
+/* ── STOZ org tags ── */
+.stoz-org-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;font-size:.7rem;font-weight:600;cursor:pointer;background:var(--dz-bg);color:var(--dz-navy);border:1.5px solid var(--dz-border);transition:all .15s;margin-bottom:3px}
+.stoz-org-tag:hover{border-color:var(--dz-navy);background:var(--dz-navy);color:#fff}
+
+/* ── Card footer ── */
+.card-footer{padding:10px 18px;background:var(--dz-bg);border-top:1px solid var(--dz-border);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.footer-text{font-size:.65rem;color:var(--dz-muted)}
+.footer-link{font-size:.65rem;color:var(--dz-purple);text-decoration:none;font-weight:600}
+.footer-link:hover{text-decoration:underline}
+
+/* ── In-card Drawer ── */
+.drawer-overlay{display:none;position:absolute;inset:0;background:rgba(27,30,76,.18);z-index:40;backdrop-filter:blur(1px);border-radius:18px}
+.drawer-overlay.open{display:block}
+.drawer{position:absolute;right:0;top:0;bottom:0;width:320px;background:#fff;border-left:2px solid var(--dz-border);border-radius:0 18px 18px 0;z-index:50;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow:hidden}
+.drawer.open{transform:translateX(0)}
+.drawer-head{padding:14px 16px 10px;border-bottom:1px solid var(--dz-border);display:flex;align-items:flex-start;gap:10px}
+.drawer-icon{font-size:1.6rem;flex-shrink:0;line-height:1}
+.drawer-head-text{flex:1;min-width:0}
+.drawer-title{font-size:.9rem;font-weight:700;color:var(--dz-navy);line-height:1.3}
+.drawer-sub{font-size:.72rem;color:var(--dz-muted);margin-top:2px}
+.drawer-close{background:none;border:none;cursor:pointer;color:var(--dz-muted);font-size:1.2rem;flex-shrink:0;line-height:1;padding:0 2px;transition:color .15s}
+.drawer-close:hover{color:var(--dz-navy)}
+.drawer-body{flex:1;overflow-y:auto;padding:14px 16px}
+.drawer-section{margin-bottom:14px}
+.drawer-section-title{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--dz-muted);margin-bottom:6px}
+.drawer-row{display:flex;gap:8px;margin-bottom:5px}
+.drawer-row-label{font-size:.72rem;font-weight:600;color:var(--dz-muted);min-width:80px;flex-shrink:0}
+.drawer-row-val{font-size:.72rem;color:var(--dz-text);line-height:1.4}
+.drawer-contacts{display:flex;flex-direction:column;gap:8px}
+.contact-card{background:var(--dz-bg);border-radius:8px;padding:10px 12px}
+.contact-name{font-size:.78rem;font-weight:700;color:var(--dz-navy)}
+.contact-role{font-size:.68rem;color:var(--dz-muted);margin-top:1px}
+.contact-links{display:flex;gap:8px;margin-top:5px;flex-wrap:wrap}
+.contact-link{font-size:.65rem;color:var(--dz-purple);text-decoration:none;font-weight:600}
+.contact-link:hover{text-decoration:underline}
+.drawer-btn{display:block;width:100%;padding:9px 14px;border-radius:9px;border:none;font-size:.78rem;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;transition:all .15s;margin-top:6px}
+.drawer-btn.primary{background:var(--dz-purple);color:#fff}
+.drawer-btn.primary:hover{background:#6200c0}
+.drawer-btn.secondary{background:var(--dz-bg);color:var(--dz-navy);border:1.5px solid var(--dz-border)}
+.drawer-btn.secondary:hover{border-color:var(--dz-navy)}
+.drawer-kennis{background:var(--dz-teal-pale);border-radius:8px;padding:10px 12px;margin-top:8px}
+.drawer-kennis-title{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--dz-navy);margin-bottom:5px}
+.drawer-kennis-text{font-size:.72rem;color:var(--dz-text);line-height:1.5}
+
+/* ── Sector tabs (right sidebar) ── */
+.sector-tabs{display:flex;flex-direction:column;gap:6px;padding-top:4px}
+.sec-tab{padding:7px 12px;border-radius:10px;border:1.5px solid var(--dz-border);background:#fff;font-size:.72rem;font-weight:700;cursor:pointer;text-align:left;color:var(--dz-muted);transition:all .15s;white-space:nowrap}
+.sec-tab:hover{border-color:var(--dz-purple-light);color:var(--dz-purple)}
+.sec-tab.active{color:#fff;border-color:transparent}
+.sec-tab .tab-count{display:inline-block;background:rgba(255,255,255,.25);border-radius:8px;padding:1px 6px;font-size:.65rem;margin-left:4px}
+.sec-tab:not(.active) .tab-count{background:var(--dz-border);color:var(--dz-muted)}
+
+/* ── Responsive ── */
+@media(max-width:860px){
+  .machine-wrap{flex-direction:column}
+  .machine{width:100%}
+  .sector-tabs{flex-direction:row;flex-wrap:wrap}
+}
+
+/* ── STOZ route-balken (3 parallelle routes, geen continuüm) ── */
+.stoz-routes { padding: 8px 0 4px; }
+.stoz-route-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 5px 0; border-bottom: 1px solid var(--dz-border);
+  cursor: help;
+}
+.stoz-route-row:last-of-type { border-bottom: none; }
+.stoz-route-row.stoz-eval-empty { opacity: 0.65; }
+.stoz-route-label {
+  min-width: 160px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 1px;
+}
+.stoz-route-name {
+  font-size: 11px; font-weight: 600; color: var(--dz-navy);
+}
+.stoz-route-sub {
+  font-size: 9px; color: var(--dz-muted); font-style: italic;
+}
+.stoz-bar-wrap { flex: 1; min-width: 0; }
+.stoz-bar-bg {
+  width: 100%; height: 20px; background: #f0edf7;
+  border-radius: 4px; overflow: hidden;
+  position: relative; display: flex; align-items: center;
+}
+.stoz-bar-fill {
+  height: 100%; border-radius: 4px;
+  display: flex; align-items: center;
+  transition: width 0.3s ease;
+  min-width: 0; position: relative;
+}
+.stoz-bar-count {
+  font-size: 10px; font-weight: 700;
+  padding: 0 6px; white-space: nowrap;
+}
+.stoz-bar-count-outside {
+  font-size: 10px; font-weight: 700;
+  padding: 0 6px; white-space: nowrap;
+}
+.stoz-eval-note {
+  font-size: 9px; color: #9e9e9e; padding-left: 8px;
+  font-style: italic;
+}
+.stoz-route-total {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--dz-muted);
+  padding: 6px 0 2px; border-top: 1px dashed var(--dz-border);
+  margin-top: 4px;
+}
+.stoz-route-total strong { color: var(--dz-navy); }
+/* Verwijder oude seg-strat/seg-impl/seg-opsch/seg-eval als ze nog ergens staan */
+.tl-seg.seg-strat, .tl-seg.seg-impl,
+.tl-seg.seg-opsch, .tl-seg.seg-eval { display: none; }
+
+
+/* ── STOZ aanvragers-sectie ── */
+.stoz-orgs-section { margin-top: 10px; }
+.stoz-org-group { margin-bottom: 8px; }
+.stoz-org-label {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--dz-muted); margin-bottom: 4px;
+}
+.stoz-org-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600; padding: 3px 9px;
+  border-radius: 20px; border: 1px solid; margin: 2px 3px 2px 0;
+  cursor: pointer; transition: filter .15s;
+}
+.stoz-org-tag:hover { filter: brightness(.88); }
+.stoz-tag-opsch { background: #e8f5e9; color: #1b5e20; border-color: #81c784; }
+.stoz-tag-eval  { background: #e3f2fd; color: #0d3d73; border-color: #42a5f5; }
+.stoz-kennis-mini { font-size: 11px; }
+
+/* ── STOZ leveranciers / technologieën ── */
+.stoz-lev-section { margin-top: 8px; }
+.stoz-lev-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.stoz-lev-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600; padding: 3px 9px;
+  border-radius: 20px; border: 1px solid #fcd34d;
+  background: #fffbeb; color: #78350f;
+}
+.stoz-lev-badge {
+  font-size: 8px; font-weight: 700; padding: 1px 4px;
+  border-radius: 8px; background: #d97706; color: #fff;
+}
+
+/* ── STOZ footer ── */
+.stoz-footer {
+  font-size: 9px; color: var(--dz-muted); margin-top: 8px;
+  padding-top: 6px; border-top: .5px solid var(--dz-border);
+}
+
+
+/* ── AAN1: Route-tags conform org-tag stijl ── */
+.stoz-route-tag-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.stoz-tag-impl {
+  background: #fff3e0 !important; color: #7c3300 !important;
+  border-color: #ffb74d !important;
+}
+.stoz-tag-impl:hover { background: #ffe0b2 !important; }
+.stoz-tag-opsch-main {
+  background: #e8f5e9 !important; color: #1b5e20 !important;
+  border-color: #81c784 !important;
+}
+.stoz-tag-opsch-main:hover { background: #c8e6c9 !important; }
+.stoz-tag-eval-main {
+  background: #e3f2fd !important; color: #0d3d73 !important;
+  border-color: #42a5f5 !important;
+}
+.stoz-tag-eval-main:hover { background: #bbdefb !important; }
+.route-count {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  background: rgba(0,0,0,.10); border-radius: 10px;
+  padding: 0 5px; margin-left: 4px; line-height: 1.6;
+}
+
+/* ── AAN2: STOZ-infokaart ── */
+.stoz-info-card { border-top: 3px solid #f59e0b; }
+.stoz-info-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  margin-top: 8px;
+}
+@media (max-width: 800px) { .stoz-info-grid { grid-template-columns: 1fr; } }
+.stoz-info-route {
+  border-radius: 8px; padding: 10px 12px;
+  border: 1px solid; font-size: .7rem;
+}
+.stoz-info-impl  { background: #fff8f0; border-color: #ffb74d; }
+.stoz-info-opsch { background: #f0fdf4; border-color: #86efac; }
+.stoz-info-eval  { background: #eff6ff; border-color: #93c5fd; }
+.stoz-info-route-title {
+  font-size: .72rem; font-weight: 700; margin-bottom: 2px; color: var(--dz-navy);
+}
+.stoz-info-route-sub {
+  font-size: .62rem; color: var(--dz-muted); margin-bottom: 6px;
+}
+.stoz-info-route-desc { font-size: .68rem; line-height: 1.5; color: var(--dz-navy); }
+.stoz-info-table-wrap { overflow-x: auto; margin-top: 8px; }
+.stoz-info-table {
+  width: 100%; border-collapse: collapse; font-size: .68rem;
+}
+.stoz-info-table th {
+  font-size: .6rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--dz-muted);
+  border-bottom: 1px solid var(--dz-border); padding: 4px 6px;
+  text-align: left;
+}
+.stoz-info-table td { padding: 3px 6px; border-bottom: .5px solid var(--dz-border); }
+.stoz-info-table tr:hover td { background: var(--dz-teal-pale); }
+.stoz-info-table .tc { text-align: center; }
+.impl-cell  { color: #7c3300; font-weight: 600; }
+.opsch-cell { color: #1b5e20; font-weight: 600; }
+.eval-cell  { color: #0d3d73; font-weight: 600; }
+.total-cell { color: var(--dz-navy); }
+
+/* ── AAN2: drawer info-ref ── */
+.drawer-info-ref {
+  margin-top: 12px; padding: 8px 10px;
+  background: var(--dz-bg-secondary, #f8f8fa);
+  border-radius: 8px; font-size: .68rem;
+  color: var(--dz-muted); display: flex; align-items: center; gap: 6px;
+  border: .5px solid var(--dz-border);
+}
+.drawer-info-icon { font-size: 14px; color: var(--dz-navy); }
+.drawer-info-link {
+  color: var(--dz-purple); font-weight: 600; text-decoration: none;
+}
+.drawer-info-link:hover { text-decoration: underline; }
+
+/* ── AAN4: Kennis-tag hover ── */
+.stoz-tag-kennis:hover { filter: brightness(.88); }
+.stoz-tag-kennis-empty { cursor: help !important; }
+
+/* ── Remove old toggle styles ── */
+.drawer-toggle-section, .drawer-toggle-btn,
+.toggle-check, .drawer-route-content { display: none !important; }
+/* Verberg ook de old stoz-route-summary / route-mini / stoz-detail-btn */
+.stoz-count-badge, .stoz-route-mini, .stoz-detail-btn { display: none !important; }
+
+
+/* ── drawer route-badge voor impl ── */
+.drawer-route-impl { background: #fff3e0; color: #7c3300; border: 1px solid #ffb74d; }
+
+
+.org-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-title">DigiDex v4</div>
+  <div class="page-sub">Digizo.nu · ZonMw Versnellingsimpuls VVH · 42 processen</div>
+</div>
+
+<div class="source-bar">
+  <button class="src-btn active" onclick="filterBron('all')">Alle processen <span class="src-count" id="cnt-all">42</span></button>
+  <button class="src-btn" onclick="filterBron('stoz')">STOZ <span class="src-count" id="cnt-stoz">0</span></button>
+  <button class="src-btn" onclick="filterBron('zonmw')">ZonMw VVH <span class="src-count" id="cnt-zonmw">0</span></button>
+  <button class="src-btn" onclick="filterBron('both')">Beide bronnen <span class="src-count" id="cnt-both">0</span></button>
+</div>
+
+<div class="machine-wrap">
+  <div class="machine" id="machine">
+    <div class="nav-bar">
+      <button class="nav-arrow" id="btn-prev" onclick="navigate(-1)">&#8592;</button>
+      <div class="nav-center">
+        <div class="nav-counter" id="nav-counter">1 / 42</div>
+        <div class="pips" id="pips"></div>
+      </div>
+      <button class="nav-arrow" id="btn-next" onclick="navigate(1)">&#8594;</button>
+    </div>
+    <div class="card-slot" id="card-slot">
+      <!-- cards injected by JS -->
+    </div>
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+    <div class="drawer" id="drawer">
+      <div class="drawer-head">
+        <div class="drawer-icon" id="d-icon">🔬</div>
+        <div class="drawer-head-text">
+          <div class="drawer-title" id="d-title"></div>
+          <div class="drawer-sub" id="d-sub"></div>
+        </div>
+        <button class="drawer-close" onclick="closeDrawer()">✕</button>
+      </div>
+      <div class="drawer-body" id="d-body"></div>
+    </div>
+  </div>
+  <div class="sector-tabs" id="sector-tabs"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const TODAY = new Date();
+
+const STOZ_VWS_DATA = {
+  "Beeldzorg": {
+    aanvragers: [{a:"Stichting GGNet",k:null,l:["Minddistrict"],r:"opsch"},{a:"Stichting Patyna",k:null,l:[],r:"opsch"},{a:"Stichting Cosis",k:null,l:["DigiContact"],r:"opsch"},{a:"Stichting ASVZ",k:null,l:[],r:"opsch"},{a:"Stichting MagentaZorg",k:null,l:["Compaan"],r:"opsch"},{a:"Psychologenpraktijk Ebbers B.V.",k:null,l:[],r:"opsch"},{a:"Stichting Laurens",k:null,l:[],r:"opsch"},{a:"HappyZorg B.V.",k:null,l:[],r:"opsch"},{a:"Zorggroep Achterhoek B.V.",k:null,l:["Nedap (ONS)"],r:"impl"},{a:"Rapha\u00eblstichting",k:null,l:[],r:"impl"},{a:"Stichting Surplus Welzijn",k:null,l:[],r:"impl"},{a:"Admiraal De Ruyter Ziekenhuis B.V.",k:null,l:[],r:"impl"},{a:"Fysiotherapie Polman",k:null,l:[],r:"impl"},{a:"DreamFit Fysiotherapie",k:null,l:[],r:"impl"}],
+    leveranciers: ["Compaan", "DigiContact", "Minddistrict", "Nedap (ONS)", "Robot Tessa"],
+    kennis: [["Academisch Ziekenhuis Groningen", "Academisch ziekenhuis/UMC"], ["Podotherapeutisch Centrum RondOm B.V.", "Hogeschool/Lectoraat"], ["Campus Enschede Huisartsen Praktijk B.V.", "Universiteit"]],
+  },
+  "Behandeling via digitale EMDR": {
+    aanvragers: [{a:"MiSi NeuroPsy B.V.",k:null,l:["WeMind (Moovd)"],r:"opsch"},{a:"Stichting GGZ Noord-Holland-Noord",k:null,l:["WeMind (Moovd)"],r:"opsch"},{a:"KieN B.V.",k:null,l:["WeMind (Moovd)"],r:"opsch"},{a:"Stichting GGZ Keizersgracht",k:null,l:["WeMind (Moovd)"],r:"opsch"},{a:"Psychologenpraktijk Ebbers B.V.",k:null,l:[],r:"opsch"},{a:"Mentaal Beter Cure B.V.",k:null,l:["Nedap (ONS)"],r:"opsch"},{a:"CaleidoZorg B.V.",k:null,l:["WeMind (Moovd)"],r:"opsch"},{a:"Praktijk Spil B.V.",k:null,l:["WeMind (Moovd)"],r:"opsch"},{a:"Fysiotherapie Polman",k:null,l:[],r:"impl"},{a:"Connect2Care Jeugd B.V.",k:null,l:["WeMind (Moovd)"],r:"impl"},{a:"Apotheek Van der Arend B.V.",k:null,l:[],r:"impl"},{a:"Psychologisch Centrum B.V.",k:null,l:[],r:"impl"},{a:"Delta Apotheek B.V.",k:null,l:[],r:"impl"},{a:"Aerdenhout Apotheek B.V.",k:null,l:[],r:"impl"}],
+    leveranciers: ["Nedap (ONS)", "WeMind (Moovd)"],
+    kennis: [],
+  },
+  "Dagstructuurondersteuning": {
+    aanvragers: [{a:"Stichting Zorgbalans",k:null,l:["Robot Tessa"],r:"opsch"},{a:"Stichting Sovak",k:null,l:["MijnEigenPlan", "Nedap (ONS)"],r:"opsch"},{a:"Stichting ORO",k:null,l:["MijnEigenPlan"],r:"opsch"},{a:"Stichting MagentaZorg",k:null,l:["Compaan"],r:"opsch"},{a:"Stichting tanteLouise Zorg",k:null,l:["Compaan"],r:"opsch"},{a:"Stichting Silverein",k:null,l:["Compaan"],r:"opsch"},{a:"Stichting Vivium Zorggroep",k:null,l:["Nedap (ONS)", "Compaan"],r:"opsch"},{a:"Stichting ICARE",k:null,l:[],r:"opsch"},{a:"Sa-Net Woonzorg B.V.",k:null,l:["Nedap (ONS)"],r:"impl"},{a:"Golden Years B.V.",k:null,l:[],r:"impl"},{a:"Fysiotherapie Rockanje",k:null,l:[],r:"impl"},{a:"Resultaat Plus B.V.",k:null,l:[],r:"impl"},{a:"Stichting Maatschappelijke Dienstverlening Ensched",k:null,l:[],r:"impl"},{a:"MAX Gym & Fysio",k:null,l:[],r:"impl"}],
+    leveranciers: ["Compaan", "MijnEigenPlan", "Nedap (ONS)", "Robot Tessa"],
+    kennis: [],
+  },
+  "Digitale triage": {
+    aanvragers: [{a:"Maatschap Huisartsenpraktijk De Waterkant",k:null,l:[],r:"opsch"},{a:"Huisartsenpraktijk Otte Klieverik",k:null,l:["PraatmetdeDokter"],r:"opsch"},{a:"Huisartsenpraktijk De Hogewoerd",k:null,l:["PraatmetdeDokter"],r:"opsch"},{a:"Maatschap Pijlman en Schirm",k:null,l:["PraatmetdeDokter"],r:"opsch"},{a:"Maatschap Huisartsenpraktijk Haarlemmerpoort",k:null,l:["PraatmetdeDokter"],r:"opsch"},{a:"Huisartsen De Orderbron",k:null,l:["PraatmetdeDokter"],r:"opsch"},{a:"Huisartsenpraktijk De Potgieter",k:null,l:["PraatmetdeDokter"],r:"opsch"},{a:"Stichting Esd\u00e9g\u00e9-Reigersdaal",k:null,l:[],r:"opsch"},{a:"Huisartsenpraktijk Matenpark B.V.",k:null,l:["PraatmetdeDokter"],r:"eval"},{a:"MaatscHAP Leusden Asschatterweg",k:null,l:["PraatmetdeDokter"],r:"eval"},{a:"B. van Kralingen, huisarts",k:null,l:["PraatmetdeDokter"],r:"eval"},{a:"Huisartsenpraktijk de Gaarde",k:null,l:["PraatmetdeDokter"],r:"eval"},{a:"Huisartsenpraktijk Betondorp B.V.",k:null,l:[],r:"impl"},{a:"Maatschap Heikens",k:null,l:[],r:"impl"},{a:"Rembrandt Fysiotherapie & Revalidatie B.V.",k:null,l:[],r:"impl"},{a:"Fysik",k:null,l:[],r:"impl"},{a:"Fysiotherapie Polman",k:null,l:[],r:"impl"},{a:"Fysiopraktijk Zeist",k:null,l:[],r:"impl"}],
+    leveranciers: ["LUSCII", "Nedap (ONS)", "PraatmetdeDokter"],
+    kennis: [],
+  },
+  "Hybride aanreiking van medicatie met een medicijndispenser": {
+    aanvragers: [{a:"Stichting Patyna",k:null,l:[],r:"opsch"},{a:"Stichting tanteLouise Zorg",k:null,l:[],r:"opsch"},{a:"Comfor Zorg B.V.",k:null,l:["Sensara"],r:"opsch"},{a:"Stichting Zorggroep Noorderboog",k:null,l:[],r:"opsch"},{a:"Stichting Zorggroep Apeldoorn en omstreken",k:null,l:[],r:"opsch"},{a:"Stichting Amstelring Groep",k:null,l:[],r:"opsch"},{a:"Stichting Zinn (Zorgorganisatie in Noord Nederland",k:null,l:[],r:"opsch"},{a:"Stichting Sensire",k:null,l:[],r:"opsch"},{a:"Royal Care B.V.",k:null,l:[],r:"impl"},{a:"Stichting Ouderenzorg Noord-Beveland",k:null,l:[],r:"impl"},{a:"Apotheek 'De Oostburg' B.V.",k:null,l:[],r:"impl"},{a:"Delta Apotheek B.V.",k:null,l:[],r:"impl"}],
+    leveranciers: ["Attendi", "Robot Tessa", "Sensara"],
+    kennis: [],
+  },
+  "Hybride incontinentiezorg": {
+    aanvragers: [{a:"Stichting Alliade",k:null,l:[],r:"opsch"},{a:"Stichting Zozijn Zorg",k:null,l:["Nedap (ONS)"],r:"opsch"},{a:"Stichting Vereen",k:null,l:["Nedap (ONS)"],r:"opsch"},{a:"Stichting Sint Anna",k:null,l:[],r:"opsch"},{a:"Stichting Bartim\u00e9us Sonneheerdt",k:null,l:[],r:"opsch"},{a:"Stichting S & L Zorg",k:null,l:[],r:"opsch"},{a:"Stichting Baalderborg",k:null,l:[],r:"opsch"},{a:"Stichting Zorggroep Oude en Nieuwe Land",k:null,l:[],r:"opsch"},{a:"Stichting Careaz",k:null,l:[],r:"impl"},{a:"Stichting Zorggroep Noordwest-Veluwe Zorg",k:null,l:[],r:"impl"},{a:"Stichting Zorgcombinatie Marga Klomp\u00e9",k:null,l:[],r:"impl"},{a:"Bunatizorg B.V.",k:null,l:[],r:"impl"},{a:"PROTESTANTS CHRISTELIJKE STICHTING voor ZORGVERLEN",k:null,l:[],r:"impl"}],
+    leveranciers: ["Nedap (ONS)"],
+    kennis: [],
+  },
+  "Leefcirkels intern en extern": {
+    aanvragers: [{a:"Stichting Zorggroep ENA",k:null,l:["BproCare"],r:"opsch"},{a:"Stichting De Zijlen",k:null,l:[],r:"opsch"},{a:"Stichting Rosengaerde",k:null,l:[],r:"opsch"},{a:"Opella, Christelijke Stichting voor wonen, zorg en",k:null,l:["BproCare"],r:"opsch"},{a:"Stichting Wittenbergzorg",k:null,l:[],r:"opsch"},{a:"Stichting Amstelring Groep",k:null,l:[],r:"opsch"},{a:"Stichting Jan Berchmans",k:null,l:["BproCare"],r:"opsch"},{a:"Stichting Zorggroep Groningen",k:null,l:[],r:"opsch"},{a:"Home Instead Thuisservice Kennemerland B.V.",k:null,l:[],r:"impl"},{a:"Senior Service Zorg B.V.",k:null,l:[],r:"impl"},{a:"Dam Apotheek C.V.",k:null,l:[],r:"impl"},{a:"Stichting Livio",k:null,l:[],r:"impl"},{a:"Delta Apotheek B.V.",k:null,l:[],r:"impl"}],
+    leveranciers: ["Attendi", "BproCare", "Nedap (ONS)"],
+    kennis: [],
+  },
+  "Planning met AI-software": {
+    aanvragers: [{a:"STICHTING SINT JOZEFOORD",k:null,l:["TONOS", "Nedap (ONS)"],r:"opsch"},{a:"stichting Laverhof",k:null,l:[],r:"opsch"},{a:"Stichting Vilente",k:null,l:["TONOS", "Nedap (ONS)"],r:"opsch"},{a:"Archipel Thuis B.V.",k:null,l:["TONOS"],r:"opsch"},{a:"Stichting QuaRijn",k:null,l:["TONOS"],r:"opsch"},{a:"Stichting Trajectum",k:null,l:[],r:"eval"},{a:"Zorgthuis Utrecht B.V.",k:null,l:[],r:"impl"},{a:"MAX Gym & Fysio",k:null,l:[],r:"impl"},{a:"Pro-Fys B.V.",k:null,l:[],r:"impl"},{a:"Sport- en Fysiotherapie Gerritsen",k:null,l:[],r:"impl"},{a:"Cardo Healthcare Waalre",k:null,l:[],r:"impl"},{a:"Apotheek Druten B.V.",k:null,l:[],r:"impl"}],
+    leveranciers: ["Nedap (ONS)", "TONOS"],
+    kennis: [],
+  },
+  "Signalering via zorgdomotica: leefpatroonmonitoring": {
+    aanvragers: [{a:"Stichting Patyna",k:null,l:[],r:"opsch"},{a:"Stichting Sovak",k:null,l:[],r:"opsch"},{a:"Stichting Zorggroep ENA",k:null,l:["BproCare"],r:"opsch"},{a:"Stichting Amarosa",k:null,l:["Sensara"],r:"opsch"},{a:"Comfor Zorg B.V.",k:null,l:["Sensara"],r:"opsch"},{a:"Castle Craig Nederland B.V.",k:null,l:[],r:"opsch"},{a:"ZorgSaam Thuis- en Ouderenzorg B.V.",k:null,l:["Nedap (ONS)"],r:"opsch"},{a:"Stichting Zorggroep Florence",k:null,l:[],r:"opsch"},{a:"Stichting Trajectum",k:null,l:[],r:"eval"},{a:"Thuiszorg Groot Gelre B.V.",k:null,l:[],r:"impl"},{a:"B.E.B. Zorg B.V.",k:null,l:[],r:"impl"},{a:"Stichting Zorggroep Noordwest-Veluwe Zorg",k:null,l:[],r:"impl"},{a:"Home Instead Thuisservice Kennemerland B.V.",k:null,l:[],r:"impl"},{a:"Fysio Rijnwaarden",k:null,l:[],r:"impl"},{a:"Ikzorg",k:null,l:[],r:"impl"}],
+    leveranciers: ["BproCare", "Nedap (ONS)", "Robot Tessa", "Sensara"],
+    kennis: [["Zuyderland Zorgcentra B.V.", "Hogeschool/Lectoraat"]],
+  },
+  "Spraakgestuurd rapporteren": {
+    aanvragers: [{a:"Actief Zorg B.V.",k:null,l:["Attendi", "Nedap (ONS)"],r:"opsch"},{a:"STMG B.V.",k:null,l:["Attendi"],r:"opsch"},{a:"Stichting De Zijlen",k:null,l:[],r:"opsch"},{a:"Stichting voor Verpleeg-, Verzorgings- en Woonfaci",k:null,l:[],r:"opsch"},{a:"Stichting Sint Annaklooster",k:null,l:[],r:"opsch"},{a:"Stichting Alliade",k:null,l:["Nedap (ONS)"],r:"opsch"},{a:"Stichting Sint Jacob",k:null,l:[],r:"opsch"},{a:"Stichting ICARE",k:null,l:["Attendi"],r:"opsch"},{a:"Stichting Vanboeijen",k:null,l:[],r:"eval"},{a:"Stichting Baalderborg",k:null,l:[],r:"eval"},{a:"Stichting Trajectum",k:null,l:[],r:"eval"},{a:"Stichting Ludgerus, wonen voor senioren",k:null,l:[],r:"impl"},{a:"Ambulante Thuiszorg WMO Parkstad B.V.",k:null,l:[],r:"impl"},{a:"Home Instead Thuisservice Kennemerland B.V.",k:null,l:[],r:"impl"},{a:"Huisartsenpraktijk Oteman",k:null,l:[],r:"impl"},{a:"SiRes Zorg B.V.",k:null,l:["Nedap (ONS)"],r:"impl"},{a:"Zorggroep Vitez B.V.",k:null,l:[],r:"impl"}],
+    leveranciers: ["Attendi", "Nedap (ONS)", "Tell James"],
+    kennis: [],
+  },
+  "Telemonitoring": {
+    aanvragers: [{a:"Huisartsenpraktijk De Hogewoerd",k:null,l:["PraatmetdeDokter"],r:"opsch"},{a:"Stichting Flevoziekenhuis",k:"Academisch ziekenhuis/UMC",l:["Nedap (ONS)"],r:"opsch"},{a:"Stichting Catharina Ziekenhuis",k:"Academisch ziekenhuis/UMC",l:[],r:"eval"},{a:"Maatschap Huisartsenpraktijk Engelen",k:null,l:["Nedap (ONS)", "LUSCII"],r:"impl"},{a:"Fysio Eekmaat B.V.",k:null,l:[],r:"impl"},{a:"Fysiotherapie Praktijk Larink",k:null,l:[],r:"impl"},{a:"Fysio Rijnwaarden",k:null,l:[],r:"impl"},{a:"Maatschap Baecke & Nobel",k:null,l:[],r:"impl"},{a:"Zuiderhoed huisartsenpraktijken",k:null,l:["Nedap (ONS)", "LUSCII"],r:"impl"}],
+    leveranciers: ["LUSCII", "Nedap (ONS)", "PraatmetdeDokter"],
+    kennis: [["Stichting Flevoziekenhuis", "Academisch ziekenhuis/UMC"], ["Stichting Catharina Ziekenhuis", "Academisch ziekenhuis/UMC"]],
+  },
+  "Vallen": {
+    aanvragers: [{a:"Stichting Zorggroep ENA",k:null,l:["BproCare"],r:"opsch"},{a:"Stichting De Zijlen",k:null,l:[],r:"opsch"},{a:"Universitair Medisch Centrum Utrecht",k:null,l:["Minddistrict"],r:"opsch"},{a:"ZorgSaam Thuis- en Ouderenzorg B.V.",k:null,l:["Nedap (ONS)"],r:"opsch"},{a:"Opella, Christelijke Stichting voor wonen, zorg en",k:null,l:["BproCare"],r:"opsch"},{a:"Stichting Jan Berchmans",k:null,l:["BproCare"],r:"opsch"},{a:"Stichting Sint Joris",k:null,l:[],r:"opsch"},{a:"Hervormde Stichting \"Sonneburgh\"",k:null,l:[],r:"opsch"},{a:"Fysioteam Langeveld",k:null,l:[],r:"impl"},{a:"Maatschap Heikens",k:null,l:[],r:"impl"},{a:"Rembrandt Fysiotherapie & Revalidatie B.V.",k:null,l:[],r:"impl"},{a:"Fysik",k:null,l:[],r:"impl"},{a:"Fysiopraktijk Zeist",k:null,l:[],r:"impl"},{a:"Fysiotherapiepraktijk De Graven Esch B.V.",k:null,l:[],r:"impl"}],
+    leveranciers: ["BproCare", "Minddistrict", "Nedap (ONS)"],
+    kennis: [],
+  },
+  "Behandeling via e-health-platformen": {
+    aanvragers: [{a:"Stichting Instituut voor Mentale Vitaliteit",k:null,l:[],r:"opsch"},{a:"Stichting De Hoop",k:null,l:["Minddistrict"],r:"opsch"},{a:"Impact GGZ B.V.",k:null,l:["WeMind (Moovd)"],r:"opsch"},{a:"Di\u00ebtistenpraktijk Jolande van Teeffelen",k:null,l:[],r:"impl"},{a:"Groepspraktijk voor Fysiotherapie Blokker",k:null,l:[],r:"impl"},{a:"Maximaal Media B.V.",k:null,l:[],r:"impl"},{a:"Boncura B.V.",k:null,l:[],r:"impl"},{a:"Shockwave Katwijk",k:null,l:[],r:"impl"}],
+    leveranciers: ["Minddistrict", "WeMind (Moovd)"],
+    kennis: [],
+  },
+  "Digitale communicatieplatformen": {
+    aanvragers: [{a:"Stichting GGNet",k:null,l:["Minddistrict"],r:"opsch"},{a:"Stichting MagentaZorg",k:null,l:[],r:"opsch"},{a:"Academisch Ziekenhuis Leiden",k:"Academisch ziekenhuis/UMC",l:[],r:"opsch"},{a:"Maatschap voor Fysiotherapie De Fysioo",k:null,l:[],r:"opsch"},{a:"Stichting Lelie Zorggroep",k:null,l:["Minddistrict"],r:"opsch"},{a:"Stichting tanteLouise Zorg",k:null,l:[],r:"opsch"},{a:"Huisartsenpraktijk Matenpark B.V.",k:null,l:["PraatmetdeDokter"],r:"eval"},{a:"Tandartspraktijk van Mourik",k:null,l:[],r:"impl"}],
+    leveranciers: ["Minddistrict", "PraatmetdeDokter"],
+    kennis: [["Academisch Ziekenhuis Leiden", "Academisch ziekenhuis/UMC"]],
+  },
+  "Behandeling via Virtual Reality (VR)": {
+    aanvragers: [{a:"Ergotherapie Breda",k:null,l:[],r:"impl"},{a:"FysioCapelle",k:null,l:[],r:"impl"},{a:"Centrum Fysiotherapie N H van Rijnsbergen-Baars",k:null,l:[],r:"impl"},{a:"Maatschap Fysiotherapiepraktijk Balijelaan",k:null,l:[],r:"impl"},{a:"Procare Fysiotherapie B.V.",k:null,l:[],r:"impl"},{a:"Fitaal GLI & Valpreventie B.V.",k:null,l:[],r:"impl"}],
+    leveranciers: [],
+    kennis: [],
+  },
+  "Digitale consultatie": {
+    aanvragers: [{a:"De Sl\u00f6ttel B.V.",k:null,l:[],r:"opsch"},{a:"Admiraal De Ruyter Ziekenhuis B.V.",k:null,l:[],r:"impl"},{a:"Huisartsenpraktijk Terlaak & Timmers",k:null,l:[],r:"impl"},{a:"Aalstzorg B.V.",k:null,l:[],r:"impl"},{a:"Maatschap Fysiotherapie Midden Drenthe",k:null,l:[],r:"impl"}],
+    leveranciers: [],
+    kennis: [],
+  },
+  "Behandeling via apps": {
+    aanvragers: [{a:"Stichting Sint Jacob",k:null,l:[],r:"opsch"}],
+    leveranciers: [],
+    kennis: [],
+  }
+};
+
+const STOZ_ROUTE_DATA = {
+  "Spraakgestuurd rapporteren": { impl: 58, opsch: 36, eval: 3, total: 97 },
+  "Digitale triage": { impl: 76, opsch:  8, eval: 8, total: 92 },
+  "Beeldzorg": { impl: 71, opsch: 18, eval: 0, total: 89 },
+  "Planning met AI-software": { impl: 76, opsch:  1, eval: 1, total: 78 },
+  "Digitale consultatie": { impl: 55, opsch:  6, eval: 7, total: 68 },
+  "Signalering via zorgdomotica: leefpatroonmonitoring": { impl: 21, opsch: 13, eval: 1, total: 35 },
+  "Behandeling via apps": { impl: 26, opsch:  5, eval: 0, total: 31 },
+  "Vallen": { impl: 21, opsch:  6, eval: 0, total: 27 },
+  "Behandeling via Virtual Reality (VR)": { impl: 26, opsch:  1, eval: 0, total: 27 },
+  "Dagstructuurondersteuning": { impl: 20, opsch:  7, eval: 0, total: 27 },
+  "Digitale communicatieplatformen": { impl: 17, opsch: 10, eval: 0, total: 27 },
+  "Expertise op afstand": { impl: 24, opsch:  1, eval: 0, total: 25 },
+  "Telemonitoring": { impl: 20, opsch:  1, eval: 3, total: 24 },
+  "Behandeling via e-health-platformen": { impl:  9, opsch:  5, eval: 1, total: 15 },
+  "Hybride incontinentiezorg": { impl:  5, opsch: 10, eval: 0, total: 15 },
+  "Behandeling via digitale EMDR": { impl:  2, opsch: 12, eval: 0, total: 14 },
+  "Leefcirkels intern en extern": { impl:  6, opsch:  8, eval: 0, total: 14 },
+  "Hybride aanreiking van medicatie met een medicijndispenser": { impl:  3, opsch: 11, eval: 0, total: 14 },
+  "Digitale dagbesteding": { impl:  4, opsch:  0, eval: 0, total:  4 },
+  "Glucosemeting": { impl:  4, opsch:  0, eval: 0, total:  4 },
+  "Digitale poli": { impl:  4, opsch:  0, eval: 0, total:  4 },
+  "Valbescherming": { impl:  1, opsch:  0, eval: 0, total:  1 },
+}
+
+const DIGIZO_PROCESSEN = [
+  { naam:"Beeldzorg", slug:"beeldzorg-algemeen", sectoren:["VVT","SD"], stoz:"Beeldzorg" },
+  { naam:"Beeldzorg SD", slug:"beeldzorg", sectoren:["SD"], stoz:"Beeldzorg" },
+  { naam:"Beeldzorg VVT", slug:"hybride-zorg-en-ondersteuning-met-beeldschermcontact", sectoren:["VVT"], stoz:"Beeldzorg" },
+  { naam:"Behandeling met digitale EMDR", slug:"behandeling-emdr", sectoren:["GGZ"], stoz:"Behandeling via digitale EMDR" },
+  { naam:"Behandeling middels apps", slug:"behandeling-apps", sectoren:["GGZ"], stoz:"Behandeling via apps" },
+  { naam:"Behandeling middels eHealthplatformen", slug:"behandeling-e-healthplatformen", sectoren:["GGZ"], stoz:"Behandeling via e-health-platformen" },
+  { naam:"Behandeling middels VR", slug:"behandeling-middels-vr", sectoren:["GGZ"], stoz:"Behandeling via Virtual Reality (VR)" },
+  { naam:"Digitale Communicatie Platformen", slug:"digitale-communicatieplatformen", sectoren:["MSZ"], stoz:"Digitale communicatieplatformen" },
+  { naam:"Digitale consultatie", slug:"digitale-consultatie", sectoren:["HA"], stoz:"Digitale consultatie" },
+  { naam:"Digitale dagbesteding", slug:"digitale-dagbesteding", sectoren:["SD"], stoz:"Digitale dagbesteding" },
+  { naam:"Digitale poli", slug:"digitale-poli", sectoren:["GGZ"], stoz:"Digitale poli" },
+  { naam:"Digitale triage- en consultvoorbereiding", slug:"digitale-triage-consultvoorbereiding", sectoren:["HAP","HA"], stoz:"Digitale triage", zonmw:"digitale-triage-hap" },
+  { naam:"Digitale verwijzing HA-SD", slug:"digitale-verwijzing-huisarts-sociaal-domein", sectoren:["SD","HA"], stoz:null },
+  { naam:"Digitale zelfzorg bij draaiduizeligheid", slug:"digitale-zelfzorgtoepassingen-bij-draaiduizeligheid", sectoren:["HA"], stoz:"Behandeling via apps", zonmw:"selfcare-apps-ha" },
+  { naam:"Digitale zelfzorg bij vermoeidheid kanker", slug:"digitale-zelfzorgtoepassingen-bij-vermoeidheid-bij-kanker", sectoren:["HA"], stoz:"Behandeling via apps", zonmw:"selfcare-apps-ha" },
+  { naam:"Digitale zelfzorg urine-incontinentie", slug:"digitale-zelfzorgtoepassingen-voor-urine-incontinentie-bij-vrouwen", sectoren:["HA"], stoz:"Behandeling via apps", zonmw:"selfcare-apps-ha" },
+  { naam:"Expertise op afstand", slug:"expertise-op-afstand", sectoren:["VVT"], stoz:"Expertise op afstand" },
+  { naam:"Glucosemeting Diabetes T2", slug:"glucosemeting-voor-diabetes-type-2-patienten", sectoren:["VVT"], stoz:"Glucosemeting" },
+  { naam:"Hybride medicatie (intramuraal)", slug:"hybride-aanreiking-van-medicatie-met-een-medicijndispenser-intramuraal", sectoren:["VVT"], stoz:"Hybride aanreiking van medicatie met een medicijndispenser", zonmw:"medicatie-vvt" },
+  { naam:"Hybride medicatie (extramuraal)", slug:"hybride-aanreiking-van-medicatie-met-een-medicijndispenser", sectoren:["VVT"], stoz:"Hybride aanreiking van medicatie met een medicijndispenser", zonmw:"medicatie-vvt" },
+  { naam:"Hybride dagstructuur SD", slug:"hybride-dagstructuurondersteuning-sd", sectoren:["SD"], stoz:"Dagstructuurondersteuning" },
+  { naam:"Hybride dagstructuur VVT", slug:"hybride-dagstructuurondersteuning-vvt", sectoren:["VVT"], stoz:"Dagstructuurondersteuning" },
+  { naam:"Hybride incontinentiezorg", slug:"hybride-incontinentiemateriaal", sectoren:["VVT"], stoz:"Hybride incontinentiezorg" },
+  { naam:"Leefcirkels intern en extern", slug:"leefcirkels", sectoren:["VVT"], stoz:"Leefcirkels intern en extern" },
+  { naam:"Planning met AI-software", slug:"planning-met-ai-software", sectoren:["VVT"], stoz:"Planning met AI-software", zonmw:"planning-vvt" },
+  { naam:"Signalering via zorgdomotica", slug:"signalering-middels-leefpatroonmonitoring-en-domotica", sectoren:["VVT"], stoz:"Signalering via zorgdomotica: leefpatroonmonitoring" },
+  { naam:"Slimme infuuspompen", slug:"slimme-infuuspompen", sectoren:["MSZ"], stoz:null },
+  { naam:"Spraakgestuurd rapporteren (overkoepelend)", slug:"spraakgestuurd-rapporteren", sectoren:["VVT","MSZ","GGZ","SD","HAP","HA"], stoz:"Spraakgestuurd rapporteren" },
+  { naam:"Spraakgestuurd rapporteren GGZ", slug:"spraakgestuurd-rapporteren-ggz", sectoren:["GGZ"], stoz:"Spraakgestuurd rapporteren", zonmw:"sgr-ggz" },
+  { naam:"Spraakgestuurd rapporteren HA/HAP", slug:"spraakgestuurd-rapporteren-haz", sectoren:["HA","HAP"], stoz:"Spraakgestuurd rapporteren", zonmw:"sgr-ha" },
+  { naam:"Spraakgestuurd rapporteren MSZ", slug:"spraakgestuurd-rapporteren-msz", sectoren:["MSZ"], stoz:"Spraakgestuurd rapporteren", zonmw:"clear-msz" },
+  { naam:"Spraakgestuurd rapporteren SD", slug:"spraakgestuurd-rapporteren-sociaal-domein", sectoren:["SD"], stoz:"Spraakgestuurd rapporteren", zonmw:"sgr-sd" },
+  { naam:"Spraakgestuurd rapporteren VVT", slug:"spraakgestuurd-rapporteren-vvt", sectoren:["VVT"], stoz:"Spraakgestuurd rapporteren" },
+  { naam:"Stressreductie", slug:"stressherkenning", sectoren:["SD"], stoz:null },
+  { naam:"Telemonitoring (COPD)", slug:"telemonitoring-copd", sectoren:["MSZ"], stoz:"Telemonitoring" },
+  { naam:"Telemonitoring diabetes T2", slug:"telemonitoring", sectoren:["HA"], stoz:"Telemonitoring" },
+  { naam:"Telemonitoring hypertensie", slug:"telemonitoring-bij-hypertensie", sectoren:["HA"], stoz:"Telemonitoring" },
+  { naam:"Telemonitoring IBD", slug:"telemonitoring-in-het-zorgproces-ibd", sectoren:["MSZ"], stoz:"Telemonitoring" },
+  { naam:"Track & trace", slug:"track-trace", sectoren:["MSZ"], stoz:null },
+  { naam:"Valbescherming", slug:"valbescherming", sectoren:["VVT"], stoz:"Valbescherming" },
+  { naam:"Vallen / valpreventie", slug:"valpreventie-in-het-sociaal-domein", sectoren:["VVT","SD"], stoz:"Vallen" },
+  { naam:"AI-app triage huidafwijkingen", slug:"ai-triage-huid", sectoren:["HA"], stoz:null, zonmw:"ai-huid-ha" },
+  { naam:"HYPE — hybride behandeling persoonlijkheidsproblematiek", slug:"hype-ggz", sectoren:["GGZ"], stoz:"Behandeling via e-health-platformen", zonmw:"hype-ggz" },
+  // DigiDex STOZ-infokaart (aparte informatiekaart, geen echt Digizo.nu proces)
+  { naam:'STOZ — Subsidie-informatie', slug:'', sectoren:[], stoz:null, zonmw:null, _infokaart:true }
+];
+
+const ZONMW_CARDS = {
+  'sgr-ggz': {
+    title:'Spraakgestuurd rapporteren — GGZ',
+    meta:'ZonMw · 11660012510008 · UMC Utrecht · start apr 2026 · 24 mnd',
+    pills:[{l:'GGZ',c:'var(--s-ggz)'}],
+    fg:'var(--s-ggz)',bg:'var(--s-ggz-bg)',
+    sub:'11660012510008 · start apr 2026',
+    tlStart:'2026-04-01', tlEnd:'2028-03-31',
+    segs:[
+      {w:8,c:'#5ad1c4',tc:'#1b1e4c',l:'IST-SOLL'},
+      {w:44,c:'var(--s-ggz)',tc:'#fff',l:'Implementatie + metingen'},
+      {w:28,c:'var(--s-ggz-mid)',tc:'#fff',l:'Analyse'},
+      {w:20,c:'var(--dz-purple-mid)',tc:'#fff',l:'Diss.'},
+    ],
+    axis:[{l:"apr '26",p:0},{l:"okt '26",p:20},{l:"apr '27",p:45},{l:"okt '27",p:72},{l:"mrt '28",p:100,r:true}],
+    aanvragers:[{l:'UMC Utrecht',k:'umc-utrecht'},{l:'GGZ Noord-Holland-Noord',k:'ggz-nhn'}],
+    zorgaan:[{l:'GGZ Eindhoven',k:'ggz-eindhoven'},{l:'Dimence Groep',k:'dimence'},{l:'ETZ — RIGH:T',k:'etz-right'}],
+    vouchers:[{l:'SAM — Slimme Assistent Mentale gezondheid',k:'sam-ggz'},{l:'Slim Spraakrapporteren — Senz GGZ',k:'senz-ggz'},{l:'Spreken Werkt — DeKinderGGZ',k:'spreken-werkt'},{l:'Samen naar toestemming voor SGR',k:'toestemming-sgr'}]
+  },
+  'sgr-ha': {
+    title:'Spraakgestuurd rapporteren — HA (IMPULSE)',
+    meta:'ZonMw · 11660012510010 · Erasmus MC · start apr 2026 · 24 mnd',
+    pills:[{l:'HA',c:'var(--s-ha)'},{l:'HAP',c:'var(--s-hap)'}],
+    fg:'var(--s-ha)',bg:'var(--s-ha-bg)',
+    sub:'11660012510010 · start apr 2026',
+    tlStart:'2026-04-01', tlEnd:'2028-03-31',
+    segs:[{w:8,c:'#5ad1c4',tc:'#1b1e4c',l:'IST-SOLL'},{w:44,c:'var(--s-ha)',tc:'#fff',l:'Implementatie + metingen'},{w:28,c:'var(--s-ha-mid)',tc:'#fff',l:'Analyse'},{w:20,c:'#0d5040',tc:'#fff',l:'Diss.'}],
+    axis:[{l:"apr '26",p:0},{l:"okt '26",p:20},{l:"apr '27",p:45},{l:"okt '27",p:72},{l:"mrt '28",p:100,r:true}],
+    aanvragers:[{l:'Erasmus MC',k:'erasmus-ha'},{l:'Amsterdam UMC',k:'amc-ha'},{l:'UMCG',k:'umcg-ha'}],
+    zorgaan:[{l:'AHA Amsterdam',k:'aha'},{l:'Rijnmond Dokters',k:'rijnmond'},{l:'ROHA',k:'roha'}],
+    vouchers:[{l:'SGR + hybride werken — huisartsenzorg',k:'sgr-ha-ioc'},{l:'Van gesprek naar gebruik — AHA',k:'vgng-aha'},{l:'Opschaling AI-inzet',k:'opschaling-ai-ha'},{l:'SGR + digitale triage — HAZ',k:'sgr-haz'}]
+  },
+  'clear-msz': {
+    title:'CLEAR — Spraakgestuurd rapporteren MSZ',
+    meta:'ZonMw · 11660012510015 · HAN University · start apr 2026 · 18 mnd',
+    pills:[{l:'MSZ',c:'var(--s-msz)'}],
+    fg:'var(--s-msz)',bg:'var(--s-msz-bg)',
+    sub:'11660012510015 · start apr 2026',
+    tlStart:'2026-04-01', tlEnd:'2027-09-30',
+    segs:[{w:15,c:'#5ad1c4',tc:'#1b1e4c',l:'IST-SOLL'},{w:50,c:'var(--s-msz)',tc:'#fff',l:'Impl. 3 locaties + metingen'},{w:20,c:'var(--s-msz-mid)',tc:'#fff',l:'Opschaling'},{w:15,c:'#1e3050',tc:'#fff',l:'Diss.'}],
+    axis:[{l:"apr '26",p:0},{l:"jul '26",p:22},{l:"jan '27",p:47},{l:"apr '27",p:70},{l:"sep '27",p:100,r:true}],
+    aanvragers:[{l:'HAN University (LTVG)',k:'han-msz'}],
+    zorgaan:[{l:'DC Klinieken (3 vestigingen)',k:'dc-klinieken'},{l:'ETZ — RIGH:T',k:'etz-right'}],
+    vouchers:[{l:'Van gesprek naar gebruik — ETZ',k:'vgng-etz'},{l:'Implementatie SGR — CWZ',k:'sgr-cwz'},{l:'Implementatie SGR — WZA',k:'sgr-wza'}]
+  },
+  'sgr-sd': {
+    title:'Spraakgestuurd rapporteren — Sociaal Domein',
+    meta:'ZonMw · 11660012510006 · Levvel / HvA · start apr 2026 · 24 mnd',
+    pills:[{l:'SD',c:'var(--s-sd)'}],
+    fg:'var(--s-sd)',bg:'var(--s-sd-bg)',
+    sub:'11660012510006 · start apr 2026',
+    tlStart:'2026-04-01', tlEnd:'2028-03-31',
+    segs:[{w:10,c:'#5ad1c4',tc:'#1b1e4c',l:'Start'},{w:35,c:'var(--s-sd)',tc:'#fff',l:'Metingen 2 org.'},{w:30,c:'var(--s-sd-mid)',tc:'#fff',l:'Analyse + reflectie'},{w:25,c:'#0a6e65',tc:'#fff',l:'Disseminatie'}],
+    axis:[{l:"apr '26",p:0},{l:"okt '26",p:25},{l:"apr '27",p:50},{l:"okt '27",p:75},{l:"mrt '28",p:100,r:true}],
+    aanvragers:[{l:'Levvel',k:'levvel'},{l:'Hogeschool van Amsterdam',k:'hva'},{l:'Saxion',k:'saxion'}],
+    zorgaan:[{l:'Jeugdbescherming West',k:'jbw'},{l:'ETZ — RIGH:T',k:'etz-right'}],
+    vouchers:[{l:'Inzet Voice AI — cliëntondersteuning SD',k:'voice-ai-sd'},{l:'SGR Sociaal Domein — meerdere aanbieders',k:'sgr-sd-ioc'}]
+  },
+  'planning-vvt': {
+    title:'Planning met AI-software — VVT',
+    meta:'ZonMw · 11660012510002 · HAN / Vitalis · start jan 2026 · 24 mnd',
+    pills:[{l:'VVT',c:'var(--s-vvt)'}],
+    fg:'var(--s-vvt)',bg:'var(--s-vvt-bg)',
+    sub:'11660012510002 · start jan 2026',
+    tlStart:'2026-01-01', tlEnd:'2027-12-31',
+    segs:[{w:10,c:'#5ad1c4',tc:'#1b1e4c',l:'WP1 start'},{w:40,c:'var(--s-vvt)',tc:'#fff',l:'Dataverzameling + simulatiemodel'},{w:30,c:'#3a3e7a',tc:'#fff',l:'Analyses + producten'},{w:20,c:'#6b70a8',tc:'#fff',l:'Rapportage'}],
+    axis:[{l:"jan '26",p:0},{l:"jul '26",p:25},{l:"jan '27",p:50},{l:"jul '27",p:75},{l:"dec '27",p:100,r:true}],
+    aanvragers:[{l:'Hogeschool Arnhem & Nijmegen',k:'han-vvt'}],
+    zorgaan:[{l:'Vitalis',k:'vitalis'},{l:'Saffier',k:'saffier'},{l:'Pieter van Foreest',k:'pvf'}],
+    vouchers:[{l:'Slimmer plannen met AI (TONOS)',k:'tonos-vvt'},{l:'Plannen en roosteren middels AI',k:'plannen-ai'}]
+  },
+  'digitale-triage-hap': {
+    title:'Digitale triage — huisartsenspoedpost',
+    meta:'ZonMw · 11660012510003 · Nivel · start jan 2026 · 24 mnd',
+    pills:[{l:'HAP',c:'var(--s-hap)'},{l:'HA',c:'var(--s-ha)'}],
+    fg:'var(--s-hap)',bg:'var(--s-hap-bg)',
+    sub:'11660012510003 · start jan 2026',
+    tlStart:'2026-01-01', tlEnd:'2027-12-31',
+    segs:[{w:12,c:'#5ad1c4',tc:'#1b1e4c',l:'Kaart WP1'},{w:35,c:'var(--s-hap)',tc:'#fff',l:'Kwantitatieve evaluatie'},{w:32,c:'#5a8080',tc:'#fff',l:'Kwalitatieve evaluatie'},{w:21,c:'#2a4040',tc:'#fff',l:'Competenties & rapportage'}],
+    axis:[{l:"jan '26",p:0},{l:"jul '26",p:25},{l:"jan '27",p:50},{l:"jul '27",p:75},{l:"dec '27",p:100,r:true}],
+    aanvragers:[{l:'Nivel',k:'nivel'},{l:'AmsterdamUMC',k:'amc-triage'},{l:'ErasmusMC',k:'erasmus-triage'}],
+    zorgaan:[{l:'Roha (Sietse Wieringa)',k:'roha-triage'},{l:'UMCG',k:'umcg-triage'},{l:'diverse HAP-locaties',k:'hap-locaties'}],
+    vouchers:[{l:'Digitale triage HAP — Nivel',k:'triage-nivel'},{l:'Digitale triage HAP — IOC',k:'triage-ioc'},{l:'Implementatie digitale triage HA',k:'triage-ha-ioc'}]
+  },
+  'hype-ggz': {
+    title:'HYPE — hybride behandeling persoonlijkheidsproblematiek',
+    meta:'ZonMw · 11660012510004 · Open Universiteit · start jun 2026 · 24 mnd',
+    pills:[{l:'GGZ',c:'var(--s-ggz)'}],
+    fg:'var(--s-ggz)',bg:'var(--s-ggz-bg)',
+    sub:'11660012510004 · start jun 2026',
+    tlStart:'2026-06-01', tlEnd:'2028-05-31',
+    segs:[{w:17,c:'#5ad1c4',tc:'#1b1e4c',l:'WP1 IST-SOLL'},{w:50,c:'var(--s-ggz)',tc:'#fff',l:'WP2 Implementatiestudie'},{w:17,c:'var(--s-ggz-mid)',tc:'#fff',l:'WP3 Effectstudie'},{w:16,c:'var(--dz-purple-mid)',tc:'#fff',l:'WP4 Diss.'}],
+    axis:[{l:"jun '26",p:0},{l:"okt '26",p:17},{l:"apr '27",p:42},{l:"jan '28",p:79},{l:"mei '28",p:100,r:true}],
+    aanvragers:[{l:'Open Universiteit',k:'open-univ'},{l:'MiSiNeuroPsy',k:'misineuropsy'}],
+    zorgaan:[{l:'De Viersprong',k:'viersprong'},{l:'GGZ Drenthe',k:'ggz-drenthe'}],
+    vouchers:[{l:'Hybride regie wachttijd — Caren',k:'hype-caren'},{l:'Samen beslissen over eHealth',k:'hype-ehealth'}]
+  },
+  'medicatie-vvt': {
+    title:'Hybride aanreiking van medicatie (medicijndispenser)',
+    meta:'ZonMw · 11660012510007 · Vilans · start jan 2026 · 24 mnd',
+    pills:[{l:'VVT',c:'var(--s-vvt)'}],
+    fg:'var(--s-vvt)',bg:'var(--s-vvt-bg)',
+    sub:'11660012510007 · start jan 2026',
+    tlStart:'2026-01-01', tlEnd:'2027-12-31',
+    segs:[{w:12,c:'#5ad1c4',tc:'#1b1e4c',l:'Verkenning'},{w:38,c:'var(--s-vvt)',tc:'#fff',l:'WP2-4 IST-metingen praktijk'},{w:30,c:'#3a3e7a',tc:'#fff',l:'WP3-4 SOLL-metingen'},{w:20,c:'#6b70a8',tc:'#fff',l:'Rapportage'}],
+    axis:[{l:"jan '26",p:0},{l:"apr '26",p:12},{l:"jan '27",p:50},{l:"sep '27",p:83},{l:"dec '27",p:100,r:true}],
+    aanvragers:[{l:'Vilans',k:'vilans'},{l:'NHL Stenden',k:'nhl-stenden'},{l:'Nivel',k:'nivel-medicatie'}],
+    zorgaan:[{l:'Liberein',k:'liberein'},{l:'TZA Achterhoek',k:'tza'},{l:'Pieter van Foreest',k:'pvf'}],
+    vouchers:[{l:'Hybride medicatieaanreiking + samen beslissen',k:'medicatie-wijkv'},{l:'Hybride Medicatieaanreiking — Vilans',k:'medicatie-vilans'}]
+  },
+  'selfcare-apps-ha': {
+    title:'Digitale zelfzorgtoepassingen in de huisartsenzorg',
+    meta:'ZonMw · 11660012510005 · Amsterdam UMC · start jan 2026 · 24 mnd',
+    pills:[{l:'HA',c:'var(--s-ha)'}],
+    fg:'var(--s-ha)',bg:'var(--s-ha-bg)',
+    sub:'11660012510005 · start jan 2026',
+    tlStart:'2026-01-01', tlEnd:'2027-12-31',
+    segs:[{w:12,c:'#5ad1c4',tc:'#1b1e4c',l:'WP1 prep'},{w:42,c:'var(--s-ha)',tc:'#fff',l:'WP2 dataverzameling'},{w:25,c:'var(--s-ha-mid)',tc:'#fff',l:'WP3 evaluatie'},{w:21,c:'#0d5040',tc:'#fff',l:'WP4 synthese'}],
+    axis:[{l:"jan '26",p:0},{l:"apr '26",p:12},{l:"jan '27",p:50},{l:"aug '27",p:79},{l:"dec '27",p:100,r:true}],
+    aanvragers:[{l:'Amsterdam UMC',k:'amc-selfcare'},{l:'UMCG',k:'umcg-selfcare'}],
+    zorgaan:[{l:'AHA — Huisartsenalliantie',k:'aha-selfcare'},{l:'IVM',k:'ivm'},{l:'Tired of Cancer BV',k:'tired-cancer'}],
+    vouchers:[{l:'Digitale zelfzorgapps HA — AmsterdamUMC',k:'selfcare-pr'},{l:'Implementatie incontinentie-app HA',k:'selfcare-inco'}]
+  },
+  'ai-huid-ha': {
+    title:'AI-app triage verdachte huidafwijkingen',
+    meta:'ZonMw · 11660012510012 · Erasmus MC Dermatologie · start jan 2026 · 24 mnd',
+    pills:[{l:'HA',c:'var(--s-ha)'}],
+    fg:'var(--s-ha)',bg:'var(--s-ha-bg)',
+    sub:'11660012510012 · start jan 2026',
+    tlStart:'2026-01-01', tlEnd:'2027-12-31',
+    segs:[{w:20,c:'#5ad1c4',tc:'#1b1e4c',l:'WP1+2 METC & prep'},{w:35,c:'var(--s-ha)',tc:'#fff',l:'WP1 inclusies + WP2 interviews'},{w:25,c:'var(--s-ha-mid)',tc:'#fff',l:'WP2-3 co-design & analyse'},{w:20,c:'#0d5040',tc:'#fff',l:'WP3 disseminatie'}],
+    axis:[{l:"jan '26",p:0},{l:"jul '26",p:20},{l:"jan '27",p:55},{l:"apr '27",p:78},{l:"dec '27",p:100,r:true}],
+    aanvragers:[{l:'Erasmus MC Dermatologie',k:'erasmus-huid'},{l:'TU Delft',k:'tu-delft'},{l:'Erasmus Universiteit',k:'eur'}],
+    zorgaan:[{l:'Huisartsenpraktijk L. Broek',k:'broek-ha'},{l:'CZ Groep',k:'cz-huid'}],
+    vouchers:[{l:'AI-app huidkanker triage — Erasmus MC',k:'huid-pr'}]
+  },
+};
+
+const CONTACT = {
+  'umc-utrecht':{icon:'🔬',bg:'#f3edf8',title:'UMC Utrecht',sub:'Aanvrager & PI · GGZ praktijkonderzoek',contacts:[{n:'Prof. dr. Floortje Scheepers',r:'Aanvrager / PI',mail:'f.e.scheepers@umcutrecht.nl',li:'https://www.linkedin.com/in/floortjescheepers/',web:'umcutrecht.nl'}],details:[{l:'Rol',v:'Aanvrager, WP-coördinatie'},{l:'Dossiernr.',v:'11660012510008'},{l:'Afdeling',v:'Psychiatrie'},{l:'Website',v:'umcutrecht.nl'}]},
+  'ggz-nhn':{icon:'🏥',bg:'#f3edf8',title:'GGZ Noord-Holland-Noord',sub:'Lokale projectcoördinatie',contacts:[{n:'Eva Velthorst',r:'Projectleider',li:'https://www.linkedin.com/search/results/all/?keywords=Eva+Velthorst+GGZ',web:'ggz-nhn.nl'},{n:'Elsbeth de Ruijter',r:'Bestuurlijk verantwoordelijke',web:'ggz-nhn.nl'},{n:'Dr. Fabiana Engelsbel',r:'Lokale projectcoördinator',web:'ggz-nhn.nl'}],details:[{l:'Rol',v:'Lokale coördinatie & dataverzameling'},{l:'Website',v:'ggz-nhn.nl'}]},
+  'ggz-eindhoven':{icon:'🏥',bg:'#f3edf8',title:'GGZ Eindhoven',sub:'Deelnemende instelling',contacts:[{n:'Dr. Liselore Snaphaan',r:'Hoofd onderzoek',web:'ggze.nl'},{n:'Pia Burger',r:'Lokale onderzoekscoördinator',web:'ggze.nl'}],details:[{l:'Rol',v:'Deelnemende instelling WP2'},{l:'Website',v:'ggze.nl'}]},
+  'dimence':{icon:'🏥',bg:'#f3edf8',title:'Dimence Groep',sub:'Deelnemende instelling',contacts:[{n:'Joost Dekker',r:'Lokale projectcoördinator',web:'dimence.nl'}],details:[{l:'Rol',v:'Deelnemende instelling WP2'},{l:'Website',v:'dimence.nl'}]},
+  'etz-right':{icon:'🔗',bg:'#e6f0f0',title:'ETZ — Elisabeth-TweeSteden',sub:'Oprichter RIGH:T consortium',contacts:[{n:'Jessica Workum',r:'Coördinator RIGH:T',li:'https://www.linkedin.com/search/results/all/?keywords=Jessica+Workum+ETZ',web:'etz.nl'}],details:[{l:'Rol',v:'Sectoroverstijgende coördinatie'},{l:'Website',v:'etz.nl'}]},
+  'erasmus-ha':{icon:'🔬',bg:'#e1f5ee',title:'Erasmus MC',sub:'Aanvrager IMPULSE · Huisartsgeneeskunde',contacts:[{n:'Dr. Reinier van Linschoten',r:'Aanvrager / Projectleider',web:'erasmusmc.nl'}],details:[{l:'Rol',v:'Aanvrager, WP-coördinatie'},{l:'Website',v:'erasmusmc.nl'}]},
+  'amc-ha':{icon:'🔬',bg:'#e1f5ee',title:'Amsterdam UMC',sub:'Mede-aanvrager IMPULSE',contacts:[{n:'Dr. Vincent van Vugt',r:'Coördinatie WP3',web:'amsterdamumc.nl'},{n:'Dr. Habibollah Pirnejad',r:'Supervisie onderzoek',web:'amsterdamumc.nl'}],details:[{l:'Website',v:'amsterdamumc.nl'}]},
+  'han-msz':{icon:'🔬',bg:'#e4ecf5',title:'HAN University of Applied Sciences',sub:'Aanvrager CLEAR · MSZ',contacts:[{n:'Dr. Paul Rood',r:'Aanvrager / Projectleider',web:'han.nl'}],details:[{l:'Afdeling',v:'LTVG'},{l:'Website',v:'han.nl'}]},
+  'dc-klinieken':{icon:'🏥',bg:'#e4ecf5',title:'DC Klinieken',sub:'3 vestigingen · hoofdpartner CLEAR',contacts:[{n:'Teun Kessels',r:'Projectleider',web:'dcklinieken.nl'},{n:'Cecile Goldman',r:'Directeur Innovatie',web:'dcklinieken.nl'},{n:'Dr. Richard Oei',r:'Medisch specialist',web:'dcklinieken.nl'}],details:[{l:'Vestigingen',v:'3 klinieken (MSZ)'},{l:'Website',v:'dcklinieken.nl'}]},
+  'levvel':{icon:'🏥',bg:'#e0f5f3',title:'Levvel',sub:'Aanvrager SGR Sociaal Domein',contacts:[{n:'Leonieke Boendermaker',r:'Aanvrager',web:'levvel.nl'},{n:'Kaya Stok',r:'Projectleider',web:'levvel.nl'}],details:[{l:'Website',v:'levvel.nl'}]},
+  'hva':{icon:'🎓',bg:'#e0f5f3',title:'Hogeschool van Amsterdam',sub:'Uitvoerend onderzoek · jeugdzorg',contacts:[{n:'Kaya Stok',r:'Projectleider / onderzoeker',web:'hva.nl'}],details:[{l:'Lectoraat',v:'Jeugdzorg'},{l:'Website',v:'hva.nl'}]},
+  'han-vvt':{icon:'🔬',bg:'#e8e9f0',title:'HAN University of Applied Sciences',sub:'Aanvrager AI-planning VVT',contacts:[{n:'Dr. Nienke Hofstra',r:'Aanvrager & Projectleider',web:'han.nl'}],details:[{l:'Lectoraat',v:'Logistiek in een Vitale Samenleving'},{l:'Website',v:'han.nl'}]},
+  'vitalis':{icon:'🏥',bg:'#e8e9f0',title:'Vitalis',sub:'Deelnemende VVT-organisatie',contacts:[{n:'Iris Jansen-van Ravenstein',r:'Onderzoek & opschaling WP4',web:'vitaliseindhoven.nl'}],details:[{l:'Website',v:'vitaliseindhoven.nl'}]},
+  'sam-ggz':{icon:'🏷️',bg:'#f3edf8',title:'SAM — Slimme Assistent Mentale gezondheid',sub:'IOC-voucher · GGZ',contacts:[],details:[{l:'Type',v:'IOC-voucher (implementatie)'},{l:'Sector',v:'GGZ'},{l:'ZonMw',v:'zonmw.nl/versnellingsimpuls'}]},
+  'senz-ggz':{icon:'🏷️',bg:'#f3edf8',title:'Slim Spraakrapporteren — Senz GGZ',sub:'IOC-voucher · GGZ',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Organisatie',v:'Senz GGZ'},{l:'Sector',v:'GGZ'}]},
+  'spreken-werkt':{icon:'🏷️',bg:'#f3edf8',title:'Spreken Werkt — DeKinderGGZ',sub:'IOC-voucher · GGZ jeugd',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Organisatie',v:'DeKinderGGZ'}]},
+  'toestemming-sgr':{icon:'🏷️',bg:'#f3edf8',title:'Samen naar toestemming voor SGR',sub:'IOC-voucher · GGZ',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'GGZ'}]},
+  'sgr-ha-ioc':{icon:'🏷️',bg:'#e1f5ee',title:'SGR + hybride werken — huisartsenzorg',sub:'IOC-voucher · HA',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'HA'}]},
+  'vgng-aha':{icon:'🏷️',bg:'#e1f5ee',title:'Van gesprek naar gebruik — AHA',sub:'IOC-voucher · HA',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'HA'}]},
+  'opschaling-ai-ha':{icon:'🏷️',bg:'#e1f5ee',title:'Opschaling AI-inzet',sub:'IOC-voucher · HA',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'HA'}]},
+  'sgr-haz':{icon:'🏷️',bg:'#e6f0f0',title:'SGR + digitale triage — HAZ',sub:'IOC-voucher · HAP/HA',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'HAP/HA'}]},
+  'vgng-etz':{icon:'🏷️',bg:'#e4ecf5',title:'Van gesprek naar gebruik — ETZ',sub:'IOC-voucher · MSZ',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'MSZ'}]},
+  'sgr-cwz':{icon:'🏷️',bg:'#e4ecf5',title:'Implementatie SGR — CWZ',sub:'IOC-voucher · MSZ',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'MSZ'}]},
+  'sgr-wza':{icon:'🏷️',bg:'#e4ecf5',title:'Implementatie SGR — WZA',sub:'IOC-voucher · MSZ',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'MSZ'}]},
+  'voice-ai-sd':{icon:'🏷️',bg:'#e0f5f3',title:'Inzet Voice AI — cliëntondersteuning SD',sub:'IOC-voucher · SD',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'SD'}]},
+  'sgr-sd-ioc':{icon:'🏷️',bg:'#e0f5f3',title:'SGR Sociaal Domein — meerdere aanbieders',sub:'IOC-voucher · SD',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'SD'}]},
+  'tonos-vvt':{icon:'🏷️',bg:'#e8e9f0',title:'Slimmer plannen met AI (TONOS)',sub:'IOC-voucher · VVT',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'VVT'}]},
+  'plannen-ai':{icon:'🏷️',bg:'#e8e9f0',title:'Plannen en roosteren middels AI',sub:'IOC-voucher · VVT',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'VVT'}]},
+  'nivel':{icon:'🔬',bg:'#e6f0f0',title:'Nivel',sub:'Aanvrager digitale triage HAP',contacts:[{n:'Dr. Lotte Ramerman',r:'Aanvrager / Projectleider',web:'nivel.nl'},{n:'Prof. dr. Cordula Wagner',r:'Bestuurlijk verantwoordelijke',web:'nivel.nl'}],details:[{l:'Dossiernr.',v:'11660012510003'},{l:'Website',v:'nivel.nl'}]},
+  'amc-triage':{icon:'🔬',bg:'#e6f0f0',title:'Amsterdam UMC',sub:'Mede-aanvrager digitale triage',contacts:[{n:'Dr. Sietske Luijten',r:'Mede-aanvrager'},{n:'Dr. Vincent van Vught',r:'Mede-aanvrager',web:'amsterdamumc.nl'}],details:[{l:'Website',v:'amsterdamumc.nl'}]},
+  'erasmus-triage':{icon:'🔬',bg:'#e6f0f0',title:'ErasmusMC',sub:'Mede-aanvrager digitale triage',contacts:[{n:'Dr. Laura Zwaan',r:'Mede-aanvrager'},{n:'Dr. Charlotte van Sassen',r:'Mede-aanvrager projectleider WP3+4',web:'erasmusmc.nl'}],details:[{l:'Website',v:'erasmusmc.nl'}]},
+  'triage-nivel':{icon:'🏷️',bg:'#e6f0f0',title:'Digitale triage HAP — Nivel',sub:'Praktijkonderzoek IOC-voucher',contacts:[],details:[{l:'Type',v:'Praktijkonderzoek + IOC'},{l:'Sector',v:'HAP'}]},
+  'triage-ioc':{icon:'🏷️',bg:'#e6f0f0',title:'Digitale triage huisartsenspoedpost',sub:'IOC-voucher · HAP',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'HAP'}]},
+  'triage-ha-ioc':{icon:'🏷️',bg:'#e1f5ee',title:'Implementatie digitale triage huisartsenpraktijk',sub:'IOC-voucher · HA',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'HA'}]},
+  'roha-triage':{icon:'🏥',bg:'#e6f0f0',title:'Roha',sub:'Deelnemend, HAP-locatie',contacts:[{n:'Dr. Sietse Wieringa',r:'Mede-aanvrager en zorgaanbieder',web:'roha.nl'}],details:[{l:'Website',v:'roha.nl'}]},
+  'open-univ':{icon:'🎓',bg:'#f3edf8',title:'Open Universiteit',sub:'Aanvrager HYPE · GGZ',contacts:[{n:'Prof. dr. Catherine Bolman',r:'Aanvrager'},{n:'Pieter Rohrbach',r:'Projectleider',web:'ou.nl'}],details:[{l:'Dossiernr.',v:'11660012510004'},{l:'Afdeling',v:'Psychologie'},{l:'Website',v:'ou.nl'}]},
+  'misineuropsy':{icon:'🏥',bg:'#f3edf8',title:'MiSiNeuroPsy',sub:'Partner HYPE · GGZ',contacts:[{n:'Dr. Lea Jabbarian',r:'Projectteamlid coördinatie',web:'misineuropsy.nl'}],details:[{l:'Website',v:'misineuropsy.nl'}]},
+  'viersprong':{icon:'🏥',bg:'#f3edf8',title:'De Viersprong',sub:'Deelnemende instelling HYPE',contacts:[{n:'Dr. Maaike Smits',r:'Projectteamlid'},{n:'Drs. Ilse Krah',r:'Projectteamlid',web:'deviersprong.nl'}],details:[{l:'Website',v:'deviersprong.nl'}]},
+  'ggz-drenthe':{icon:'🏥',bg:'#f3edf8',title:'GGZ Drenthe',sub:'Deelnemende instelling HYPE',contacts:[{n:'Drs. Rob Mijnheer',r:'Projectteamlid Online Poli',web:'ggzdrenthe.nl'}],details:[{l:'Website',v:'ggzdrenthe.nl'}]},
+  'hype-caren':{icon:'🏷️',bg:'#f3edf8',title:'Hybride regie wachttijd — Caren + leefstijl',sub:'IOC-voucher · GGZ',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'GGZ'}]},
+  'hype-ehealth':{icon:'🏷️',bg:'#f3edf8',title:'Samen beslissen over eHealth in behandeling',sub:'IOC-voucher · GGZ',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'GGZ'}]},
+  'vilans':{icon:'🔬',bg:'#e8e9f0',title:'Vilans',sub:'Aanvrager hybride medicatieaanreiking',contacts:[{n:'Prof. dr. Henk Herman Nap',r:'Aanvrager & Projectleider',web:'vilans.nl'},{n:'Ilse Bierhoff MSc',r:'Senior onderzoeker',web:'vilans.nl'}],details:[{l:'Dossiernr.',v:'11660012510007'},{l:'Afdeling',v:'Digitale Zorg – Onderzoek & Validatie'},{l:'Website',v:'vilans.nl'}]},
+  'nhl-stenden':{icon:'🎓',bg:'#e8e9f0',title:'NHL Stenden',sub:'Partner hybride medicatie · waardebepaling',contacts:[{n:'Dr. Lise Beumeler',r:'Onderzoeker Waardebepaling'},{n:'Dr. Job van \'t Veer',r:'Expert',web:'nhlstenden.com'}],details:[{l:'Website',v:'nhlstenden.com'}]},
+  'nivel-medicatie':{icon:'🔬',bg:'#e8e9f0',title:'Nivel',sub:'Partner hybride medicatie',contacts:[{n:'Dr. Linda van Eikenhorst',r:'Senior onderzoeker'},{n:'Dr. Marcia Vervloet',r:'Senior onderzoeker',web:'nivel.nl'}],details:[{l:'Website',v:'nivel.nl'}]},
+  'liberein':{icon:'🏥',bg:'#e8e9f0',title:'Liberein',sub:'Zorgaanbieder VVT · medicatieaanreiking',contacts:[{n:'Dineke Brouwer',r:'Adviseur Technologie en Innovatie',web:'liberein.nl'}],details:[{l:'Website',v:'liberein.nl'}]},
+  'tza':{icon:'🏥',bg:'#e8e9f0',title:'TZA Achterhoek',sub:'Zorgaanbieder VVT · living lab',contacts:[{n:'Demi Demkes',r:'Projectmedewerker/coördinator living lab'},{n:'Stefan Zielhuis',r:'Directeur TZA Achterhoek',web:'tza.nl'}],details:[{l:'Website',v:'tza.nl'}]},
+  'medicatie-wijkv':{icon:'🏷️',bg:'#e8e9f0',title:'Hybride medicatieaanreiking + samen beslissen — wijkverpleging',sub:'IOC-voucher · VVT',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'VVT'}]},
+  'medicatie-vilans':{icon:'🏷️',bg:'#e8e9f0',title:'Hybride Medicatieaanreiking — Vilans',sub:'Praktijkonderzoek + IOC · VVT',contacts:[],details:[{l:'Type',v:'Praktijkonderzoek'},{l:'Sector',v:'VVT'}]},
+  'amc-selfcare':{icon:'🔬',bg:'#e1f5ee',title:'Amsterdam UMC',sub:'Aanvrager digitale zelfzorgtoepassingen HA',contacts:[{n:'Dr. Vincent van Vugt',r:'Aanvrager & Projectleider',web:'amsterdamumc.nl'},{n:'Dr. Sietske Luijten',r:'Mede-aanvrager',web:'amsterdamumc.nl'}],details:[{l:'Dossiernr.',v:'11660012510005'},{l:'Afdeling',v:'Huisartsgeneeskunde'},{l:'Website',v:'amsterdamumc.nl'}]},
+  'ivm':{icon:'🏥',bg:'#e1f5ee',title:'IVM — Instituut Verantwoord Medicijngebruik',sub:'Partner self-care apps',contacts:[{n:'Drs. Anke Lambooij',r:'Mede-aanvrager',web:'medicijngebruik.nl'}],details:[{l:'Website',v:'medicijngebruik.nl'}]},
+  'tired-cancer':{icon:'🏥',bg:'#e1f5ee',title:'Tired of Cancer BV',sub:'App-ontwikkelaar Untire · partner',contacts:[{n:'Dr. Simon Spahrkäs',r:'Projectadviseur',web:'tiredofcancer.com'}],details:[{l:'App',v:'Untire'},{l:'Website',v:'tiredofcancer.com'}]},
+  'aha-selfcare':{icon:'🏥',bg:'#e1f5ee',title:'AHA — Amsterdamse Huisartsenalliantie',sub:'Mede-aanvrager self-care apps',contacts:[{n:'Drs. Jonathan Bouman',r:'Mede-aanvrager',web:'aha.nl'}],details:[{l:'Website',v:'aha.nl'}]},
+  'selfcare-pr':{icon:'🏷️',bg:'#e1f5ee',title:'Digitale zelfzorgapps HA — AmsterdamUMC',sub:'Praktijkonderzoek · HA',contacts:[],details:[{l:'Type',v:'Praktijkonderzoek'},{l:'Apps',v:'URinControl, Untire, Vertigo Training'}]},
+  'selfcare-inco':{icon:'🏷️',bg:'#e1f5ee',title:'Implementatie incontinentie-app — hybride HA',sub:'IOC-voucher · HA',contacts:[],details:[{l:'Type',v:'IOC-voucher'},{l:'Sector',v:'HA'}]},
+  'erasmus-huid':{icon:'🔬',bg:'#e1f5ee',title:'Erasmus MC Dermatologie',sub:'Aanvrager AI-app huidafwijkingen',contacts:[{n:'Dr. Marlies Wakkee',r:'Aanvrager & Projectleider',web:'erasmusmc.nl/dermatologie'},{n:'Dr. Charlotte van Sassen',r:'Mede-aanvrager',web:'erasmusmc.nl'}],details:[{l:'Dossiernr.',v:'11660012510012'},{l:'Afdeling',v:'Dermatologie'},{l:'Website',v:'erasmusmc.nl'}]},
+  'tu-delft':{icon:'🎓',bg:'#e1f5ee',title:'TU Delft',sub:'Mede-aanvrager AI-huid · design engineering',contacts:[{n:'Dr. Jos Kraal',r:'Mede-aanvrager',web:'tudelft.nl'}],details:[{l:'Afdeling',v:'Industrial Design Engineering'},{l:'Website',v:'tudelft.nl'}]},
+  'eur':{icon:'🎓',bg:'#e1f5ee',title:'Erasmus Universiteit Rotterdam',sub:'Mede-aanvrager AI-huid · health policy',contacts:[{n:'Dr. Carin Uyl-de Groot',r:'Mede-aanvrager',web:'eur.nl'}],details:[{l:'Afdeling',v:'Erasmus School of Health Policy & Management'},{l:'Website',v:'eur.nl'}]},
+  'cz-huid':{icon:'🏥',bg:'#e1f5ee',title:'CZ Groep',sub:'Adviseur AI-app huidafwijkingen',contacts:[{n:'Menno Jansen',r:'Projectadviseur',web:'cz.nl'}],details:[{l:'Rol',v:'Verzekeraar-perspectief'},{l:'Website',v:'cz.nl'}]},
+  'broek-ha':{icon:'🏥',bg:'#e1f5ee',title:'Huisartsenpraktijk L. Broek',sub:'Deelnemende huisartsenpraktijk',contacts:[],details:[{l:'Rol',v:'Deelnemende zorgaanbieder'},{l:'Sector',v:'HA'}]},
+  'huid-pr':{icon:'🏷️',bg:'#e1f5ee',title:'AI-app huidkanker triage — Erasmus MC',sub:'Praktijkonderzoek · HA',contacts:[],details:[{l:'Type',v:'Praktijkonderzoek'},{l:'Sector',v:'HA'}]},
+  'hap-locaties':{icon:'🏥',bg:'#e6f0f0',title:'Diverse HAP-locaties',sub:'Deelnemende huisartsenposten',contacts:[],details:[{l:'Rol',v:'Deelnemende zorgaanbieders'},{l:'Sector',v:'HAP'}]},
+  'umcg-triage':{icon:'🔬',bg:'#e6f0f0',title:'UMCG',sub:'Mede-aanvrager digitale triage',contacts:[{n:'Prof. dr. Marco Blanker',r:'Projectgroeplid',web:'umcg.nl'}],details:[{l:'Website',v:'umcg.nl'}]},
+  'umcg-selfcare':{icon:'🔬',bg:'#e1f5ee',title:'UMCG',sub:'Mede-aanvrager self-care apps',contacts:[{n:'Dr. Marco Blanker',r:'Mede-aanvrager'},{n:'Dr. Henk van der Worp',r:'Mede-aanvrager',web:'umcg.nl'}],details:[{l:'Website',v:'umcg.nl'}]},
+  'umcg-ha':{icon:'🔬',bg:'#e1f5ee',title:'UMCG',sub:'Mede-aanvrager IMPULSE',contacts:[{n:'Dr. Marco Blanker',r:'Mede-aanvrager',web:'umcg.nl'}],details:[{l:'Website',v:'umcg.nl'}]},
+  'aha':{icon:'🏥',bg:'#e1f5ee',title:'AHA — Amsterdamse Huisartsenalliantie',sub:'Deelnemend, CMIO-link',contacts:[{n:'Jonathan Bouman',r:'Huisarts / CMIO',web:'aha.nl'}],details:[{l:'Website',v:'aha.nl'}]},
+  'rijnmond':{icon:'🏥',bg:'#e1f5ee',title:'Rijnmond Dokters',sub:'Deelnemend, CMIO Rotterdam',contacts:[{n:'Leon Joanknecht',r:'Huisarts / CMIO Rotterdam',web:'rijndokters.nl'}],details:[{l:'Website',v:'rijndokters.nl'}]},
+  'roha':{icon:'🏥',bg:'#e1f5ee',title:'ROHA Amsterdam',sub:'Deelnemend, Amsterdamse huisartsen',contacts:[],details:[{l:'Website',v:'roha.nl'}]},
+  'saxion':{icon:'🎓',bg:'#e0f5f3',title:'Saxion Hogeschool',sub:'Mede-aanvrager SGR SD',contacts:[{n:'Dr. Christina Jaschinski',r:'Researcher'},{n:'Dr. Marjolein den Ouden',r:'Lector'}],details:[{l:'Website',v:'saxion.nl'}]},
+  'jbw':{icon:'🏥',bg:'#e0f5f3',title:'Jeugdbescherming West',sub:'Deelnemende organisatie SD',contacts:[{n:'Nelleke Huizing-Fokker',r:'Projectleider praktijk'}],details:[{l:'Website',v:'jbwest.nl'}]},
+  'pvf':{icon:'🏥',bg:'#e8e9f0',title:'Pieter van Foreest',sub:'Deelnemende VVT-organisatie',contacts:[{n:'Rosalie Hendriks',r:'Beleidsadviseur onderzoek'}],details:[{l:'Website',v:'pietervanforeest.nl'}]},
+  'saffier':{icon:'🏥',bg:'#e8e9f0',title:'Saffier',sub:'Deelnemende VVT-organisatie',contacts:[{n:'Patricia Mos',r:'Onderzoek WP2 & opschaling WP4'}],details:[{l:'Website',v:'saffier.nl'}]},
+};
+
+const SEC_COLORS = {
+  VVT:{fg:'var(--s-vvt)',bg:'var(--s-vvt-bg)'},
+  GGZ:{fg:'var(--s-ggz)',bg:'var(--s-ggz-bg)'},
+  HA: {fg:'var(--s-ha)', bg:'var(--s-ha-bg)'},
+  HAP:{fg:'var(--s-hap)',bg:'var(--s-hap-bg)'},
+  MSZ:{fg:'var(--s-msz)',bg:'var(--s-msz-bg)'},
+  SD: {fg:'var(--s-sd)', bg:'var(--s-sd-bg)'},
+};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let currentBron = 'all';
+let currentSector = 'all';
+let filteredIndices = []; // indices into DIGIZO_PROCESSEN
+let currentIdx = 0; // index into filteredIndices
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function hasStoz(proc){ return proc.stoz && STOZ_ROUTE_DATA[proc.stoz]; }
+function hasZonmw(proc){ return proc.zonmw && ZONMW_CARDS[proc.zonmw]; }
+
+function bronMatch(proc, bron){
+  const s = hasStoz(proc), z = hasZonmw(proc);
+  if(bron==='all') return true;
+  if(bron==='stoz') return s;
+  if(bron==='zonmw') return z;
+  if(bron==='both') return s && z;
+  return true;
+}
+function sectorMatch(proc, sec){
+  if(sec==='all') return true;
+  return proc.sectoren.includes(sec);
+}
+
+// stoNuPct verwijderd: STOZ-routes zijn geen continuüm
+function zmNuPct(tlStart, tlEnd){
+  const s = new Date(tlStart), e = new Date(tlEnd);
+  return Math.max(0, Math.min(100, (TODAY - s)/(e - s)*100));
+}
+
+function e(tag, cls, html){
+  const el = document.createElement(tag);
+  if(cls) el.className = cls;
+  if(html != null) el.innerHTML = html;
+  return el;
+}
+
+// ─────────────────────────────────────────────
+// BUILD STOZ BAND
+// ─────────────────────────────────────────────
+function buildStozBand(proc){
+  const d  = STOZ_ROUTE_DATA[proc.stoz];
+  const vd = STOZ_VWS_DATA[proc.stoz] || STOZ_VWS_DATA[proc.naam] || null;
+  const wrap = e('div','band');
+
+  // Band header
+  const lbl = e('div','band-label');
+  lbl.innerHTML = `<span class="band-tag" style="background:#fff3cd;color:#856404;border:1px solid #ffc107">STOZ</span> ${proc.stoz || proc.naam}`;
+  wrap.appendChild(lbl);
+
+  if(!d){
+    wrap.appendChild(e('div','band-ph','Geen STOZ-routedata beschikbaar voor dit proces'));
+    return wrap;
+  }
+
+  // ── COMPACTE ROUTESAMENVATTING (detail via drawer) ──────────────────
+  // Route-samenvatting: gebruik org-tag stijl conform de rest van de kaart
+  const routeSummary = e('div','zm-orgs-row');  // zelfde container als ZonMw
+
+  const routeGrp = e('div','zm-org-group');
+  routeGrp.appendChild(e('div','zm-org-group-label','Subsidieroutes STOZ 2024/2025'));
+
+  const tagRow = e('div','stoz-route-tag-row');
+
+  if(d.impl){
+    const tag = e('span','org-tag stoz-tag-impl');
+    tag.title = 'Implementatiestart-route: eerste inzet van technologie, incl. strategievorming. Klik voor details.';
+    tag.innerHTML = `Impl. &amp; Strat. <span class="route-count">${d.impl}</span>`;
+    tag.onclick = () => openStozDrawer(proc, null);
+    tagRow.appendChild(tag);
+  }
+  if(d.opsch){
+    const tag = e('span','org-tag stoz-tag-opsch-main');
+    tag.title = 'Opschalingsroute: technologie uitrollen naar meer locaties. Kennisinstituut optioneel. Klik voor details.';
+    tag.innerHTML = `Opschaling <span class="route-count">${d.opsch}</span>`;
+    tag.onclick = () => openStozDrawer(proc, null);
+    tagRow.appendChild(tag);
+  }
+  if(d.eval){
+    const tag = e('span','org-tag stoz-tag-eval-main');
+    tag.title = 'Evaluatieroute: wetenschappelijke effectmeting. Kennisinstituut verplicht per subsidieregeling. Klik voor details.';
+    tag.innerHTML = `Evaluatie ✶ <span class="route-count">${d.eval}</span>`;
+    tag.onclick = () => openStozDrawer(proc, null);
+    tagRow.appendChild(tag);
+  }
+
+  routeGrp.appendChild(tagRow);
+  routeSummary.appendChild(routeGrp);
+  wrap.appendChild(routeSummary);
+
+  // ── AANVRAGERS (alle 3 routes: Impl./Strat., Opschaling, Evaluatie) ─────
+  if(vd && vd.aanvragers && vd.aanvragers.length > 0){
+    const orgsSection = e('div','stoz-orgs-section');
+    const implAanvr  = vd.aanvragers.filter(a => a.r === 'impl');
+    const opschAanvr = vd.aanvragers.filter(a => a.r === 'opsch');
+    const evalAanvr  = vd.aanvragers.filter(a => a.r === 'eval');
+
+    function makeAanvrGroup(label, aanvrs, tagClass, routeKey){
+      if(!aanvrs.length) return;
+      const grp = e('div','zm-org-group');
+      grp.appendChild(e('div','zm-org-group-label', label));
+      const tagRow = e('div','org-tags');
+      aanvrs.forEach(a => {
+        const tag = e('span','org-tag ' + tagClass);
+        tag.title = (a.k ? 'Kennisinstituut: ' + a.k + ' | ' : '') +
+                    (a.l && a.l.length ? 'Tech: ' + a.l.join(', ') : 'Klik voor details');
+        tag.innerHTML = a.a + (a.k ? ` <span style="font-size:10px">🎓</span>` : '');
+        tag.onclick = () => openStozDrawer(proc, a);
+        tagRow.appendChild(tag);
+      });
+      grp.appendChild(tagRow);
+      orgsSection.appendChild(grp);
+    }
+
+    makeAanvrGroup('Implementatiestart & Strategievorming', implAanvr,  'stoz-tag-impl',       'impl');
+    makeAanvrGroup('Opschalingsroute',                       opschAanvr, 'stoz-tag-opsch-main', 'opsch');
+    makeAanvrGroup('Evaluatieroute ✶',                       evalAanvr,  'stoz-tag-eval-main',  'eval');
+
+    wrap.appendChild(orgsSection);
+  }
+
+  // ── TECHNOLOGIEËN / LEVERANCIERS ──────────────────────────────────────
+  if(vd && vd.leveranciers && vd.leveranciers.length > 0){
+    const levSection = e('div','stoz-lev-section');
+    levSection.appendChild(e('div','stoz-org-label','Geïmplementeerde technologieën (uit goedgekeurde projecten)'));
+    const levRow = e('div','stoz-lev-row');
+    vd.leveranciers.forEach(l => {
+      const pill = e('span','stoz-lev-pill');
+      pill.innerHTML = `<span class="stoz-lev-badge">TECH</span>${l}`;
+      levRow.appendChild(pill);
+    });
+    levSection.appendChild(levRow);
+    wrap.appendChild(levSection);
+  }
+
+  // ── KENNISINSTITUUT-SECTIE ────────────────────────────────────────────
+  wrap.appendChild(buildKennisSectie(proc, vd));
+
+  // Footer
+  const footer = e('div','stoz-footer');
+  footer.innerHTML = `STOZ 2024/2025 · RVO · <a href="https://www.rvo.nl/subsidies-financiering/stoz" target="_blank" style="color:#856404">↗ rvo.nl</a>`;
+  wrap.appendChild(footer);
+
+  return wrap;
+}
+
+
+function buildKennisSectie(proc, vd){
+  const d = STOZ_ROUTE_DATA[proc.stoz];
+  const wrap = e('div','stoz-org-group');  // zelfde container als aanvragers
+
+  // Label — conform de rest van de kaart
+  const lbl = e('div','stoz-org-label');
+  lbl.innerHTML = 'Kennisinstituut-participatie <span class="stoz-eval-eis-inline" title="Bij de Evaluatieroute is deelname van een kennisinstituut verplicht per STOZ-subsidieregeling">✶ verplicht bij Evaluatieroute</span>';
+  wrap.appendChild(lbl);
+
+  const kennisEntries = (vd && vd.kennis) ? vd.kennis : [];
+
+  if(kennisEntries.length > 0){
+    kennisEntries.forEach(([naam, type]) => {
+      const tag = e('span','stoz-org-tag stoz-tag-kennis');
+      tag.title = `${naam} — ${type} · Klik voor details`;
+      tag.innerHTML = `🎓 ${naam} <span class="stoz-kennis-type">${type}</span>`;
+      // onclick: open drawer met kennis-aanvrager als er een aanvrager is met dit kennis-type
+      tag.onclick = () => {
+        const vd2 = STOZ_VWS_DATA[proc.stoz] || STOZ_VWS_DATA[proc.naam] || null;
+        const kennisAanvr = vd2 && vd2.aanvragers
+          ? vd2.aanvragers.find(a => a.k && a.k === type)
+          : null;
+        if(kennisAanvr){
+          openStozDrawer(proc, kennisAanvr);
+        } else {
+          // Fallback: open drawer met het proces, toon kennis in titel
+          openStozDrawer(proc, {a: naam, k: type, l:[], r:'opsch'});
+        }
+      };
+      wrap.appendChild(tag);
+    });
+  } else if(d && d.eval > 0){
+    // Evaluatieroute aanwezig maar geen kennis gedetecteerd → amber waarschuwing
+    const tag = e('span','stoz-org-tag stoz-tag-kennis-warn');
+    tag.title = 'Evaluatieroute-projecten vereisen een kennisinstituut per subsidieregeling. Mogelijk ontbreekt informatie.';
+    tag.innerHTML = `⚠ Evaluatieroute (${d.eval}×) — kennisinstituut niet gedetecteerd`;
+    wrap.appendChild(tag);
+  } else {
+    // Geen data
+    const tag = e('span','stoz-org-tag stoz-tag-kennis-empty');
+    tag.title = 'Geen kennisinstituut-participatie gedetecteerd in de beschikbare RVO-data. Bij de Evaluatieroute is dit verplicht.';
+    tag.innerHTML = '🎓 Kennisinstituut — niet bekend';
+    tag.style.cursor = 'help';
+    wrap.appendChild(tag);
+  }
+  return wrap;
+}
+
+
+function buildZonmwBand(proc, zm){
+  const wrap = e('div','band');
+
+  const lbl = e('div','band-label');
+  lbl.innerHTML = `<span class="band-tag" style="background:var(--dz-purple-pale);color:var(--dz-purple)">ZonMw VVH</span> ${zm.title}`;
+  wrap.appendChild(lbl);
+
+  const meta = e('div','zm-meta', zm.meta);
+  wrap.appendChild(meta);
+
+  // Timeline
+  const nuPct = zmNuPct(zm.tlStart, zm.tlEnd);
+  const tlWrap = e('div','tl-wrap');
+  const bar = e('div','tl-bar');
+  zm.segs.forEach(seg => {
+    const s = e('div','tl-seg');
+    s.style.width = seg.w + '%';
+    s.style.background = seg.c;
+    s.style.color = seg.tc;
+    s.textContent = seg.w >= 12 ? seg.l : '';
+    s.title = seg.l;
+    bar.appendChild(s);
+  });
+  const nu = e('div','tl-nu');
+  nu.style.left = nuPct + '%';
+  tlWrap.appendChild(bar);
+  tlWrap.appendChild(nu);
+
+  const axis = e('div','tl-axis');
+  zm.axis.forEach(t => {
+    const tick = e('div','tl-tick'+(t.r?' right':''), t.l);
+    tick.style.left = t.p+'%';
+    axis.appendChild(tick);
+  });
+  tlWrap.appendChild(axis);
+  wrap.appendChild(tlWrap);
+
+  // Orgs row
+  const orgsRow = e('div','zm-orgs-row');
+
+  if(zm.aanvragers && zm.aanvragers.length){
+    const g = e('div','zm-org-group');
+    g.appendChild(e('div','zm-org-group-label','Aanvragers'));
+    zm.aanvragers.forEach(a => {
+      const tag = e('span','org-tag');
+      tag.textContent = a.l;
+      tag.onclick = ()=>openContactDrawer(a.k);
+      g.appendChild(tag);
+    });
+    orgsRow.appendChild(g);
+  }
+
+  if(zm.zorgaan && zm.zorgaan.length){
+    const g = e('div','zm-org-group');
+    g.appendChild(e('div','zm-org-group-label','Zorgaanbieders'));
+    zm.zorgaan.forEach(a => {
+      const tag = e('span','org-tag');
+      tag.textContent = a.l;
+      tag.onclick = ()=>openContactDrawer(a.k);
+      g.appendChild(tag);
+    });
+    orgsRow.appendChild(g);
+  }
+
+  if(zm.vouchers && zm.vouchers.length){
+    const g = e('div','zm-org-group');
+    g.appendChild(e('div','zm-org-group-label','ZonMw Implementatie en Opschalingsvouchers (IOC)'));
+    zm.vouchers.forEach(v => {
+      const tag = e('span','voucher-tag');
+      tag.innerHTML = `🏷️ ${v.l}`;
+      tag.onclick = ()=>openContactDrawer(v.k);
+      g.appendChild(tag);
+    });
+    orgsRow.appendChild(g);
+  }
+
+  wrap.appendChild(orgsRow);
+
+  // STOZ cross-ref: show STOZ orgs for this process if STOZ data exists
+  if(proc.stoz && STOZ_ROUTE_DATA[proc.stoz]){
+    const d = STOZ_ROUTE_DATA[proc.stoz];
+    const xref = e('div','stoz-cross-ref');
+    xref.innerHTML = `<div class="v-lbl">Zorgorganisaties met STOZ-subsidie voor dit proces</div>`;
+    const total = d.total || (d.impl + d.opsch + d.eval);
+    const routeMap = [
+      {key:'impl', count:d.impl,  cls:'route-impl',  label:'Impl.'},
+      {key:'opsch',count:d.opsch, cls:'route-opsch', label:'Opsch.'},
+      {key:'eval', count:d.eval,  cls:'route-eval',  label:'Eval. ✶'},
+    ];
+    routeMap.filter(r=>r.count>0).forEach(r=>{
+      const pill = e('span','stoz-org-pill');
+      pill.innerHTML = `<span class="stoz-badge">STOZ</span>${r.count} instellingen <span class="route-indicator-mini ${r.cls}">${r.label}</span>`;
+      pill.onclick = ()=>openStozDrawer(proc);
+      xref.appendChild(pill);
+    });
+    wrap.appendChild(xref);
+  }
+
+  return wrap;
+}
+
+// ─────────────────────────────────────────────
+// BUILD CARD
+// ─────────────────────────────────────────────
+function buildStozInfoKaart(proc){
+  const card = e('div','card stoz-info-card');
+  card.dataset.procIdx = DIGIZO_PROCESSEN.indexOf(proc);
+
+  // Header
+  const head = e('div','card-head');
+  head.innerHTML = `
+    <div class="card-head-left">
+      <span class="card-proc-link" style="cursor:default">STOZ — Stimuleringsregeling Technologie in Ondersteuning en Zorg</span>
+      <div class="card-pills">
+        <span class="pill" style="background:#fff3cd;color:#856404;border:1px solid #ffc107">Subsidie-informatie</span>
+        <span class="pill" style="background:#e8f5e9;color:#1b5e20">RVO · gesloten 2024/2025</span>
+      </div>
+    </div>`;
+  card.appendChild(head);
+
+  // Band: de 3 routes uitgelegd
+  const band = e('div','band');
+  band.innerHTML = `
+    <div class="band-label">
+      <span class="band-tag" style="background:#fff3cd;color:#856404;border:1px solid #ffc107">STOZ</span>
+      Drie subsidieroutes — parallelle trajecten, geen continuüm
+    </div>
+    <div class="stoz-info-grid">
+      <div class="stoz-info-route stoz-info-impl">
+        <div class="stoz-info-route-title">Strategievorming &amp; Implementatiestart</div>
+        <div class="stoz-info-route-sub">666 projecten · max. €25k (strat.) of €750k</div>
+        <div class="stoz-info-route-desc">Eerste inzet van technologie, inclusief visie- en strategievorming. Geen vermelding op Digizo.nu-overzicht vereist. Kennisinstituut niet verplicht. Max. 1 strategievorming per organisatie.</div>
+      </div>
+      <div class="stoz-info-route stoz-info-opsch">
+        <div class="stoz-info-route-title">Opschalingsroute</div>
+        <div class="stoz-info-route-sub">147 projecten · €25k – €750k</div>
+        <div class="stoz-info-route-desc">Technologie staat al op het Digizo.nu-procesoverzicht (bewezen effectief). Direct instappen — geen strategievorming vereist. Kennisinstituut optioneel.</div>
+      </div>
+      <div class="stoz-info-route stoz-info-eval">
+        <div class="stoz-info-route-title">Evaluatieroute ✶</div>
+        <div class="stoz-info-route-sub">23 projecten · €25k – €750k</div>
+        <div class="stoz-info-route-desc">Technologie staat <em>nog niet</em> op het Digizo.nu-overzicht. Verplicht evaluatieonderzoek via Weten Wat Werkt, mini-HTA, Waardewaaier of Digizo.nu-methode. Kennisinstituut sterk aanbevolen. Positieve uitkomst → kandidaat voor Digizo.nu-procesoverzicht.</div>
+      </div>
+    </div>`;
+  card.appendChild(band);
+
+  // Band: totalen per proces
+  const totBand = e('div','band');
+  totBand.innerHTML = `
+    <div class="band-label">
+      <span class="band-tag" style="background:#e8f5e9;color:#1b5e20">Aantallen</span>
+      Goedgekeurde projecten per Digizo.nu-proces
+    </div>
+    <div class="stoz-info-table-wrap">
+      <table class="stoz-info-table">
+        <thead><tr><th>Digizo.nu-proces</th><th class="tc">Impl.+Strat.</th><th class="tc">Opschaling</th><th class="tc">Evaluatie ✶</th><th class="tc">Totaal</th></tr></thead>
+        <tbody id="stoz-info-tbody"></tbody>
+      </table>
+    </div>`;
+  card.appendChild(totBand);
+
+  // Footer
+  const footer = e('div','card-footer');
+  footer.innerHTML = `<span class="footer-text">STOZ 2024/2025 · RVO</span>
+    <a class="footer-link" href="https://www.rvo.nl/subsidies-financiering/stoz/aanvraagproces" target="_blank">Aanvraagproces op RVO.nl →</a>`;
+  card.appendChild(footer);
+
+  // Vul tabel na render
+  setTimeout(() => {
+    const tbody = document.getElementById('stoz-info-tbody');
+    if(!tbody) return;
+    const rows = Object.entries(STOZ_ROUTE_DATA)
+      .sort((a,b) => b[1].total - a[1].total);
+    rows.forEach(([proc, d]) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${proc}</td>
+        <td class="tc impl-cell">${d.impl}</td>
+        <td class="tc opsch-cell">${d.opsch}</td>
+        <td class="tc eval-cell">${d.eval || '<span style="color:#ccc">—</span>'}</td>
+        <td class="tc total-cell"><strong>${d.total}</strong></td>`;
+      tbody.appendChild(tr);
+    });
+  }, 50);
+
+  return card;
+}
+
+function buildCard(procIdx){
+  const proc = DIGIZO_PROCESSEN[procIdx];
+
+  // Speciale weergave voor de STOZ-infokaart
+  if(proc._infokaart){
+    return buildStozInfoKaart(proc);
+  }
+  const card = e('div','card');
+  card.dataset.procIdx = procIdx;
+
+  // Header
+  const head = e('div','card-head');
+  const headLeft = e('div','card-head-left');
+
+  const link = e('a','card-proc-link', proc.naam);
+  link.href = `https://digizo.nu/proces/${proc.slug}/`;
+  link.target = '_blank';
+  headLeft.appendChild(link);
+
+  const pills = e('div','card-pills');
+  proc.sectoren.forEach(sec => {
+    const c = SEC_COLORS[sec] || {fg:'#888',bg:'#eee'};
+    const p = e('span','pill', sec);
+    p.style.background = c.bg;
+    p.style.color = c.fg;
+    pills.appendChild(p);
+  });
+  headLeft.appendChild(pills);
+  head.appendChild(headLeft);
+
+  const badges = e('div','card-badge-row');
+  if(hasStoz(proc)){
+    const b = e('span','src-badge stoz','STOZ');
+    badges.appendChild(b);
+  }
+  if(hasZonmw(proc)){
+    const b = e('span','src-badge zonmw','ZonMw');
+    badges.appendChild(b);
+  }
+  head.appendChild(badges);
+  card.appendChild(head);
+
+  // ZonMw band — EERST (meest inhoudelijk relevant voor zorgveld)
+  if(proc.zonmw){
+    const zm = ZONMW_CARDS[proc.zonmw];
+    if(zm){
+      card.appendChild(buildZonmwBand(proc, zm));
+    } else {
+      const band = e('div','band');
+      band.innerHTML = `<div class="band-label"><span class="band-tag" style="background:var(--dz-purple-pale);color:var(--dz-purple)">ZonMw VVH</span></div>
+        <div class="band-ph">ZonMw-projectdata niet beschikbaar.</div>`;
+      card.appendChild(band);
+    }
+  } else {
+    const band = e('div','band');
+    band.innerHTML = `<div class="band-label"><span class="band-tag" style="background:var(--dz-purple-pale);color:var(--dz-purple)">ZonMw VVH</span> Geen ZonMw-koppeling</div>
+      <div class="band-ph">Er is geen ZonMw Versnellingsimpuls VVH project gekoppeld aan dit Digizo.nu proces.</div>`;
+    card.appendChild(band);
+  }
+
+  // STOZ band — TWEEDE
+  if(proc.stoz){
+    const stozBand = buildStozBand(proc);
+    card.appendChild(stozBand);
+  } else {
+    const band = e('div','band');
+    band.innerHTML = `<div class="band-label"><span class="band-tag" style="background:#e8e9f0;color:#1b1e4c">STOZ</span> Routekaart</div>
+      <div class="band-ph">Dit proces heeft geen STOZ-routedata. Zie <a href="https://digizo.nu/proces/${proc.slug}/" target="_blank" style="color:var(--dz-purple)">digizo.nu</a> voor meer info.</div>`;
+    card.appendChild(band);
+  }
+
+  // Footer
+  const footer = e('div','card-footer');
+  footer.innerHTML = `<span class="footer-text">Digizo.nu proces</span>
+    <a class="footer-link" href="https://digizo.nu/proces/${proc.slug}/" target="_blank">Bekijk op digizo.nu →</a>
+    <span class="footer-text" style="margin-left:auto">${proc.sectoren.join(' · ')}</span>`;
+  card.appendChild(footer);
+
+  return card;
+}
+
+// ─────────────────────────────────────────────
+// DRAWER
+// ─────────────────────────────────────────────
+function openContactDrawer(key){
+  const c = CONTACT[key];
+  if(!c){ console.warn('No contact data for',key); return; }
+
+  document.getElementById('d-icon').textContent = c.icon || '📋';
+  document.getElementById('d-title').textContent = c.title;
+  document.getElementById('d-sub').textContent = c.sub || '';
+
+  const body = document.getElementById('d-body');
+  body.innerHTML = '';
+
+  // Details section
+  if(c.details && c.details.length){
+    const sec = e('div','drawer-section');
+    sec.appendChild(e('div','drawer-section-title','Details'));
+    c.details.forEach(d => {
+      const row = e('div','drawer-row');
+      row.appendChild(e('div','drawer-row-label',d.l));
+      row.appendChild(e('div','drawer-row-val',d.v));
+      sec.appendChild(row);
+    });
+    body.appendChild(sec);
+  }
+
+  // Contacts
+  if(c.contacts && c.contacts.length){
+    const sec = e('div','drawer-section');
+    sec.appendChild(e('div','drawer-section-title','Contactpersonen'));
+    const list = e('div','drawer-contacts');
+    c.contacts.forEach(ct => {
+      const card = e('div','contact-card');
+      card.appendChild(e('div','contact-name',ct.n));
+      if(ct.r) card.appendChild(e('div','contact-role',ct.r));
+      const links = e('div','contact-links');
+      if(ct.mail){
+        const a = e('a','contact-link',`✉ ${ct.mail}`);
+        a.href = `mailto:${ct.mail}`;
+        links.appendChild(a);
+      }
+      if(ct.li){
+        const a = e('a','contact-link','in LinkedIn');
+        a.href = ct.li;
+        a.target = '_blank';
+        links.appendChild(a);
+      }
+      if(ct.web){
+        const a = e('a','contact-link','🌐 '+ct.web);
+        a.href = 'https://'+ct.web;
+        a.target = '_blank';
+        links.appendChild(a);
+      }
+      if(links.children.length) card.appendChild(links);
+      list.appendChild(card);
+    });
+    sec.appendChild(list);
+    body.appendChild(sec);
+  }
+
+  // Kennis
+  const ken = e('div','drawer-kennis');
+  ken.innerHTML = `<div class="drawer-kennis-title">Over deze organisatie</div>
+    <div class="drawer-kennis-text">${c.sub || c.title}. Onderdeel van het ZonMw Versnellingsimpuls VVH programma.</div>`;
+  body.appendChild(ken);
+
+  // Buttons
+  const a1 = e('a','drawer-btn primary','Bekijk op ZonMw →');
+  a1.href = 'https://zonmw.nl/versnellingsimpuls';
+  a1.target = '_blank';
+  body.appendChild(a1);
+
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function openStozDrawer(proc, aanvr){
+  const d  = hasStoz(proc) ? STOZ_ROUTE_DATA[proc.stoz] : null;
+  const vd = STOZ_VWS_DATA[proc.stoz] || STOZ_VWS_DATA[proc.naam] || null;
+  document.getElementById('d-icon').textContent = '📊';
+  document.getElementById('d-title').textContent = proc.stoz || proc.naam;
+  document.getElementById('d-sub').textContent = `STOZ Routekaart · ${(proc.sectoren||[]).join(', ')}`;
+
+  const body = document.getElementById('d-body');
+  body.innerHTML = '';
+
+  // ── Aanvrager detail (als geklikt op een org-tag) ──────────────────
+  if(aanvr){
+    const asecTop = e('div','drawer-section');
+    const routeLabelMap = {
+      'eval':  'Evaluatieroute-aanvrager ✶',
+      'opsch': 'Opschalingsroute-aanvrager',
+      'impl':  'Implementatiestart & Strategievorming-aanvrager',
+    };
+    const routeBadgeMap = {
+      'eval':  'Evaluatieroute ✶',
+      'opsch': 'Opschalingsroute',
+      'impl':  'Implementatiestart & Strategievorming',
+    };
+    const routeTitle = routeLabelMap[aanvr.r] || 'STOZ-aanvrager';
+    asecTop.appendChild(e('div','drawer-section-title', routeTitle));
+
+    // Route-badge prominent
+    const badge = e('div','drawer-aanvr-header');
+    badge.innerHTML = `<span class="drawer-aanvr-naam">${aanvr.a}</span>
+      <span class="drawer-route-badge drawer-route-${aanvr.r}">${routeBadgeMap[aanvr.r] || aanvr.r}</span>`;
+    asecTop.appendChild(badge);
+
+    // Kennispartner
+    const kennisRow = e('div','drawer-row');
+    kennisRow.appendChild(e('div','drawer-row-label','Kennispartner'));
+    const kennisVal = e('div','drawer-row-val');
+    if(aanvr.k){
+      kennisVal.innerHTML = `<span class="drawer-kennis-badge">🎓 ${aanvr.k}</span>`;
+    } else {
+      kennisVal.textContent = aanvr.r === 'eval'
+        ? '⚠ Niet gedetecteerd — bij evaluatieroute verplicht'
+        : 'Niet van toepassing (optioneel bij opschalingsroute)';
+    }
+    kennisRow.appendChild(kennisVal);
+    asecTop.appendChild(kennisRow);
+
+    // Technologieën van DEZE aanvrager — zelfde stijl als kaart
+    if(aanvr.l && aanvr.l.length){
+      const techRow = e('div','drawer-row');
+      techRow.appendChild(e('div','drawer-row-label','Technologieën'));
+      const techVal = e('div','drawer-row-val stoz-lev-row');
+      aanvr.l.forEach(t => {
+        const pill = e('span','stoz-lev-pill');
+        pill.innerHTML = `<span class="stoz-lev-badge">TECH</span>${t}`;
+        techVal.appendChild(pill);
+      });
+      techRow.appendChild(techVal);
+      asecTop.appendChild(techRow);
+    }
+
+    body.appendChild(asecTop);
+  }
+
+  // ── Alle aanvragers voor dit proces (als geen specifieke aanvrager) ──
+  if(vd && vd.aanvragers && vd.aanvragers.length && !aanvr){
+    const asec = e('div','drawer-section');
+    asec.appendChild(e('div','drawer-section-title','Goedgekeurde aanvragers RVO 2024/2025'));
+
+    const implAanvr2  = vd.aanvragers.filter(a => a.r === 'impl');
+    const opschAanvr2 = vd.aanvragers.filter(a => a.r === 'opsch');
+    const evalAanvr2  = vd.aanvragers.filter(a => a.r === 'eval');
+
+    function makeDrawerGrp(label, aanvrs, tagClass){
+      if(!aanvrs.length) return;
+      const grp = e('div','zm-org-group');
+      grp.appendChild(e('div','zm-org-group-label', label));
+      const tagWrap = e('div','org-tags');
+      aanvrs.forEach(a => {
+        const tag = e('span','org-tag ' + tagClass);
+        tag.innerHTML = a.a + (a.k ? ` <span style="font-size:10px">🎓</span>` : '');
+        tag.title = (a.k ? `Kennispartner: ${a.k}` : '') + (a.l&&a.l.length ? `
+Tech: ${a.l.join(', ')}` : '');
+        tag.onclick = () => openStozDrawer(proc, a);
+        tagWrap.appendChild(tag);
+      });
+      grp.appendChild(tagWrap);
+      asec.appendChild(grp);
+    }
+    makeDrawerGrp('Implementatiestart & Strategievorming', implAanvr2,  'stoz-tag-impl');
+    makeDrawerGrp('Opschalingsroute',                       opschAanvr2, 'stoz-tag-opsch-main');
+    makeDrawerGrp('Evaluatieroute ✶',                       evalAanvr2,  'stoz-tag-eval-main');
+    body.appendChild(asec);
+  }
+
+  // ── Technologieën voor dit proces ────────────────────────────────────
+  if(vd && vd.leveranciers && vd.leveranciers.length && !aanvr){
+    const tsec = e('div','drawer-section');
+    tsec.appendChild(e('div','drawer-section-title','Technologieën in goedgekeurde projecten'));
+    const techRow = e('div','stoz-lev-row');  // zelfde klasse als op kaart
+    vd.leveranciers.forEach(t => {
+      const pill = e('span','stoz-lev-pill');
+      pill.innerHTML = `<span class="stoz-lev-badge">TECH</span>${t}`;
+      techRow.appendChild(pill);
+    });
+    tsec.appendChild(techRow);
+    body.appendChild(tsec);
+  }
+
+
+  // ── Route-info: verwijzing naar DigiDex-infokaart ────────────────────
+  const infoRef = e('div','drawer-info-ref');
+  infoRef.innerHTML = `<span class="drawer-info-icon">ℹ</span>
+    Route-aantallen en subsidie-uitleg staan op de
+    <a href="#" class="drawer-info-link" onclick="event.preventDefault();showInfoKaart()">STOZ-infokaart ↗</a>`;
+  body.appendChild(infoRef);
+
+    const a1 = e('a','drawer-btn secondary','Bekijk op digizo.nu →');
+  a1.href = `https://digizo.nu/proces/${proc.slug}/`;
+  a1.target = '_blank';
+  body.appendChild(a1);
+
+  const a2 = e('a','drawer-btn secondary','STOZ informatie (RVO) →');
+  a2.href = 'https://www.rvo.nl/subsidies-financiering/stoz';
+  a2.target = '_blank';
+  body.appendChild(a2);
+
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+// ─────────────────────────────────────────────
+// NAVIGATION & FILTERING
+// ─────────────────────────────────────────────
+function computeFiltered(){
+  filteredIndices = DIGIZO_PROCESSEN
+    .map((_,i)=>i)
+    .filter(i => bronMatch(DIGIZO_PROCESSEN[i], currentBron) && sectorMatch(DIGIZO_PROCESSEN[i], currentSector));
+}
+
+function showCard(pos){
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('visible'));
+  const pips = document.querySelectorAll('.pip');
+  pips.forEach((p,i)=>p.classList.toggle('active', i===pos));
+
+  if(filteredIndices.length === 0){
+    document.getElementById('nav-counter').textContent = '0 / 0';
+    document.getElementById('btn-prev').disabled = true;
+    document.getElementById('btn-next').disabled = true;
+    return;
+  }
+
+  currentIdx = Math.max(0, Math.min(pos, filteredIndices.length-1));
+  const procIdx = filteredIndices[currentIdx];
+  const card = document.querySelector(`.card[data-proc-idx="${procIdx}"]`);
+  if(card) card.classList.add('visible');
+
+  document.getElementById('nav-counter').textContent = `${currentIdx+1} / ${filteredIndices.length}`;
+  document.getElementById('btn-prev').disabled = currentIdx === 0;
+  document.getElementById('btn-next').disabled = currentIdx === filteredIndices.length-1;
+
+  closeDrawer();
+}
+
+function buildPips(){
+  const pipsEl = document.getElementById('pips');
+  pipsEl.innerHTML = '';
+  filteredIndices.forEach((procIdx, pos) => {
+    const pip = e('div','pip');
+    const proc = DIGIZO_PROCESSEN[procIdx];
+    pip.title = proc.naam;
+    pip.onclick = ()=>showCard(pos);
+    pipsEl.appendChild(pip);
+  });
+}
+
+function navigate(dir){
+  showCard(currentIdx + dir);
+}
+
+function showInfoKaart(){
+  // Navigeer naar de STOZ-infokaart (aparte kaart in de machine)
+  const infoIdx = DIGIZO_PROCESSEN.findIndex(p => p._infokaart === true);
+  if(infoIdx > -1){
+    showCard(infoIdx);
+  } else {
+    // Fallback: open RVO-pagina
+    window.open('https://www.rvo.nl/subsidies-financiering/stoz/aanvraagproces','_blank');
+  }
+}
+
+function filterBron(bron){
+  currentBron = bron;
+  document.querySelectorAll('.src-btn').forEach(b=>b.classList.remove('active'));
+  const map = {all:0, stoz:1, zonmw:2, both:3};
+  document.querySelectorAll('.src-btn')[map[bron]].classList.add('active');
+  currentIdx = 0;
+  computeFiltered();
+  buildPips();
+  showCard(0);
+  buildSectorTabs(); // rebuild tabs with updated counts
+}
+
+function filterSector(sec){
+  currentSector = sec;
+  currentIdx = 0;
+  computeFiltered();
+  buildPips();
+  showCard(0);
+  buildSectorTabs();
+}
+
+// ─────────────────────────────────────────────
+// SECTOR TABS
+// ─────────────────────────────────────────────
+const ALL_SECTORS = ['VVT','GGZ','HA','HAP','MSZ','SD'];
+
+function buildSectorTabs(){
+  const container = document.getElementById('sector-tabs');
+  container.innerHTML = '';
+
+  const allCount = DIGIZO_PROCESSEN.filter(p=>bronMatch(p,currentBron)).length;
+  const allTab = e('button','sec-tab'+(currentSector==='all'?' active':''));
+  allTab.innerHTML = `Alle <span class="tab-count">${allCount}</span>`;
+  if(currentSector==='all') allTab.style.background='var(--dz-navy)';
+  allTab.onclick = ()=>filterSector('all');
+  container.appendChild(allTab);
+
+  ALL_SECTORS.forEach(sec=>{
+    const count = DIGIZO_PROCESSEN.filter(p=>p.sectoren.includes(sec) && bronMatch(p,currentBron)).length;
+    const c = SEC_COLORS[sec];
+    const tab = e('button','sec-tab'+(currentSector===sec?' active':''));
+    tab.innerHTML = `${sec} <span class="tab-count">${count}</span>`;
+    if(currentSector===sec){
+      tab.style.background = c.fg;
+      tab.style.borderColor = c.fg;
+    }
+    tab.onclick = ()=>filterSector(sec);
+    container.appendChild(tab);
+  });
+}
+
+// ─────────────────────────────────────────────
+// SOURCE COUNTS
+// ─────────────────────────────────────────────
+function updateSourceCounts(){
+  const all = DIGIZO_PROCESSEN.length;
+  const stoz = DIGIZO_PROCESSEN.filter(p=>hasStoz(p)).length;
+  const zonmw = DIGIZO_PROCESSEN.filter(p=>hasZonmw(p)).length;
+  const both = DIGIZO_PROCESSEN.filter(p=>hasStoz(p)&&hasZonmw(p)).length;
+  document.getElementById('cnt-all').textContent = all;
+  document.getElementById('cnt-stoz').textContent = stoz;
+  document.getElementById('cnt-zonmw').textContent = zonmw;
+  document.getElementById('cnt-both').textContent = both;
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function init(){
+  // Build all cards into slot
+  const slot = document.getElementById('card-slot');
+  DIGIZO_PROCESSEN.forEach((_,i)=>{
+    slot.appendChild(buildCard(i));
+  });
+
+  updateSourceCounts();
+  computeFiltered();
+  buildPips();
+  buildSectorTabs();
+  showCard(0);
+}
+
+init();
+</script>
+</body>
+</html>
