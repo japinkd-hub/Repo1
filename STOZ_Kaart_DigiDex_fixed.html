@@ -632,9 +632,9 @@ function MAP_initKaart() {
   MAP_svgEl = d3.select('#map-svg');
   MAP_svgEl.attr('viewBox', `0 0 ${w} ${h}`);
 
-  MAP_zoom = d3.MAP_zoom()
+  MAP_zoom = d3.zoom()
     .scaleExtent([1, 12])
-    .on('MAP_zoom', e => {
+    .on('zoom', e => {
       MAP_gZK.attr('transform', e.transform);
       MAP_gProv.attr('transform', e.transform);
     });
