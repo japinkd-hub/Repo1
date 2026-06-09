@@ -625,6 +625,94 @@ let MAP_gProv, MAP_gZK, MAP_pathFn, MAP_zoom, MAP_svgEl;
 let MAP_selProv = null;
 let MAP_dbData  = [];
 
+// Static geo keyword → province mapping (substring match on aanvrager name)
+const MAP_GEO_KW = [
+  // Friesland
+  ["Patyna","Friesland"],["Alliade","Friesland"],["De Friesland","Friesland"],
+  ["Zorggroep Oude en Nieuwe Land","Friesland"],
+  // Groningen
+  ["Stichting Cosis","Groningen"],["Careaz","Groningen"],["De Zijlen","Groningen"],
+  ["Zorggroep Groningen","Groningen"],["Stichting Zinn","Groningen"],["Stichting ICARE","Groningen"],
+  ["Accare","Groningen"],
+  // Drenthe
+  ["Vanboeijen","Drenthe"],["Baalderborg","Drenthe"],["Zorggroep Noorderboog","Drenthe"],
+  ["Midden Drenthe","Drenthe"],
+  // Overijssel
+  ["Rosengaerde","Overijssel"],["Livio","Overijssel"],["Twente","Overijssel"],
+  ["Midden-IJssel","Overijssel"],["Stichting Ludgerus","Overijssel"],
+  // Gelderland
+  ["GGNet","Gelderland"],["Zorggroep Achterhoek","Gelderland"],["Sensire","Gelderland"],
+  ["Stichting Zozijn","Gelderland"],["Zorggroep Apeldoorn","Gelderland"],
+  ["Marga Klompe","Gelderland"],["Marga Klompé","Gelderland"],
+  ["Noordwest-Veluwe","Gelderland"],["Groot Gelre","Gelderland"],
+  ["Stichting Jan Berchmans","Gelderland"],["Stichting Vilente","Gelderland"],
+  ["Stichting Opella","Gelderland"],["Thuiszorg Groot Gelre","Gelderland"],
+  // Utrecht
+  ["Stichting QuaRijn","Utrecht"],["Stichting Trajectum","Utrecht"],
+  ["Bartimeus","Utrecht"],["Wittenbergzorg","Utrecht"],
+  ["Universitair Medisch Centrum Utrecht","Utrecht"],["Zorgthuis Utrecht","Utrecht"],
+  ["Sonneburgh","Utrecht"],["Stichting Sint Joris","Utrecht"],
+  // Noord-Holland
+  ["MagentaZorg","Noord-Holland"],["Stichting Zorgbalans","Noord-Holland"],
+  ["Stichting Vivium","Noord-Holland"],["Amstelring","Noord-Holland"],
+  ["GGZ Noord-Holland","Noord-Holland"],["Reigersdaal","Noord-Holland"],
+  ["Stichting Sint Jacob","Noord-Holland"],["Kennemerland","Noord-Holland"],
+  ["Stichting DOCK","Noord-Holland"],["Stichting Evean","Noord-Holland"],
+  ["Zaanstreek","Noord-Holland"],["'t Gooi","Noord-Holland"],
+  // Zuid-Holland
+  ["Stichting Laurens","Zuid-Holland"],["Stichting Zorggroep Florence","Zuid-Holland"],
+  ["Stichting Zorggroep ENA","Zuid-Holland"],["Lelie Zorggroep","Zuid-Holland"],
+  ["Stichting De Hoop","Zuid-Holland"],["Academisch Ziekenhuis Leiden","Zuid-Holland"],
+  ["Huisartsenpraktijk De Hogewoerd","Zuid-Holland"],
+  // Noord-Brabant
+  ["Stichting Sovak","Noord-Brabant"],["Stichting ORO","Noord-Brabant"],
+  ["tanteLouise","Noord-Brabant"],["Sint Jozefoord","Noord-Brabant"],
+  ["Surplus Welzijn","Noord-Brabant"],["Catharina Ziekenhuis","Noord-Brabant"],
+  ["Stichting Archipel","Noord-Brabant"],["Stichting ASVZ","Noord-Brabant"],
+  // Zeeland
+  ["Admiraal De Ruyter","Zeeland"],["Stichting ZorgSaam","Zeeland"],
+  ["Noord-Beveland","Zeeland"],["Apotheek.*Oostburg","Zeeland"],
+  // Flevoland
+  ["Flevoziekenhuis","Flevoland"],["Stichting Zorggroep Apeldoorn en omst","Gelderland"],
+  // Limburg
+  ["Zuyderland","Limburg"],["Parkstad","Limburg"],["Zuid-Limburg","Limburg"],
+  ["SiRes Zorg","Limburg"],
+];
+
+// Computed at init from static STOZ data
+let MAP_PROV_AANVR  = {}; // province → Set<aanvrager_name>
+let MAP_PROV_COUNT  = {}; // province → count (with duplicates)
+let MAP_ZK_STATNAAM = {}; // ZK code → statnaam
+
+function MAP_buildProvData() {
+  const allAanvr = [];
+  Object.values(STOZ_VWS_DATA).forEach(stoz => {
+    (stoz.aanvragers || []).forEach(a => allAanvr.push(a.a));
+  });
+  Object.values(STOZ_IMPL_AANVR).forEach(list => {
+    list.forEach(a => allAanvr.push(a.a));
+  });
+
+  MAP_PROV_AANVR = {};
+  MAP_PROV_COUNT = {};
+  const seen = new Set();
+
+  allAanvr.forEach(naam => {
+    const naamLower = naam.toLowerCase();
+    for (const [kw, prov] of MAP_GEO_KW) {
+      if (naamLower.includes(kw.toLowerCase())) {
+        if (!MAP_PROV_AANVR[prov]) MAP_PROV_AANVR[prov] = new Set();
+        MAP_PROV_AANVR[prov].add(naam);
+        if (!seen.has(naam + '|' + prov)) {
+          seen.add(naam + '|' + prov);
+          MAP_PROV_COUNT[prov] = (MAP_PROV_COUNT[prov] || 0) + 1;
+        }
+        break;
+      }
+    }
+  });
+}
+
 function MAP_initKaart() {
   const pane = document.getElementById('map-pane');
   const w = pane.clientWidth, h = pane.clientHeight;
@@ -644,8 +732,14 @@ function MAP_initKaart() {
   const proj = d3.geoMercator().fitSize([w, h], PROV_GEOJSON);
   MAP_pathFn = d3.geoPath().projection(proj);
 
+  // Build static province data
+  MAP_buildProvData();
+
   // Zorgkantoor layer (TopoJSON)
   const geoZK = topojson.feature(TOPO_ZK, Object.values(TOPO_ZK.objects)[0]);
+  geoZK.features.forEach(f => {
+    MAP_ZK_STATNAAM[f.properties.statcode] = f.properties.statnaam;
+  });
   MAP_gZK = MAP_svgEl.append('g').attr('id','g-zk');
   MAP_gZK.selectAll('.zkshape')
     .data(geoZK.features).enter().append('path')
@@ -697,12 +791,17 @@ async function MAP_laadDbData() {
   } catch {
     const tot = Object.values(STOZ_ROUTE_DATA).reduce((s,v)=>s+v.total,0);
     document.getElementById('tb-s').textContent = tot + '+ STOZ';
+    MAP_kleurOpAantallen();
   }
 }
 
 function MAP_kleurOpAantallen() {
-  const counts = {};
-  MAP_dbData.forEach(p => { if(p.provincie) counts[p.provincie]=(counts[p.provincie]||0)+1; });
+  let counts = {};
+  if (MAP_dbData.length) {
+    MAP_dbData.forEach(p => { if(p.provincie) counts[p.provincie]=(counts[p.provincie]||0)+1; });
+  } else {
+    counts = MAP_PROV_COUNT;
+  }
   const max = Math.max(...Object.values(counts), 1);
   MAP_gProv.selectAll('.pshape').attr('opacity', function() {
     const naam = d3.select(this).attr('data-naam');
@@ -759,26 +858,27 @@ function MAP_resetKaart() {
   // Verwijder provincie-badges in DigiDex
   document.querySelectorAll('.prov-badge').forEach(el => el.remove());
   if (window.filterBron) filterBron('all');
-  if (MAP_dbData.length) MAP_kleurOpAantallen();
+  MAP_kleurOpAantallen();
 }
 
 function MAP_toonProvPanel(naam, zkSet) {
   const pp = document.getElementById('prov-panel');
-  const provP = MAP_dbData.filter(p => p.provincie === naam);
+  const provP = MAP_dbData.length ? MAP_dbData.filter(p => p.provincie === naam) : [];
+  const stozCount = provP.length || MAP_PROV_COUNT[naam] || 0;
   const routes = {};
   provP.forEach(p => { if(p.route) routes[p.route]=(routes[p.route]||0)+1; });
 
-  const zkObj = topojson.feature(TOPO_ZK, Object.values(TOPO_ZK.objects)[0]);
-  const zkNames = zkObj.features
-    .filter(f => zkSet.has(f.properties.statcode))
-    .map(f => ({code: f.properties.statcode, naam: f.properties.statnaam}));
+  const zkNames = (PROV_TO_ZK[naam] || []).map(code => ({
+    code, naam: MAP_ZK_STATNAAM[code] || code
+  }));
 
   const inkCount = provP.filter(p=>p.inkoper).length;
+  const stozLabel = MAP_dbData.length ? stozCount : `${stozCount}+ (schatting)`;
 
   pp.innerHTML = `
     <h3>${naam}</h3>
     <div style="margin-bottom:8px">
-      <span class="sp sp-s">STOZ ${provP.length}</span>
+      <span class="sp sp-s">STOZ ${stozLabel}</span>
       ${inkCount ? `<span class="sp sp-i">Inkoper ${inkCount}</span>` : ''}
       <span class="sp sp-z">ZonMw nationaal</span>
     </div>
@@ -800,19 +900,28 @@ function MAP_filterDdxProv(naam) {
   document.getElementById('ddx-ctx').textContent = naam;
   document.getElementById('ddx-scroll').scrollTop = 0;
 
-  // Markeer kaarten met aanvragers uit deze provincie
-  const lokaleAanvr = new Set(
-    MAP_dbData.filter(p=>p.provincie===naam && p.aanvrager)
-      .map(p=>p.aanvrager.split(' ').slice(0,3).join(' '))
-  );
-  document.querySelectorAll('.prov-badge').forEach(el=>el.remove());
-  if (!lokaleAanvr.size) return;
+  // Build search terms: aanvrager names + ZK statnamen for this province
+  const lokaleAanvr = MAP_dbData.length
+    ? new Set(MAP_dbData.filter(p=>p.provincie===naam && p.aanvrager)
+        .map(p=>p.aanvrager.split(' ').slice(0,3).join(' ')))
+    : (MAP_PROV_AANVR[naam] || new Set());
 
+  // ZK region names as additional geographic search terms
+  const zkTerms = (PROV_TO_ZK[naam] || [])
+    .map(c => MAP_ZK_STATNAAM[c])
+    .filter(Boolean)
+    .map(s => s.toLowerCase());
+
+  document.querySelectorAll('.prov-badge').forEach(el=>el.remove());
+
+  let firstMatch = null;
   document.querySelectorAll('.ddx-card').forEach(card => {
-    const tekst = card.textContent;
+    const tekst = card.textContent.toLowerCase();
     let match = false;
-    lokaleAanvr.forEach(a => { if(tekst.includes(a)) match = true; });
+    lokaleAanvr.forEach(a => { if (tekst.includes(a.toLowerCase())) match = true; });
+    if (!match) zkTerms.forEach(z => { if (tekst.includes(z)) match = true; });
     if (match) {
+      if (!firstMatch) firstMatch = card;
       const badge = document.createElement('div');
       badge.className = 'prov-badge';
       badge.style.cssText = `position:absolute;top:6px;right:6px;
@@ -824,16 +933,20 @@ function MAP_filterDdxProv(naam) {
       card.appendChild(badge);
     }
   });
+
+  if (firstMatch) firstMatch.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
 // ═══ TOOLTIP ════════════════════════════════════════════════
 function MAP_ttShow(ev, d) {
   const naam = d.properties.provincie;
   const pp = MAP_dbData.filter(p => p.provincie === naam);
+  const stozCount = pp.length || MAP_PROV_COUNT[naam] || 0;
+  const stozLabel = MAP_dbData.length ? stozCount : `${stozCount}+ aanvr.`;
   const zk = (PROV_TO_ZK[naam]||[]).length;
   document.getElementById('ktt').innerHTML = `
     <h4>${naam}</h4>
-    <div class="kr"><span class="kl">STOZ (in DB)</span><span class="kv">${pp.length}</span></div>
+    <div class="kr"><span class="kl">STOZ aanvragers</span><span class="kv">${stozLabel}</span></div>
     <div class="kr"><span class="kl">Met inkoper</span><span class="kv">${pp.filter(p=>p.inkoper).length}</span></div>
     <div class="kr"><span class="kl">Zorgkantoorregios</span><span class="kv">${zk}</span></div>
     <div class="kr"><span class="kl">ZonMw VVH</span><span class="kv">nationaal</span></div>
