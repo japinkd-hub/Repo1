@@ -2,7 +2,7 @@
 
 **Branch:** `claude/digidex-sector-filters-dvucy8` (v5 blijft onaangeroerd; v6 wordt een nieuw bestand)
 **Visuele voorzet:** `Mockup_DigiDex_v6_sectorfilter.html`
-**Status:** wacht op akkoord vóór implementatie
+**Status:** geïmplementeerd in `DigiDex_ZonMw_v6.html` (variant A, bevestigd door gebruiker)
 
 ## 1. Doel
 
