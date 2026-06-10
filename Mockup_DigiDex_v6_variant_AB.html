@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voorbeeld — punt 2: zijbalk-tabs vervangen of behouden?</title>
+<style>
+:root{
+  --dz-navy:#1b1e4c;--dz-purple:#7a00df;--dz-purple-pale:#f5f0fb;
+  --dz-muted:#6b6b6b;--dz-border:#ddd6e8;--dz-bg:#f7f5fc;
+  --s-vvt:#1b1e4c;--s-ggz:#7a00df;--s-ha:#0a6e50;--s-hap:#375454;--s-msz:#2d4a6e;--s-sd:#b85c00;
+  --s-ha-bg:#e1f5ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--dz-bg);color:#2a2a2a;padding:24px 16px 60px;max-width:900px;margin:0 auto}
+h1{font-size:1.2rem;color:var(--dz-navy);margin-bottom:6px}
+.intro{font-size:.78rem;color:var(--dz-muted);margin-bottom:26px;line-height:1.6}
+.variant{background:#fff;border:1.5px solid var(--dz-border);border-radius:16px;padding:18px;margin-bottom:30px}
+.variant h2{font-size:.95rem;color:var(--dz-navy);margin-bottom:4px}
+.variant .verdict{font-size:.72rem;margin-bottom:14px;padding:6px 12px;border-radius:8px;display:inline-block}
+.v-good{background:#e1f5ee;color:#0a6e50;border:1px solid #9fd8c2}
+.v-warn{background:#fdecea;color:#a4301f;border:1px solid #f0b5ad}
+
+/* knoppenbalk */
+.sector-bar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;background:#fbfaff;border:1.5px solid var(--dz-border);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.sec-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:20px;border:2px solid var(--dz-border);background:#fff;font-size:.74rem;font-weight:700;color:var(--dz-muted);cursor:default}
+.sec-btn .dot{width:8px;height:8px;border-radius:50%;background:var(--c,#999)}
+.sec-btn .cnt{background:#eee;border-radius:9px;padding:0 7px;font-size:.62rem}
+.sec-btn.active{background:var(--c,var(--dz-navy));border-color:var(--c,var(--dz-navy));color:#fff}
+.sec-btn.active .cnt{background:rgba(255,255,255,.25);color:#fff}
+.sec-btn.active .dot{background:#fff}
+.acad-toggle{margin-left:auto;border-style:dashed;font-size:.7rem}
+.sub-chips{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:7px 12px;margin-bottom:8px;border-left:3px solid var(--s-ha);background:var(--s-ha-bg);border-radius:0 10px 10px 0;font-size:.68rem}
+.sub-chips .lbl{font-weight:700;color:var(--dz-muted);font-size:.6rem;text-transform:uppercase}
+.sub-chip{padding:3px 11px;border-radius:13px;border:1.5px solid var(--dz-border);background:#fff;font-size:.66rem;font-weight:600;color:var(--dz-muted)}
+.sub-chip.active{background:var(--s-ha);border-color:var(--s-ha);color:#fff}
+
+/* machine + zijbalk zoals in v5 */
+.machine-wrap{display:flex;gap:12px;align-items:flex-start}
+.machine{flex:1;background:#fff;border:1.5px solid var(--dz-border);border-radius:14px;padding:14px;min-height:150px}
+.nav-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.nav-arrow{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--dz-border);background:#fff;color:var(--dz-muted)}
+.nav-counter{font-size:.68rem;font-weight:700;color:var(--dz-muted)}
+.fake-card{border:1.5px solid var(--dz-border);border-radius:10px;padding:13px}
+.fake-card h3{font-size:.85rem;color:var(--dz-navy);margin-bottom:4px}
+.fake-card p{font-size:.7rem;color:var(--dz-muted);line-height:1.5}
+
+.sector-tabs{display:flex;flex-direction:column;gap:5px;width:96px;flex-shrink:0}
+.sec-tab{padding:6px 10px;border-radius:9px;border:1.5px solid var(--dz-border);background:#fff;font-size:.64rem;font-weight:700;text-align:left;color:var(--dz-muted)}
+.sec-tab .tc{display:inline-block;background:var(--dz-border);border-radius:7px;padding:0 5px;font-size:.58rem;margin-left:3px}
+.sec-tab.active{background:var(--s-vvt);border-color:var(--s-vvt);color:#fff}
+.sec-tab.active .tc{background:rgba(255,255,255,.25);color:#fff}
+
+.callout{position:relative;border:2px solid #d23b2a;background:#fdecea;color:#7c281c;border-radius:10px;padding:9px 13px;font-size:.7rem;line-height:1.5;margin-top:12px}
+.note{font-size:.72rem;color:var(--dz-muted);line-height:1.6;margin-top:12px}
+.note b{color:var(--dz-navy)}
+.arrow-label{font-size:.62rem;font-weight:800;color:#d23b2a;text-align:center;margin-bottom:3px}
+</style>
+</head>
+<body>
+
+<h1>Punt 2 uitgelegd: wat zijn die "zijbalk-tabs" en wat gebeurt ermee?</h1>
+<p class="intro">
+In de huidige v5 staat <b>rechts naast de kaartmachine</b> een smal kolommetje knopjes
+(Alle / VVT / GGZ / HA / HAP / MSZ / SD) — dat is het huidige sectorfilter.
+De nieuwe knoppenbalk bovenaan filtert straks óók op sector. De vraag was:
+halen we het kolommetje weg (variant A) of laten we beide staan (variant B)?
+Hieronder zie je beide situaties.
+</p>
+
+<!-- ════════ VARIANT A ════════ -->
+<div class="variant">
+  <h2>Variant A — alleen de nieuwe knoppenbalk (aanbevolen)</h2>
+  <span class="verdict v-good">✓ Eén sectorfilter, geen verwarring; detailniveau (HA/HAP) blijft via sub-chips</span>
+
+  <div class="sector-bar">
+    <button class="sec-btn" style="--c:var(--dz-navy)"><span class="dot"></span>Alle <span class="cnt">42</span></button>
+    <button class="sec-btn" style="--c:var(--s-sd)"><span class="dot"></span>Sociaal domein <span class="cnt">9</span></button>
+    <button class="sec-btn active" style="--c:var(--s-ha)"><span class="dot"></span>1e lijn <span class="cnt">12</span></button>
+    <button class="sec-btn" style="--c:var(--s-msz)"><span class="dot"></span>2e/3e lijn <span class="cnt">7</span></button>
+    <button class="sec-btn" style="--c:var(--s-vvt)"><span class="dot"></span>VVT <span class="cnt">15</span></button>
+    <button class="sec-btn" style="--c:var(--s-ggz)"><span class="dot"></span>GGZ <span class="cnt">8</span></button>
+    <button class="sec-btn acad-toggle" style="--c:#6a1b9a"><span class="dot"></span>🎓 Academische link <span class="cnt">8</span></button>
+  </div>
+  <div class="sub-chips">
+    <span class="lbl">Verfijn 1e lijn:</span>
+    <span class="sub-chip active">Alles 12</span>
+    <span class="sub-chip">Huisartsen 11</span>
+    <span class="sub-chip">Huisartsenpost 3</span>
+  </div>
+
+  <div class="machine-wrap">
+    <div class="machine">
+      <div class="nav-bar"><button class="nav-arrow">←</button><div class="nav-counter">1 / 12</div><button class="nav-arrow">→</button></div>
+      <div class="fake-card"><h3>Digitale triage- en consultvoorbereiding</h3>
+      <p>De kaartmachine gebruikt nu de volle breedte. Het kolommetje rechts is weg —
+      alle sectorkeuzes zitten in de balk bovenaan.</p></div>
+    </div>
+    <!-- geen zijbalk -->
+  </div>
+
+  <p class="note"><b>Nieuw t.o.v. vorige voorstel:</b> de gestippelde knop
+  <b>🎓 Academische link</b> rechts in de balk is het 3e-lijnsfilter dat je noemde.
+  In de data hebben 8 processen een kennispartner van het type UMC/Universiteit
+  (o.a. UMC Groningen, LUMC). Deze knop is een <i>aan/uit-toggle die combineert met
+  elke sectorknop</i>: bijv. "2e/3e lijn" + 🎓 = ziekenhuisprocessen met academische
+  betrokkenheid. Zo blijft "2e/3e lijn" één knop voor zorgaanbieders, en is de
+  3e-lijns/universitaire dimensie tóch apart filterbaar.</p>
+</div>
+
+<!-- ════════ VARIANT B ════════ -->
+<div class="variant">
+  <h2>Variant B — knoppenbalk én het huidige kolommetje behouden</h2>
+  <span class="verdict v-warn">⚠ Twee sectorfilters tegelijk → tegenstrijdige keuzes mogelijk</span>
+
+  <div class="sector-bar">
+    <button class="sec-btn" style="--c:var(--dz-navy)"><span class="dot"></span>Alle <span class="cnt">42</span></button>
+    <button class="sec-btn" style="--c:var(--s-sd)"><span class="dot"></span>Sociaal domein <span class="cnt">9</span></button>
+    <button class="sec-btn active" style="--c:var(--s-ha)"><span class="dot"></span>1e lijn <span class="cnt">12</span></button>
+    <button class="sec-btn" style="--c:var(--s-msz)"><span class="dot"></span>2e/3e lijn <span class="cnt">7</span></button>
+    <button class="sec-btn" style="--c:var(--s-vvt)"><span class="dot"></span>VVT <span class="cnt">15</span></button>
+    <button class="sec-btn" style="--c:var(--s-ggz)"><span class="dot"></span>GGZ <span class="cnt">8</span></button>
+  </div>
+
+  <div class="machine-wrap">
+    <div class="machine">
+      <div class="nav-bar"><button class="nav-arrow">←</button><div class="nav-counter">? / ?</div><button class="nav-arrow">→</button></div>
+      <div class="fake-card"><h3>Welke kaarten tonen we nu?</h3>
+      <p>Bovenaan is <b>1e lijn</b> gekozen, maar rechts staat <b>VVT</b> actief.
+      Moet de teller dan 12 (1e lijn), 15 (VVT) of 0 (doorsnede) tonen?</p></div>
+    </div>
+    <div>
+      <div class="arrow-label">huidige zijbalk-tabs (v5) ↓</div>
+      <div class="sector-tabs">
+        <span class="sec-tab">Alle <span class="tc">42</span></span>
+        <span class="sec-tab active">VVT <span class="tc">15</span></span>
+        <span class="sec-tab">GGZ <span class="tc">8</span></span>
+        <span class="sec-tab">HA <span class="tc">11</span></span>
+        <span class="sec-tab">HAP <span class="tc">3</span></span>
+        <span class="sec-tab">MSZ <span class="tc">7</span></span>
+        <span class="sec-tab">SD <span class="tc">9</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>Het probleem:</b> hierboven zegt de knoppenbalk "1e lijn" terwijl de zijbalk "VVT" zegt.
+    Twee plekken die hetzelfde regelen geven tegenstrijdige signalen, dubbele tellers en
+    extra onderhoud. Het kan technisch wel (we kunnen ze synchroniseren: klik je boven,
+    dan springt de zijbalk mee), maar het voegt geen filtermogelijkheid toe die variant A
+    niet ook heeft — alleen drukte in het scherm.
+  </div>
+</div>
+
+<p class="intro" style="margin-bottom:0">
+<b>Kortom:</b> "zijbalk-tabs vervallen" betekent alleen dat het smalle kolommetje rechts
+verdwijnt; <u>geen enkele filtermogelijkheid gaat verloren</u> — HA en HAP blijven
+bereikbaar als sub-chips onder "1e lijn". Wil je toch beide houden, dan maken we ze
+gesynchroniseerd (variant B), maar mijn advies is variant A.
+</p>
+
+</body>
+</html>

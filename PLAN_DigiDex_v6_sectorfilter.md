@@ -30,10 +30,13 @@ sectorfiltersysteem overblijft.
 | VVT | VVT | nee |
 | GGZ | GGZ | nee |
 
-**Openstaand besluit (3e lijn):** de dataset onderscheidt geen aparte 3e lijn — alle
-ziekenhuiszorg valt onder MSZ. Voorstel: één gecombineerde knop "2e/3e lijn".
-Alternatief: aparte 3e-lijnknop met teller 0 (uitgegrijsd). GGZ is formeel ook
-2e-lijns maar blijft conform de opdracht een eigen knop.
+**Besloten (3e lijn):** één gecombineerde knop "2e/3e lijn" voor zorgaanbieders.
+De 3e-lijns/universitaire dimensie komt terug als aparte **🎓 Academische
+link**-toggle rechts in de knoppenbalk: een aan/uit-filter dat met élke sectorknop
+combineert en processen toont waarvan een gekoppelde STOZ-kennispartner van het
+type "Academisch ziekenhuis/UMC" of "Universiteit" is (8 processen in de huidige
+data, o.a. UMC Groningen en LUMC). GGZ is formeel ook 2e-lijns maar blijft
+conform de opdracht een eigen knop.
 
 ## 4. Ontwerp (zie mockup)
 
@@ -42,8 +45,13 @@ Alternatief: aparte 3e-lijnknop met teller 0 (uitgegrijsd). GGZ is formeel ook
 2. **Sub-chips** verschijnen alleen onder een actieve hoofdsector met meerdere
    subsectoren (nu alleen 1e lijn).
 3. **Gedrag:** single-select (consistent met huidig filtergedrag); "Alle sectoren" reset.
-   Sectorfilter × bronfilter combineren; tellers in beide balken rekenen live mee.
-4. **Zijbalk-tabs** vervallen (vervangen door de knoppenbalk).
+   Sectorfilter × bronfilter × 🎓-toggle combineren; tellers rekenen live mee.
+4. **🎓 Academische link**-toggle (gestippelde knop, rechts in de balk): filtert op
+   processen met UMC-/universiteitskennispartner in de gekoppelde STOZ-data;
+   combineert met elke sector- en bronkeuze.
+5. **Zijbalk-tabs** vervallen (vervangen door de knoppenbalk) — keuze ter
+   bevestiging, zie `Mockup_DigiDex_v6_variant_AB.html` voor het verschil
+   (variant A = zonder zijbalk, aanbevolen; variant B = beide, gesynchroniseerd).
 5. **URL-state:** `?sector=lijn1&sub=HA`; oude links met `?sector=VVT` blijven werken
    (legacy-codes worden naar de juiste hoofdsector gemapt).
 
