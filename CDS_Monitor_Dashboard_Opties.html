@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDS Monitor V2 — Top 5 Dashboard-opties</title>
+<style>
+  :root {
+    --rood: #e74c3c; --rood-licht: #fdecea;
+    --oranje: #f39c12; --oranje-licht: #fef9e7;
+    --groen: #27ae60; --groen-licht: #eafaf1;
+    --grijs: #95a5a6; --grijs-licht: #f2f3f4;
+    --blauw: #2980b9; --blauw-licht: #ebf5fb;
+    --paars: #8e44ad;
+    --donker: #2c3e50;
+    --tekst: #34495e;
+    --rand: #dfe6e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; color: var(--tekst); line-height: 1.6; }
+
+  .header { background: var(--donker); color: white; padding: 40px; text-align: center; }
+  .header h1 { font-size: 2rem; margin-bottom: 8px; }
+  .header p { opacity: 0.75; font-size: 0.95rem; }
+
+  .meta-bar { background: white; border-bottom: 2px solid var(--rand); padding: 16px 40px; display: flex; gap: 32px; flex-wrap: wrap; }
+  .meta-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--grijs); }
+  .meta-item strong { color: var(--donker); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+  .optie-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    margin-bottom: 48px;
+    overflow: hidden;
+  }
+  .optie-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 24px 32px; border-bottom: 2px solid var(--rand);
+  }
+  .optie-nr {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--donker); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 700; flex-shrink: 0;
+  }
+  .optie-titel h2 { font-size: 1.25rem; color: var(--donker); }
+  .optie-titel .tag {
+    display: inline-block; background: var(--blauw-licht); color: var(--blauw);
+    font-size: 0.75rem; font-weight: 600; padding: 2px 10px; border-radius: 20px; margin-top: 4px;
+  }
+  .optie-body { display: grid; grid-template-columns: 1fr 1.2fr; gap: 0; }
+  .optie-tekst { padding: 28px 32px; border-right: 2px solid var(--rand); }
+  .optie-tekst p { margin-bottom: 12px; font-size: 0.92rem; }
+  .optie-tekst ul { padding-left: 18px; font-size: 0.9rem; }
+  .optie-tekst li { margin-bottom: 6px; }
+  .optie-tekst .label { font-weight: 700; color: var(--donker); display: block; margin: 16px 0 4px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .optie-preview { padding: 24px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+
+  /* --- PREVIEW 1: GEO-KAART --- */
+  .geo-wrap { width: 100%; text-align: center; }
+  .geo-wrap h4 { font-size: 0.8rem; color: var(--grijs); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .geo-kaart { position: relative; display: inline-block; }
+  .geo-kaart svg { width: 260px; height: auto; }
+  .geo-legenda { display: flex; gap: 12px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+  .geo-legenda span { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; }
+  .geo-legenda .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .tooltip-kaart {
+    position: absolute; background: var(--donker); color: white; font-size: 0.7rem;
+    padding: 6px 10px; border-radius: 6px; white-space: nowrap;
+    top: 30px; right: -20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .tooltip-kaart::before { content: ''; position: absolute; left: -6px; top: 8px; border: 6px solid transparent; border-right-color: var(--donker); border-left: none; }
+
+  /* --- PREVIEW 2: HEATMAP --- */
+  .heatmap-wrap { width: 100%; overflow-x: auto; }
+  .heatmap-wrap h4 { font-size: 0.8rem; color: var(--grijs); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .heatmap { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+  .heatmap th { background: var(--donker); color: white; padding: 6px 8px; text-align: center; font-weight: 600; }
+  .heatmap th:first-child { text-align: left; width: 130px; }
+  .heatmap td { padding: 5px 8px; text-align: center; border: 1px solid var(--rand); font-size: 0.68rem; font-weight: 600; }
+  .heatmap td:first-child { text-align: left; font-weight: 400; color: var(--donker); background: white; }
+  .hm-groen { background: #d5f5e3; color: #1e8449; }
+  .hm-geel  { background: #fef9e7; color: #b7770d; }
+  .hm-rood  { background: #fdecea; color: #c0392b; }
+  .hm-grijs { background: #f2f3f4; color: #7f8c8d; }
+  .pct-bar { height: 8px; border-radius: 4px; background: var(--rand); overflow: hidden; margin-top: 2px; }
+  .pct-fill { height: 100%; border-radius: 4px; }
+
+  /* --- PREVIEW 3: SCORECARD --- */
+  .scorecard-wrap { width: 100%; }
+  .scorecard-wrap h4 { font-size: 0.8rem; color: var(--grijs); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .kpi-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+  .kpi-tile { background: white; border-radius: 8px; padding: 12px 14px; border: 2px solid var(--rand); }
+  .kpi-tile .kpi-val { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+  .kpi-tile .kpi-lbl { font-size: 0.68rem; color: var(--grijs); margin-top: 3px; }
+  .kpi-tile.groen { border-color: var(--groen); }
+  .kpi-tile.groen .kpi-val { color: var(--groen); }
+  .kpi-tile.rood { border-color: var(--rood); }
+  .kpi-tile.rood .kpi-val { color: var(--rood); }
+  .kpi-tile.oranje { border-color: var(--oranje); }
+  .kpi-tile.oranje .kpi-val { color: var(--oranje); }
+  .kpi-tile.blauw { border-color: var(--blauw); }
+  .kpi-tile.blauw .kpi-val { color: var(--blauw); }
+  .tab-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .tab-btn { padding: 5px 12px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; background: var(--rand); color: var(--grijs); cursor: default; }
+  .tab-btn.actief { background: var(--donker); color: white; }
+  .mini-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .mini-bar-label { font-size: 0.68rem; width: 90px; flex-shrink: 0; }
+  .mini-bar { flex: 1; height: 10px; border-radius: 5px; background: var(--rand); overflow: hidden; }
+  .mini-bar-fill { height: 100%; border-radius: 5px; }
+
+  /* --- PREVIEW 4: NETWERK --- */
+  .netwerk-wrap { width: 100%; text-align: center; }
+  .netwerk-wrap h4 { font-size: 0.8rem; color: var(--grijs); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .netwerk-wrap svg { width: 100%; max-width: 380px; height: 220px; }
+
+  /* --- PREVIEW 5: PORTAAL --- */
+  .portaal-wrap { width: 100%; }
+  .portaal-wrap h4 { font-size: 0.8rem; color: var(--grijs); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .portaal-frame { background: white; border-radius: 10px; border: 2px solid var(--rand); overflow: hidden; font-size: 0.72rem; }
+  .portaal-topbar { background: var(--donker); color: white; padding: 7px 12px; display: flex; align-items: center; gap: 8px; }
+  .portaal-topbar span { font-size: 0.75rem; opacity: 0.9; }
+  .portaal-user { margin-left: auto; background: var(--blauw); border-radius: 12px; padding: 2px 10px; font-size: 0.68rem; }
+  .portaal-content { display: grid; grid-template-columns: 1fr 1fr; }
+  .portaal-form { padding: 12px; border-right: 1px solid var(--rand); }
+  .form-label { font-weight: 700; color: var(--donker); font-size: 0.68rem; margin-bottom: 3px; display: block; }
+  .form-input { width: 100%; border: 1px solid var(--rand); border-radius: 5px; padding: 5px 8px; font-size: 0.68rem; color: var(--tekst); background: #f8f9fa; margin-bottom: 8px; }
+  .form-select { width: 100%; border: 1px solid var(--blauw); border-radius: 5px; padding: 5px 8px; font-size: 0.68rem; color: var(--blauw); background: var(--blauw-licht); margin-bottom: 8px; font-weight: 600; }
+  .form-btn { width: 100%; background: var(--groen); color: white; border: none; border-radius: 6px; padding: 7px; font-size: 0.72rem; font-weight: 700; cursor: default; margin-top: 4px; }
+  .portaal-dash { padding: 12px; background: #f8f9fa; }
+  .dash-title { font-weight: 700; font-size: 0.7rem; color: var(--donker); margin-bottom: 8px; }
+  .dash-mini-kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 8px; }
+  .dash-kpi-tile { background: white; border-radius: 5px; padding: 6px 8px; border: 1px solid var(--rand); }
+  .dash-kpi-val { font-size: 1.1rem; font-weight: 800; }
+  .dash-kpi-lbl { font-size: 0.6rem; color: var(--grijs); }
+  .dash-status-row { display: flex; gap: 6px; margin-bottom: 5px; align-items: center; }
+  .dash-status-lbl { font-size: 0.62rem; width: 65px; flex-shrink: 0; }
+  .dash-status-bar { flex: 1; height: 8px; border-radius: 4px; background: var(--rand); overflow: hidden; }
+  .dash-status-fill { height: 100%; border-radius: 4px; }
+  .dash-update { font-size: 0.6rem; color: var(--groen); margin-top: 6px; font-weight: 600; }
+
+  /* Vergelijkingstabel */
+  .vergelijk-card { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 32px; margin-bottom: 48px; }
+  .vergelijk-card h2 { font-size: 1.2rem; color: var(--donker); margin-bottom: 20px; }
+  .vergelijk-tabel { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .vergelijk-tabel th { background: var(--donker); color: white; padding: 10px 14px; text-align: left; font-weight: 600; }
+  .vergelijk-tabel td { padding: 10px 14px; border-bottom: 1px solid var(--rand); vertical-align: top; }
+  .vergelijk-tabel tr:last-child td { border-bottom: none; }
+  .vergelijk-tabel tr:hover td { background: #f8f9fa; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; font-weight: 600; }
+  .badge-groen { background: var(--groen-licht); color: var(--groen); }
+  .badge-oranje { background: var(--oranje-licht); color: var(--oranje); }
+  .badge-rood { background: var(--rood-licht); color: var(--rood); }
+
+  .footer { text-align: center; color: var(--grijs); font-size: 0.8rem; padding: 24px; border-top: 1px solid var(--rand); background: white; }
+
+  @media (max-width: 720px) {
+    .optie-body { grid-template-columns: 1fr; }
+    .optie-tekst { border-right: none; border-bottom: 2px solid var(--rand); }
+    .kpi-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>CDS Monitor V2 — Top 5 Dashboard-opties</h1>
+  <p>Gebaseerd op analyse van 31 IZA-regio's · 4 domeinen · Datum: 14 juni 2026</p>
+</div>
+
+<div class="meta-bar">
+  <div class="meta-item">📍 <strong>31</strong> IZA-regio's</div>
+  <div class="meta-item">📊 <strong>4</strong> domeinen (Datasamenwerking, PZP, Zorgcoördinatie, ICM)</div>
+  <div class="meta-item">🏥 Zorgverzekeraars: <strong>CZ · VGZ · Menzis · Zilveren Kruis · DSW</strong></div>
+  <div class="meta-item">🗺️ ROAZ-regio's: <strong>8</strong></div>
+</div>
+
+<div class="container">
+
+<!-- ===================== OPTIE 1 ===================== -->
+<div class="optie-card">
+  <div class="optie-header">
+    <div class="optie-nr">1</div>
+    <div class="optie-titel">
+      <h2>Interactieve Nederland-kaart (geo-dashboard)</h2>
+      <span class="tag">Aanbevolen voor: bestuurlijke &amp; politieke rapportage</span>
+    </div>
+  </div>
+  <div class="optie-body">
+    <div class="optie-tekst">
+      <p>Een klikbare kaart van Nederland met alle 31 IZA-regio's, RAG-gekleurd per domein. Klik op een regio voor een detail pop-up met status op alle 4 domeinen.</p>
+      <span class="label">Filtermogelijkheden</span>
+      <ul>
+        <li>Per zorgverzekeraar (CZ / VGZ / Menzis / Zilveren Kruis)</li>
+        <li>Per ROAZ-regio</li>
+        <li>Per dataplatform (HinQ, KPN HEX, VIPPLive, Boards…)</li>
+      </ul>
+      <span class="label">Kleurcodering</span>
+      <ul>
+        <li>🟢 Groen — Implementatie / Actief</li>
+        <li>🟡 Geel — Verkenning / Pilot</li>
+        <li>🔴 Rood — Niet gestart</li>
+        <li>⚪ Grijs — Onbekend</li>
+      </ul>
+      <span class="label">Technische opties</span>
+      <ul>
+        <li>Power BI + Shape Map visual</li>
+        <li>Tableau + GeoJSON</li>
+        <li>Plotly Dash (Python)</li>
+      </ul>
+      <span class="label">Meerwaarde</span>
+      <p>Met één oogopslag ziet VWS/CDS waar de witte vlekken in Nederland zitten.</p>
+    </div>
+    <div class="optie-preview">
+      <div class="geo-wrap">
+        <h4>Voorbeeld — Nederland-kaart IZA-regio's</h4>
+        <div class="geo-kaart">
+          <!-- Vereenvoudigde NL kaart als SVG -->
+          <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
+            <!-- Achtergrond water -->
+            <rect width="200" height="260" fill="#d6eaf8" rx="4"/>
+            <!-- Regio-vormen (gestileerd) -->
+            <!-- Groningen -->
+            <rect x="120" y="12" width="55" height="38" rx="4" fill="#27ae60" stroke="white" stroke-width="1.5"/>
+            <text x="148" y="34" text-anchor="middle" font-size="6" fill="white" font-weight="bold">Groningen</text>
+            <!-- Friesland -->
+            <rect x="60" y="12" width="55" height="38" rx="4" fill="#95a5a6" stroke="white" stroke-width="1.5"/>
+            <text x="87" y="34" text-anchor="middle" font-size="6" fill="white" font-weight="bold">Friesland</text>
+            <!-- Drenthe -->
+            <rect x="120" y="54" width="55" height="32" rx="4" fill="#95a5a6" stroke="white" stroke-width="1.5"/>
+            <text x="148" y="73" text-anchor="middle" font-size="6" fill="white" font-weight="bold">Drenthe</text>
+            <!-- Overijssel / Twente / Zwolle -->
+            <rect x="115" y="90" width="60" height="32" rx="4" fill="#f39c12" stroke="white" stroke-width="1.5"/>
+            <text x="145" y="109" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">Twente/Zwolle</text>
+            <!-- NH-Noord -->
+            <rect x="25" y="54" width="42" height="32" rx="4" fill="#95a5a6" stroke="white" stroke-width="1.5"/>
+            <text x="46" y="73" text-anchor="middle" font-size="5" fill="white" font-weight="bold">NH-Noord</text>
+            <!-- Flevoland -->
+            <rect x="71" y="90" width="38" height="28" rx="4" fill="#95a5a6" stroke="white" stroke-width="1.5"/>
+            <text x="90" y="107" text-anchor="middle" font-size="5" fill="white" font-weight="bold">Flevoland</text>
+            <!-- Amsterdam -->
+            <rect x="30" y="90" width="36" height="28" rx="4" fill="#95a5a6" stroke="white" stroke-width="1.5"/>
+            <text x="48" y="107" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">AMS</text>
+            <!-- Utrecht -->
+            <rect x="70" y="122" width="42" height="28" rx="4" fill="#f39c12" stroke="white" stroke-width="1.5"/>
+            <text x="91" y="139" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">Utrecht</text>
+            <!-- Gelderland / Arnhem -->
+            <rect x="116" y="126" width="54" height="28" rx="4" fill="#f39c12" stroke="white" stroke-width="1.5"/>
+            <text x="143" y="143" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">Arnhem / AZO</text>
+            <!-- Haaglanden -->
+            <rect x="20" y="122" width="44" height="28" rx="4" fill="#27ae60" stroke="white" stroke-width="1.5"/>
+            <text x="42" y="139" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">Haaglanden</text>
+            <!-- Rotterdam -->
+            <rect x="25" y="154" width="40" height="26" rx="4" fill="#f39c12" stroke="white" stroke-width="1.5"/>
+            <text x="45" y="170" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">Rotterdam</text>
+            <!-- Zeeland -->
+            <rect x="20" y="184" width="44" height="26" rx="4" fill="#e74c3c" stroke="white" stroke-width="1.5"/>
+            <text x="42" y="200" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">Zeeland</text>
+            <!-- West-Brabant -->
+            <rect x="68" y="184" width="48" height="26" rx="4" fill="#f39c12" stroke="white" stroke-width="1.5"/>
+            <text x="92" y="200" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">West-Brabant</text>
+            <!-- Noord-Oost Brabant -->
+            <rect x="120" y="184" width="48" height="26" rx="4" fill="#f39c12" stroke="white" stroke-width="1.5"/>
+            <text x="144" y="200" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">NOB</text>
+            <!-- Limburg -->
+            <rect x="140" y="214" width="35" height="28" rx="4" fill="#27ae60" stroke="white" stroke-width="1.5"/>
+            <text x="157" y="231" text-anchor="middle" font-size="5.5" fill="white" font-weight="bold">Limburg</text>
+            <!-- Tooltip -->
+            <rect x="65" y="122" width="0" height="0" fill="none"/>
+          </svg>
+          <div class="tooltip-kaart">
+            <strong>Haaglanden</strong><br/>
+            ICM: Niet gestart<br/>
+            Zorgcoörd: Koploper ✓<br/>
+            Platform: HinQ (pilot)
+          </div>
+        </div>
+        <div class="geo-legenda">
+          <span><span class="dot" style="background:#27ae60"></span>Implementatie</span>
+          <span><span class="dot" style="background:#f39c12"></span>Verkenning</span>
+          <span><span class="dot" style="background:#e74c3c"></span>Niet gestart</span>
+          <span><span class="dot" style="background:#95a5a6"></span>Onbekend</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== OPTIE 2 ===================== -->
+<div class="optie-card">
+  <div class="optie-header">
+    <div class="optie-nr">2</div>
+    <div class="optie-titel">
+      <h2>Multidimensionele RAG-heatmap</h2>
+      <span class="tag">Aanbevolen voor: intern programmamanagement</span>
+    </div>
+  </div>
+  <div class="optie-body">
+    <div class="optie-tekst">
+      <p>Matrix-weergave: <strong>31 regio's (rijen) × 4 domeinen + KPI's (kolommen)</strong>. Elke cel toont status én een volledigheidspercentage. Klik op een cel voor drilldown.</p>
+      <span class="label">Extra's</span>
+      <ul>
+        <li>Automatisch berekend "Datavolledigheid %" per regio</li>
+        <li>Sorteerbaar op slechtst-scorende regio's bovenaan</li>
+        <li>Exporteerbaar naar PDF/Excel voor overleg</li>
+        <li>Kleurcodering direct zichtbaar zonder toelichting</li>
+      </ul>
+      <span class="label">Technische opties</span>
+      <ul>
+        <li>Power BI Matrix visual</li>
+        <li>Google Looker Studio</li>
+        <li>Streamlit (Python)</li>
+      </ul>
+      <span class="label">Meerwaarde</span>
+      <p>Directe prioritering — in één tabel zichtbaar welke regio's de meeste aandacht nodig hebben.</p>
+    </div>
+    <div class="optie-preview">
+      <div class="heatmap-wrap">
+        <h4>Voorbeeld — RAG Heatmap (uitsnede 8 regio's)</h4>
+        <table class="heatmap">
+          <thead>
+            <tr>
+              <th>IZA-regio</th>
+              <th>Datasamen-<br/>werking</th>
+              <th>Zorgcoörd.</th>
+              <th>ICM</th>
+              <th>PZP</th>
+              <th>Volledig-<br/>heid</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Haaglanden</td>
+              <td class="hm-groen">Impl.</td>
+              <td class="hm-groen">Koploper</td>
+              <td class="hm-rood">Niet gest.</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td>
+                <div>62%</div>
+                <div class="pct-bar"><div class="pct-fill" style="width:62%;background:#f39c12"></div></div>
+              </td>
+            </tr>
+            <tr>
+              <td>Zuid-Holland N.</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-groen">Koploper</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td>
+                <div>28%</div>
+                <div class="pct-bar"><div class="pct-fill" style="width:28%;background:#e74c3c"></div></div>
+              </td>
+            </tr>
+            <tr>
+              <td>Rotterdam</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-geel">Verkenning</td>
+              <td class="hm-geel">Verkenning</td>
+              <td class="hm-grijs">—</td>
+              <td>
+                <div>41%</div>
+                <div class="pct-bar"><div class="pct-fill" style="width:41%;background:#e74c3c"></div></div>
+              </td>
+            </tr>
+            <tr>
+              <td>Midden-Holland</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-groen">Koploper</td>
+              <td class="hm-geel">Verkenning</td>
+              <td class="hm-geel">KPN HEX</td>
+              <td>
+                <div>55%</div>
+                <div class="pct-bar"><div class="pct-fill" style="width:55%;background:#f39c12"></div></div>
+              </td>
+            </tr>
+            <tr>
+              <td>'t Gooi</td>
+              <td class="hm-groen">Implementatie</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-geel">VIPPLive</td>
+              <td>
+                <div>38%</div>
+                <div class="pct-bar"><div class="pct-fill" style="width:38%;background:#e74c3c"></div></div>
+              </td>
+            </tr>
+            <tr>
+              <td>Noord-Oost Br.</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-geel">Verkenning</td>
+              <td class="hm-geel">KPN HEX</td>
+              <td>
+                <div>31%</div>
+                <div class="pct-bar"><div class="pct-fill" style="width:31%;background:#e74c3c"></div></div>
+              </td>
+            </tr>
+            <tr>
+              <td>Arnhem</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-geel">AZO</td>
+              <td class="hm-geel">Verkenning</td>
+              <td class="hm-grijs">—</td>
+              <td>
+                <div>44%</div>
+                <div class="pct-bar"><div class="pct-fill" style="width:44%;background:#e74c3c"></div></div>
+              </td>
+            </tr>
+            <tr>
+              <td>Friesland</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-grijs">Onbekend</td>
+              <td class="hm-grijs">—</td>
+              <td>
+                <div>12%</div>
+                <div class="pct-bar"><div class="pct-fill" style="width:12%;background:#e74c3c"></div></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== OPTIE 3 ===================== -->
+<div class="optie-card">
+  <div class="optie-header">
+    <div class="optie-nr">3</div>
+    <div class="optie-titel">
+      <h2>Gelaagd KPI Scorecard Dashboard</h2>
+      <span class="tag">Aanbevolen voor: stuurgroeprapportage</span>
+    </div>
+  </div>
+  <div class="optie-body">
+    <div class="optie-tekst">
+      <p>Drie lagen in één dashboard: KPI-tiles bovenaan, domein-tabs en een regio-selectiepanel.</p>
+      <span class="label">Drie lagen</span>
+      <ul>
+        <li><strong>Laag 1:</strong> KPI-tiles — % gestart, # koplopers, % contactpersonen bekend</li>
+        <li><strong>Laag 2:</strong> Domein-tabs — Datasamenwerking / ICM / Zorgcoördinatie / PZP</li>
+        <li><strong>Laag 3:</strong> Regio-filterpanel — zoom in op één of meerdere regio's</li>
+      </ul>
+      <span class="label">Aanvulling</span>
+      <ul>
+        <li>Zodra datum-kolom toegevoegd: trendlijn per maand</li>
+        <li>Exporteerbaar als PDF-rapport voor stuurgroep</li>
+      </ul>
+      <span class="label">Technische opties</span>
+      <ul>
+        <li>Power BI, Tableau, of Grafana</li>
+      </ul>
+      <span class="label">Meerwaarde</span>
+      <p>Stuurt op beweging — ideaal als vaste slide in een maandelijkse stuurgroeprapportage.</p>
+    </div>
+    <div class="optie-preview">
+      <div class="scorecard-wrap">
+        <h4>Voorbeeld — KPI Scorecard (live mockup)</h4>
+        <div class="kpi-row">
+          <div class="kpi-tile groen">
+            <div class="kpi-val">10%</div>
+            <div class="kpi-lbl">Regio's actief / gestart</div>
+          </div>
+          <div class="kpi-tile blauw">
+            <div class="kpi-val">6</div>
+            <div class="kpi-lbl">Koplopers Zorgcoördinatie</div>
+          </div>
+          <div class="kpi-tile rood">
+            <div class="kpi-val">19%</div>
+            <div class="kpi-lbl">Contactpersonen ingevuld</div>
+          </div>
+          <div class="kpi-tile oranje">
+            <div class="kpi-val">21</div>
+            <div class="kpi-lbl">Actieve dataplatforms</div>
+          </div>
+        </div>
+        <div class="tab-row">
+          <div class="tab-btn actief">Datasamenwerking</div>
+          <div class="tab-btn">Zorgcoörd.</div>
+          <div class="tab-btn">ICM</div>
+          <div class="tab-btn">PZP</div>
+        </div>
+        <div class="mini-bar-row">
+          <div class="mini-bar-label">ID &amp; Authenticatie</div>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:0%;background:#e74c3c"></div></div>
+          <span style="font-size:0.68rem;color:#e74c3c">0%</span>
+        </div>
+        <div class="mini-bar-row">
+          <div class="mini-bar-label">Autorisatie</div>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:0%;background:#e74c3c"></div></div>
+          <span style="font-size:0.68rem;color:#e74c3c">0%</span>
+        </div>
+        <div class="mini-bar-row">
+          <div class="mini-bar-label">Toestemming</div>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:0%;background:#e74c3c"></div></div>
+          <span style="font-size:0.68rem;color:#e74c3c">0%</span>
+        </div>
+        <div class="mini-bar-row">
+          <div class="mini-bar-label">Dataplatform</div>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:68%;background:#f39c12"></div></div>
+          <span style="font-size:0.68rem;color:#f39c12">68%</span>
+        </div>
+        <div class="mini-bar-row">
+          <div class="mini-bar-label">Contactpersoon</div>
+          <div class="mini-bar"><div class="mini-bar-fill" style="width:19%;background:#e74c3c"></div></div>
+          <span style="font-size:0.68rem;color:#e74c3c">19%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== OPTIE 4 ===================== -->
+<div class="optie-card">
+  <div class="optie-header">
+    <div class="optie-nr">4</div>
+    <div class="optie-titel">
+      <h2>Platform-ecosysteem Netwerk-visualisatie</h2>
+      <span class="tag">Aanbevolen voor: strategische platform-analyse</span>
+    </div>
+  </div>
+  <div class="optie-body">
+    <div class="optie-tekst">
+      <p>Sankey-diagram of netwerk-grafiek die de relatie toont tussen <strong>dataplatforms en regio's</strong>. Lijndikte = aantal use cases per platform (PZP / Zorgcoördinatie / 360-beeld).</p>
+      <span class="label">Wat je ziet</span>
+      <ul>
+        <li>Welke platforms dominant zijn en waar samenwerking mogelijk is</li>
+        <li>Welke regio's hetzelfde platform gebruiken (schaalvoordeel)</li>
+        <li>Waar overlap of fragmentatie ontstaat</li>
+      </ul>
+      <span class="label">Filtermogelijkheden</span>
+      <ul>
+        <li>Per zorgverzekeraar</li>
+        <li>Per use case (PZP / Zorgcoörd / 360-viewer)</li>
+      </ul>
+      <span class="label">Technische opties</span>
+      <ul>
+        <li>D3.js (Sankey plugin)</li>
+        <li>Plotly Dash (Python)</li>
+        <li>Power BI Sankey custom visual</li>
+      </ul>
+      <span class="label">Meerwaarde</span>
+      <p>Strategisch inzicht — welke platforms winnen terrein, waar zijn schaalkansen?</p>
+    </div>
+    <div class="optie-preview">
+      <div class="netwerk-wrap">
+        <h4>Voorbeeld — Sankey: Platforms → Regio's (per use case)</h4>
+        <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Platforms links -->
+          <rect x="8" y="10" width="80" height="22" rx="4" fill="#2980b9"/>
+          <text x="48" y="25" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">HinQ</text>
+
+          <rect x="8" y="42" width="80" height="22" rx="4" fill="#8e44ad"/>
+          <text x="48" y="57" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">KPN HEX</text>
+
+          <rect x="8" y="74" width="80" height="22" rx="4" fill="#27ae60"/>
+          <text x="48" y="89" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">VIPPLive</text>
+
+          <rect x="8" y="106" width="80" height="22" rx="4" fill="#e67e22"/>
+          <text x="48" y="121" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">Boards/ZD</text>
+
+          <rect x="8" y="138" width="80" height="22" rx="4" fill="#16a085"/>
+          <text x="48" y="153" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">Digizorg</text>
+
+          <rect x="8" y="170" width="80" height="22" rx="4" fill="#c0392b"/>
+          <text x="48" y="185" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">Overig</text>
+
+          <!-- Regio's rechts -->
+          <rect x="312" y="8"  width="80" height="16" rx="3" fill="#2c3e50" opacity="0.85"/>
+          <text x="352" y="20" text-anchor="middle" font-size="6.5" fill="white">Zwolle</text>
+
+          <rect x="312" y="30" width="80" height="16" rx="3" fill="#2c3e50" opacity="0.85"/>
+          <text x="352" y="42" text-anchor="middle" font-size="6.5" fill="white">Noord-Holland N.</text>
+
+          <rect x="312" y="52" width="80" height="16" rx="3" fill="#2c3e50" opacity="0.85"/>
+          <text x="352" y="64" text-anchor="middle" font-size="6.5" fill="white">Haaglanden</text>
+
+          <rect x="312" y="74" width="80" height="16" rx="3" fill="#2c3e50" opacity="0.85"/>
+          <text x="352" y="86" text-anchor="middle" font-size="6.5" fill="white">Midden-Holland</text>
+
+          <rect x="312" y="96" width="80" height="16" rx="3" fill="#2c3e50" opacity="0.85"/>
+          <text x="352" y="108" text-anchor="middle" font-size="6.5" fill="white">Noord-Oost Br.</text>
+
+          <rect x="312" y="118" width="80" height="16" rx="3" fill="#2c3e50" opacity="0.85"/>
+          <text x="352" y="130" text-anchor="middle" font-size="6.5" fill="white">'t Gooi</text>
+
+          <rect x="312" y="140" width="80" height="16" rx="3" fill="#2c3e50" opacity="0.85"/>
+          <text x="352" y="152" text-anchor="middle" font-size="6.5" fill="white">Zeeland</text>
+
+          <rect x="312" y="162" width="80" height="16" rx="3" fill="#2c3e50" opacity="0.85"/>
+          <text x="352" y="174" text-anchor="middle" font-size="6.5" fill="white">Zuid-Hollandse Eil.</text>
+
+          <rect x="312" y="184" width="80" height="16" rx="3" fill="#2c3e50" opacity="0.85"/>
+          <text x="352" y="196" text-anchor="middle" font-size="6.5" fill="white">West-Brabant</text>
+
+          <!-- Lijnen HinQ (blauw) -->
+          <path d="M88 21 C200 21 200 16 312 16" stroke="#2980b9" stroke-width="4" fill="none" opacity="0.6"/>
+          <path d="M88 21 C200 21 200 38 312 38" stroke="#2980b9" stroke-width="3" fill="none" opacity="0.6"/>
+          <path d="M88 21 C200 21 200 60 312 60" stroke="#2980b9" stroke-width="2" fill="none" opacity="0.6"/>
+
+          <!-- Lijnen KPN HEX (paars) -->
+          <path d="M88 53 C200 53 200 82 312 82" stroke="#8e44ad" stroke-width="4" fill="none" opacity="0.6"/>
+          <path d="M88 53 C200 53 200 104 312 104" stroke="#8e44ad" stroke-width="3" fill="none" opacity="0.6"/>
+
+          <!-- Lijnen VIPPLive (groen) -->
+          <path d="M88 85 C200 85 200 126 312 126" stroke="#27ae60" stroke-width="4" fill="none" opacity="0.6"/>
+          <path d="M88 85 C200 85 200 197 312 197" stroke="#27ae60" stroke-width="2" fill="none" opacity="0.6"/>
+
+          <!-- Lijnen Boards (oranje) -->
+          <path d="M88 117 C200 117 200 148 312 148" stroke="#e67e22" stroke-width="3" fill="none" opacity="0.6"/>
+
+          <!-- Lijnen Digizorg (teal) -->
+          <path d="M88 149 C200 149 200 170 312 170" stroke="#16a085" stroke-width="4" fill="none" opacity="0.6"/>
+          <path d="M88 149 C200 149 200 192 312 192" stroke="#16a085" stroke-width="3" fill="none" opacity="0.6"/>
+
+          <!-- Legenda -->
+          <rect x="155" y="202" width="8" height="8" rx="2" fill="#2980b9"/>
+          <text x="167" y="210" font-size="6" fill="#555">= 1 use case</text>
+          <rect x="220" y="202" width="14" height="8" rx="2" fill="#2980b9"/>
+          <text x="238" y="210" font-size="6" fill="#555">= 3 use cases</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== OPTIE 5 ===================== -->
+<div class="optie-card">
+  <div class="optie-header">
+    <div class="optie-nr">5</div>
+    <div class="optie-titel">
+      <h2>Collaboratief Live Data-portaal</h2>
+      <span class="tag">Aanbevolen voor: structurele &amp; duurzame oplossing</span>
+    </div>
+  </div>
+  <div class="optie-body">
+    <div class="optie-tekst">
+      <p>Combineer data-invoer en monitoring in één portaal. Elke regio-eigenaar logt in en ziet <strong>alleen zijn eigen regio</strong>. Het dashboard updatet direct na opslaan.</p>
+      <span class="label">Werkwijze</span>
+      <ul>
+        <li>Pre-ingevuld formulier op basis van wat al bekend is</li>
+        <li>Invuller vult alleen lege velden aan (±10 min per regio)</li>
+        <li>Automatische herinnering bij ontbrekende of verouderde data</li>
+        <li>Versiebeheer en auditlog ingebakken</li>
+      </ul>
+      <span class="label">Technische opties</span>
+      <ul>
+        <li>Microsoft Power Apps (form) + SharePoint/Dataverse (backend)</li>
+        <li>Embedded Power BI dashboard (live)</li>
+        <li>Volledig binnen Microsoft 365 — geen nieuwe tooling nodig</li>
+      </ul>
+      <span class="label">Meerwaarde</span>
+      <p>Lost het datakwaliteitsprobleem structureel op. Geen handmatige Excel-rondes meer nodig. Regio's zijn eigenaar van hun eigen data.</p>
+    </div>
+    <div class="optie-preview">
+      <div class="portaal-wrap">
+        <h4>Voorbeeld — Regio-portaal (data-invoer + live dashboard)</h4>
+        <div class="portaal-frame">
+          <div class="portaal-topbar">
+            <span>🏥 CDS Monitor — Regio Portaal</span>
+            <div class="portaal-user">👤 Haaglanden (CZ)</div>
+          </div>
+          <div class="portaal-content">
+            <div class="portaal-form">
+              <div style="font-weight:700;font-size:0.75rem;color:#2c3e50;margin-bottom:8px;">📝 Jouw regio invullen</div>
+              <label class="form-label">IZA-regio</label>
+              <input class="form-input" value="Haaglanden" readonly/>
+              <label class="form-label">Dataplatform</label>
+              <input class="form-input" value="HinQ (pilot)" readonly/>
+              <label class="form-label">Status initiatief ⚠️ ontbreekt</label>
+              <select class="form-select">
+                <option>▸ Selecteer status...</option>
+                <option>Niet gestart</option>
+                <option>Verkenning</option>
+                <option>Implementatie</option>
+              </select>
+              <label class="form-label">ICM actief? ⚠️ ontbreekt</label>
+              <select class="form-select">
+                <option>▸ Ja / Nee / Onbekend</option>
+              </select>
+              <button class="form-btn">✓ Opslaan &amp; dashboard bijwerken</button>
+            </div>
+            <div class="portaal-dash">
+              <div class="dash-title">📊 Jouw regio — live status</div>
+              <div class="dash-mini-kpi">
+                <div class="dash-kpi-tile">
+                  <div class="dash-kpi-val" style="color:#27ae60">62%</div>
+                  <div class="dash-kpi-lbl">Volledigheid</div>
+                </div>
+                <div class="dash-kpi-tile">
+                  <div class="dash-kpi-val" style="color:#2980b9">3/4</div>
+                  <div class="dash-kpi-lbl">Domeinen ingevuld</div>
+                </div>
+              </div>
+              <div class="dash-status-row">
+                <div class="dash-status-lbl">Datasamenwerking</div>
+                <div class="dash-status-bar"><div class="dash-status-fill" style="width:40%;background:#f39c12"></div></div>
+                <span style="font-size:0.6rem;color:#f39c12">40%</span>
+              </div>
+              <div class="dash-status-row">
+                <div class="dash-status-lbl">Zorgcoördinatie</div>
+                <div class="dash-status-bar"><div class="dash-status-fill" style="width:85%;background:#27ae60"></div></div>
+                <span style="font-size:0.6rem;color:#27ae60">85%</span>
+              </div>
+              <div class="dash-status-row">
+                <div class="dash-status-lbl">ICM</div>
+                <div class="dash-status-bar"><div class="dash-status-fill" style="width:20%;background:#e74c3c"></div></div>
+                <span style="font-size:0.6rem;color:#e74c3c">20%</span>
+              </div>
+              <div class="dash-status-row">
+                <div class="dash-status-lbl">PZP</div>
+                <div class="dash-status-bar"><div class="dash-status-fill" style="width:0%;background:#e74c3c"></div></div>
+                <span style="font-size:0.6rem;color:#e74c3c">0%</span>
+              </div>
+              <div class="dash-update">⟳ Dashboard update live na opslaan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== VERGELIJKING ===================== -->
+<div class="vergelijk-card">
+  <h2>Vergelijkingsoverzicht</h2>
+  <table class="vergelijk-tabel">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Dashboard</th>
+        <th>Primaire doelgroep</th>
+        <th>Techniek</th>
+        <th>Bouwtijd</th>
+        <th>Complexiteit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td>Nederland-kaart</td>
+        <td>Bestuur / VWS / extern</td>
+        <td>Power BI / Tableau / Plotly</td>
+        <td><span class="badge badge-groen">2–3 dagen</span></td>
+        <td><span class="badge badge-groen">Laag</span></td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td>RAG-heatmap</td>
+        <td>Programmamanagement</td>
+        <td>Power BI / Looker Studio</td>
+        <td><span class="badge badge-groen">1–2 dagen</span></td>
+        <td><span class="badge badge-groen">Laag</span></td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>KPI Scorecard</td>
+        <td>Stuurgroep</td>
+        <td>Power BI / Tableau / Grafana</td>
+        <td><span class="badge badge-groen">2–3 dagen</span></td>
+        <td><span class="badge badge-oranje">Middel</span></td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td>Netwerk-visualisatie</td>
+        <td>Strategie / analyse</td>
+        <td>D3.js / Plotly Dash</td>
+        <td><span class="badge badge-oranje">3–5 dagen</span></td>
+        <td><span class="badge badge-oranje">Middel</span></td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td>Collaboratief portaal</td>
+        <td>Regio-eigenaren</td>
+        <td>Power Apps + Power BI</td>
+        <td><span class="badge badge-rood">2–4 weken</span></td>
+        <td><span class="badge badge-rood">Hoog</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  Opgesteld op basis van analyse van CDS Monitor V2.xlsx · 31 IZA-regio's · 14 juni 2026<br/>
+  Best practices: NHS England, WHO, RIVM, VWS IZA-voortgangsrapportages
+</div>
+
+</body>
+</html>
