@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDS Dashboard — 10 Zorgverzekeraars Samenwerkingsverband</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--blue:#1e3a5f;--blue2:#2980b9;--green:#27ae60;--orange:#e67e22;--red:#c0392b;--gray:#7f8c8d;--bg:#f0f4f8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:#2c3e50;font-size:14px}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#1e3a5f 0%,#2471a3 100%);color:#fff;padding:16px 28px;display:flex;align-items:center;gap:14px;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.hdr-icon{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.hdr h1{font-size:18px;font-weight:700}
+.hdr p{font-size:12px;opacity:.8;margin-top:2px}
+.hdr-badges{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+.hdr-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600}
+
+/* TABS */
+.tabs{background:#fff;border-bottom:1px solid #dde1e7;display:flex;overflow-x:auto;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.tab{padding:13px 18px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;font-size:13px;font-weight:500;color:var(--gray);transition:all .18s;user-select:none}
+.tab:hover{color:var(--blue2);background:#f8f9fb}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue2);font-weight:600}
+
+/* MAIN */
+.main{padding:20px 24px;max-width:1440px;margin:0 auto}
+
+/* FILTER BAR */
+.fbar{background:#fff;border-radius:10px;padding:12px 18px;box-shadow:0 1px 6px rgba(0,0,0,.07);margin-bottom:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fbar label{font-size:12px;font-weight:600;color:var(--gray)}
+select,input[type=text]{padding:7px 11px;border:1px solid #d5dae0;border-radius:7px;font-size:12px;outline:none;background:#fff}
+select:focus,input:focus{border-color:var(--blue2)}
+.btn-reset{padding:7px 14px;background:#ecf0f1;border:none;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500}
+.btn-reset:hover{background:#d5dae0}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:#fff;border-radius:10px;padding:18px 16px;box-shadow:0 1px 6px rgba(0,0,0,.07);border-left:4px solid}
+.kpi.b{border-left-color:#2980b9}
+.kpi.g{border-left-color:#27ae60}
+.kpi.o{border-left-color:#e67e22}
+.kpi.r{border-left-color:#c0392b}
+.kpi.gr{border-left-color:#95a5a6}
+.kpi.pu{border-left-color:#8e44ad}
+.kpi-val{font-size:30px;font-weight:800;line-height:1}
+.kpi-lbl{font-size:11px;color:var(--gray);margin-top:5px;font-weight:500}
+.kpi-sub{font-size:10px;color:#b2bec3;margin-top:2px}
+
+/* CHART GRID */
+.cgrid2{display:grid;grid-template-columns:1fr 2fr;gap:14px;margin-bottom:18px}
+.cgrid4{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:18px}
+.card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.card-title{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:14px}
+
+/* TABLE */
+.tbl-wrap{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 6px rgba(0,0,0,.07);overflow-x:auto}
+.tbl-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.tbl-title{font-size:14px;font-weight:700;color:var(--blue)}
+.tbl-count{font-size:11px;color:var(--gray)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:9px 10px;border-bottom:2px solid #eef0f3;font-weight:600;color:var(--gray);font-size:10px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+tr:hover td{background:#f8f9fb}
+td.num{color:#b2bec3;font-size:10px}
+
+/* BADGES */
+.bdg{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.bdg-impl{background:#d5f5e3;color:#1e6b3a}
+.bdg-verk{background:#fdebd0;color:#7e4b11}
+.bdg-pilot{background:#d6eaf8;color:#1a4f7c}
+.bdg-poc{background:#e8daef;color:#5b2c8d}
+.bdg-ont{background:#d1f2eb;color:#0e5e50}
+.bdg-onb{background:#fadbd8;color:#7b1f1f}
+.bdg-ng{background:#fef9e7;color:#7d6608;border:1px solid #f9e79f}
+.bdg-ja{background:#d5f5e3;color:#1e6b3a}
+.bdg-nee{background:#fadbd8;color:#7b1f1f}
+.bdg-sch{background:#aed6f1;color:#1a4f7c}
+
+/* VZ PILLS */
+.vp{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap}
+.vp-zk{background:#1a5276}
+.vp-vgz{background:#0e6655}
+.vp-cz{background:#7b241c}
+.vp-menzis{background:#6c3483}
+.vp-zenz{background:#1e8449}
+.vp-dsw{background:#935116}
+.vp-sal{background:#154360}
+.vp-other{background:#5d6d7e}
+
+/* PLATFORM GRID */
+.plt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:18px}
+.plt-card{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 6px rgba(0,0,0,.07);border-top:3px solid var(--blue2)}
+.plt-name{font-weight:700;font-size:13px;color:var(--blue);margin-bottom:6px}
+.plt-count{font-size:26px;font-weight:800;color:var(--blue2);line-height:1}
+.plt-lbl{font-size:10px;color:var(--gray);margin-top:2px}
+.plt-regs{font-size:10px;color:#b2bec3;margin-top:6px;line-height:1.4}
+
+/* SECTION */
+.sec-hdr{margin-bottom:16px}
+.sec-hdr h2{font-size:17px;font-weight:700;color:var(--blue)}
+.sec-hdr p{font-size:12px;color:var(--gray);margin-top:3px}
+
+/* LEGENDA */
+.leg{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gray)}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* COLLABORATION OVERVIEW */
+.collab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:18px}
+.collab-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.collab-vz{font-size:15px;font-weight:800;color:var(--blue);margin-bottom:4px}
+.collab-sub{font-size:11px;color:var(--gray)}
+.collab-stat{display:flex;justify-content:space-between;margin-top:10px}
+.collab-stat-item{text-align:center}
+.collab-stat-val{font-size:20px;font-weight:700}
+.collab-stat-lbl{font-size:10px;color:var(--gray)}
+
+/* PROGRESS */
+.prog-bar{background:#ecf0f1;border-radius:4px;height:5px;overflow:hidden;margin-top:8px}
+.prog-fill{height:100%;border-radius:4px}
+
+/* TAB CONTENT */
+.tc{display:none}
+.tc.on{display:block}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px;color:var(--gray);font-size:13px}
+
+/* TOOLTIP TABLE */
+td[title]{cursor:help}
+
+@media(max-width:768px){.cgrid2,.cgrid4{grid-template-columns:1fr}.main{padding:12px}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-icon">🏥</div>
+  <div>
+    <h1>CDS Data Samenwerkingen — Dashboard Voorstel</h1>
+    <p>Samenwerkingsverband 10 zorgverzekeraars · 31 IZA-regio's · Datasamenwerking · Zorgcoördinatie · ICM</p>
+  </div>
+  <div class="hdr-badges">
+    <span class="hdr-badge">📅 Juni 2026</span>
+    <span class="hdr-badge">📊 CDS Monitor V2</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" onclick="showTab('overzicht',this)">📊 Overzicht</div>
+  <div class="tab" onclick="showTab('verzekeraars',this)">🏢 Verzekeraars</div>
+  <div class="tab" onclick="showTab('datasamen',this)">🔗 Datasamenwerking</div>
+  <div class="tab" onclick="showTab('zorgco',this)">🚑 Zorgcoördinatie</div>
+  <div class="tab" onclick="showTab('icm',this)">⚖️ ICM</div>
+  <div class="tab" onclick="showTab('platforms',this)">🖥️ Platforms</div>
+  <div class="tab" onclick="showTab('contacten',this)">👥 Contacten</div>
+</div>
+
+<div class="main">
+
+  <!-- FILTER BAR -->
+  <div class="fbar">
+    <label>🔍 Filter:</label>
+    <select id="fVZ" onchange="applyF()">
+      <option value="">Alle verzekeraars</option>
+      <option>Zilveren Kruis</option><option>VGZ</option><option>CZ</option>
+      <option>Menzis</option><option>Zorg en Zekerheid</option><option>DSW</option><option>Salland</option>
+    </select>
+    <select id="fStatus" onchange="applyF()">
+      <option value="">Alle statussen</option>
+      <option>Implementatie</option><option>Verkenning</option><option>Pilot</option>
+      <option>Niet gestart</option><option>Onbekend</option>
+    </select>
+    <select id="fROAZ" onchange="applyF()">
+      <option value="">Alle ROAZ-netwerken</option>
+      <option>Netwerk Acute Zorg Noord-Holland/Flevoland</option>
+      <option>Netwerk Acute Zorg Noord Nederland</option>
+      <option>Acute Zorgregio Oost</option>
+      <option>Netwerk Acute Zorg West</option>
+      <option>Netwerk Acute Zorg Zuidwest</option>
+      <option>Netwerk Acute Zorg Brabant</option>
+      <option>Netwerk Acute Zorg Limburg</option>
+      <option>Netwerk Acute Zorg regio Zwolle</option>
+      <option>Acute Zorg Euregio</option>
+      <option>Netwerk Acute Zorg Midden-Nederland</option>
+    </select>
+    <input type="text" id="fSearch" placeholder="Zoek regio…" oninput="applyF()">
+    <button class="btn-reset" onclick="resetF()">✕ Reset</button>
+    <span id="fCount" style="font-size:11px;color:var(--gray);margin-left:4px"></span>
+  </div>
+
+  <!-- TAB: OVERZICHT -->
+  <div id="tab-overzicht" class="tc on">
+    <div class="sec-hdr">
+      <h2>Overzicht — IZA Data Samenwerkingen Monitor</h2>
+      <p>Gezamenlijk monitoringinstrument voor 10 zorgverzekeraars over datasamenwerking, zorgcoördinatie en integraal capaciteitsmanagement</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi b"><div class="kpi-val">31</div><div class="kpi-lbl">IZA-regio's totaal</div><div class="kpi-sub">10 ROAZ-netwerken</div></div>
+      <div class="kpi g"><div class="kpi-val">1</div><div class="kpi-lbl">In implementatie</div><div class="kpi-sub">'t Gooi — VIPPLive</div></div>
+      <div class="kpi o"><div class="kpi-val">7</div><div class="kpi-lbl">In verkenning</div><div class="kpi-sub">Actieve gesprekken</div></div>
+      <div class="kpi r"><div class="kpi-val">20</div><div class="kpi-lbl">Status onbekend</div><div class="kpi-sub">Aanvulling vereist</div></div>
+      <div class="kpi gr"><div class="kpi-val">3</div><div class="kpi-lbl">Niet gestart</div><div class="kpi-sub">Haaglanden, ZO-Brabant, Zeeland</div></div>
+      <div class="kpi pu"><div class="kpi-val">10</div><div class="kpi-lbl">ICM actief</div><div class="kpi-sub">Regio's met capaciteitsmgt</div></div>
+    </div>
+
+    <div class="cgrid2">
+      <div class="card">
+        <div class="card-title">Status datasamenwerking</div>
+        <canvas id="cStatus"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">Platforms per regio (top 10)</div>
+        <canvas id="cPlatform"></canvas>
+      </div>
+    </div>
+
+    <div class="cgrid4">
+      <div class="card">
+        <div class="card-title">Regio's per 1e zorgverzekeraar</div>
+        <canvas id="cVZ"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">ICM status verdeling</div>
+        <canvas id="cICM"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px">
+      <div class="card-title">📋 Aandachtspunten & acties</div>
+      <table>
+        <thead><tr><th>#</th><th>Regio</th><th>1e ZV</th><th>Actie vereist</th><th>Prioriteit</th></tr></thead>
+        <tbody>
+          <tr><td class="num">4,6,7,8,11,21,25</td><td>Meerdere ZK/VGZ regio's</td><td><span class="vp vp-zk">ZK</span></td><td>Dataplatform nog aanvullen/controleren</td><td><span class="bdg bdg-onb">Hoog</span></td></tr>
+          <tr><td class="num">10</td><td>Haaglanden</td><td><span class="vp vp-cz">CZ</span></td><td>Selectietraject platform starten (Digizorg kansrijk)</td><td><span class="bdg bdg-onb">Hoog</span></td></tr>
+          <tr><td class="num">1–31</td><td>Alle regio's</td><td>—</td><td>Contactpersonen ontbreken voor de meeste regio's</td><td><span class="bdg bdg-ng">Medium</span></td></tr>
+          <tr><td class="num">1–31</td><td>Alle regio's</td><td>—</td><td>Technische bouwstenen (ID&amp;Auth, Autorisatie etc.) nog niet ingevuld</td><td><span class="bdg bdg-ng">Medium</span></td></tr>
+          <tr><td class="num">20</td><td>Twente</td><td><span class="vp vp-menzis">Menzis</span></td><td>Dubbele regio controleren — meerdere ICM-initiatieven</td><td><span class="bdg bdg-verk">Laag</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: VERZEKERAARS -->
+  <div id="tab-verzekeraars" class="tc">
+    <div class="sec-hdr">
+      <h2>Zorgverzekeraars — Samenwerkingsverband</h2>
+      <p>Verdeling van verantwoordelijkheden en regio's over de 10 deelnemende zorgverzekeraars</p>
+    </div>
+    <div class="collab-grid" id="vzGrid"></div>
+    <div class="card">
+      <div class="card-title">Samenwerkingsmatrix — welke verzekeraars werken samen per regio</div>
+      <div style="overflow-x:auto"><table id="vzMatrix">
+        <thead><tr><th>Regio</th><th>1e ZV</th><th>2e ZV</th><th>Platform</th><th>Status</th><th>ICM</th></tr></thead>
+        <tbody id="vzMatrixBody"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- TAB: DATASAMENWERKING -->
+  <div id="tab-datasamen" class="tc">
+    <div class="sec-hdr">
+      <h2>Datasamenwerking</h2>
+      <p>Status dataplatformen en technische bouwstenen per IZA-regio</p>
+    </div>
+    <div class="leg">
+      <div class="leg-item"><div class="leg-dot" style="background:#27ae60"></div>Implementatie</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#e67e22"></div>Verkenning</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f1c40f"></div>Niet gestart</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#e74c3c"></div>Onbekend</div>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-hdr">
+        <span class="tbl-title">Overzicht per regio</span>
+        <span class="tbl-count" id="dsCount"></span>
+      </div>
+      <table><thead><tr>
+        <th>#</th><th>IZA-regio</th><th>1e ZV</th><th>2e ZV</th><th>Platform</th><th>Status</th>
+        <th>ID &amp; Auth</th><th>Autorisatie</th><th>Toestemming</th><th>Lokalisatie</th><th>Adressering</th><th>Logging</th>
+        <th>PZP</th><th>360-viewer</th>
+      </tr></thead>
+      <tbody id="dsBody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- TAB: ZORGCOORDINATIE -->
+  <div id="tab-zorgco" class="tc">
+    <div class="sec-hdr">
+      <h2>Zorgcoördinatie</h2>
+      <p>Voortgang per IZA-regio — Fase 1 (MSB 2.0, LPZ, Digitale triage) en Fase 2 (360° viewer, GEO, MDO, LPZ GGZ/VVT)</p>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-hdr">
+        <span class="tbl-title">Zorgcoördinatie per regio</span>
+        <span class="tbl-count" id="zcCount"></span>
+      </div>
+      <table><thead><tr>
+        <th>#</th><th>IZA-regio</th><th>1e ZV</th><th>ROAZ Netwerk</th><th>Koploper</th>
+        <th>F1: MSB 2.0</th><th>F1: LPZ</th><th>F1: Dig. triage</th>
+        <th>F2: 360°</th><th>F2: GEO</th><th>F2: MDO</th><th>F2: LPZ GGZ/VVT</th>
+      </tr></thead>
+      <tbody id="zcBody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- TAB: ICM -->
+  <div id="tab-icm" class="tc">
+    <div class="sec-hdr">
+      <h2>Integraal Capaciteitsmanagement (ICM)</h2>
+      <p>Status en implementatie van capaciteitsmanagement per IZA-regio</p>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+      <div class="kpi g"><div class="kpi-val">10</div><div class="kpi-lbl">ICM actief</div></div>
+      <div class="kpi r"><div class="kpi-val">4</div><div class="kpi-lbl">Niet actief</div></div>
+      <div class="kpi gr"><div class="kpi-val">17</div><div class="kpi-lbl">Status onbekend</div></div>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-hdr">
+        <span class="tbl-title">ICM per regio</span>
+        <span class="tbl-count" id="icmCount"></span>
+      </div>
+      <table><thead><tr>
+        <th>#</th><th>IZA-regio</th><th>1e ZV</th><th>Status</th><th>Actief</th><th>IZA?</th>
+        <th>Scope / definitie</th><th>Omschrijving</th><th>Knelpunt</th>
+      </tr></thead>
+      <tbody id="icmBody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- TAB: PLATFORMS -->
+  <div id="tab-platforms" class="tc">
+    <div class="sec-hdr">
+      <h2>Dataplatforms</h2>
+      <p>Verdeling van dataplatformen over de 31 IZA-regio's</p>
+    </div>
+    <div class="plt-grid" id="pltGrid"></div>
+    <div class="card">
+      <div class="card-title">Platformverdeling — aantal regio's</div>
+      <canvas id="cPltDetail" style="max-height:280px"></canvas>
+    </div>
+  </div>
+
+  <!-- TAB: CONTACTEN -->
+  <div id="tab-contacten" class="tc">
+    <div class="sec-hdr">
+      <h2>Contacten</h2>
+      <p>Overzicht eigenaren en contactpersonen per regio</p>
+    </div>
+    <div class="tbl-wrap">
+      <table><thead><tr>
+        <th>#</th><th>IZA-regio</th><th>1e ZV</th><th>Eigenaar</th>
+        <th>Contactpersoon DS</th><th>E-mail DS</th>
+        <th>Contactpersoon ZC</th><th>E-mail ZC</th>
+      </tr></thead>
+      <tbody id="ctBody"></tbody></table>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const D = [
+  {nr:1,r:"'t Gooi",vz1:"Zilveren Kruis",vz2:"CZ",own:"",ctDS:"",emDS:"",plt:"VIPPLive",sDS:"Implementatie",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"VIPPLive",zco:"n.t.b.",vwr:"n.t.b.",roaz:"Netwerk Acute Zorg Noord-Holland/Flevoland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:2,r:"Amstelland-Meerlanden",vz1:"Zorg en Zekerheid",vz2:"Zilveren Kruis",own:"",ctDS:"",emDS:"",plt:"Boards",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Noord-Holland/Flevoland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:3,r:"Amsterdam",vz1:"Zilveren Kruis",vz2:"CZ",own:"",ctDS:"",emDS:"",plt:"Boards",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Noord-Holland/Flevoland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:4,r:"Apeldoorn/Zutphen",vz1:"Zilveren Kruis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg regio Zwolle",kop:"",f1m:"",f1l:"",f1t:"ja",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:5,r:"Arnhem",vz1:"Menzis",vz2:"Zilveren Kruis",own:"",ctDS:"",emDS:"",plt:"VIPPLive",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Acute Zorgregio Oost",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Verkenning",iAct:"ja",iIZA:"nee",iScop:"Regionaal platform GGZ-keten",iOms:"SlimVerwijzen: regionaal inzicht GGZ-aanbod incl. wachttijden",iKnp:"",ctZC:"Maike Hulsbos",emZC:"maike.hulsbos@azo.nl"},
+  {nr:6,r:"Drenthe",vz1:"Zilveren Kruis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Noord Nederland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:7,r:"Flevoland",vz1:"Zilveren Kruis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Noord-Holland/Flevoland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:8,r:"Friesland",vz1:"Zilveren Kruis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Noord Nederland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:9,r:"Groningen / Regio Noord",vz1:"Menzis",vz2:"Zilveren Kruis",own:"",ctDS:"",emDS:"",plt:"Zorgviewer",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"Zorgviewer",zco:"",vwr:"Zorgviewer",roaz:"Netwerk Acute Zorg Noord Nederland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:10,r:"Haaglanden",vz1:"CZ",vz2:"VGZ",own:"CZ (Gijs)",ctDS:"Erik Schuppers",emDS:"erik.schuppers@transmuralezorg.nl",plt:"HinQ (pilot)",sDS:"Niet gestart",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"selectietraject (Digizorg kansrijk)",zco:"selectietraject",vwr:"selectietraject",roaz:"Netwerk Acute Zorg West",kop:"ja",f1m:"ja",f1l:"nog niet",f1t:"ja",f2v:"n.t.b.",f2g:"x",f2d:"hulpvraag ad-hoc MDO",f2l:"",sICM:"Niet gestart",iAct:"nee",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"Marco Kleijburg",emZC:"marco.kleijburg@transmuralezorg.nl"},
+  {nr:11,r:"Kennemerland",vz1:"Zilveren Kruis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Noord-Holland/Flevoland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:12,r:"Midden-Brabant",vz1:"VGZ",vz2:"CZ",own:"",ctDS:"",emDS:"",plt:"geen dataplatform",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"Phoqus Prysma",zco:"Phoqus Prysma",vwr:"Phoqus Prysma",roaz:"Netwerk Acute Zorg Brabant",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Niet gestart",iAct:"nee",iIZA:"",iScop:"",iOms:"",iKnp:"geen",ctZC:"",emZC:""},
+  {nr:13,r:"Midden-Holland",vz1:"VGZ",vz2:"Zilveren Kruis",own:"",ctDS:"",emDS:"",plt:"KPN HEX",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"KPN HEX (Cacao)",zco:"KPN HEX",vwr:"KPN HEX",roaz:"Netwerk Acute Zorg West",kop:"ja",f1m:"ja",f1l:"ja",f1t:"ja",f2v:"KPN HEX + Cacao",f2g:"x",f2d:"hulpvraag ad-hoc MDO",f2l:"",sICM:"Verkenning",iAct:"ja",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"Tjarda Scheltens",emZC:""},
+  {nr:14,r:"Midden-IJssel/Salland",vz1:"Salland",vz2:"Zilveren Kruis",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg regio Zwolle",kop:"",f1m:"",f1l:"",f1t:"ja",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:15,r:"Nijmegen Rivierenland",vz1:"VGZ/Menzis",vz2:"CZ/VGZ",own:"",ctDS:"",emDS:"",plt:"VIPPLive / OZO",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"n.t.b.",zco:"n.t.b.",vwr:"n.t.b.",roaz:"Acute Zorgregio Oost",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Niet gestart",iAct:"nee",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"Marieke Cuijten",emZC:"marieke.cuijten@azo.nl"},
+  {nr:16,r:"Noord- en Midden-Limburg",vz1:"VGZ",vz2:"CZ",own:"",ctDS:"",emDS:"",plt:"KPN HEX",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"KPN HEX (Cacao)",zco:"KPN HEX",vwr:"KPN HEX",roaz:"Netwerk Acute Zorg Limburg",kop:"ja",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"ja",sICM:"Verkenning",iAct:"ja",iIZA:"nee",iScop:"LPZ modules",iOms:"LPZ modules implementeren, elementen rondom herverdeling vraag/aanbod",iKnp:"",ctZC:"",emZC:""},
+  {nr:17,r:"Noord-Holland-Noord",vz1:"VGZ",vz2:"Zilveren Kruis",own:"",ctDS:"",emDS:"",plt:"HinQ",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"n.t.b.",zco:"n.t.b.",vwr:"n.t.b.",roaz:"Netwerk Acute Zorg Noord-Holland/Flevoland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Verkenning",iAct:"ja",iIZA:"ja",iScop:"MSZ-VVT capaciteitsplanning",iOms:"MSZ-VVT capaciteitsplanning met Performation",iKnp:"",ctZC:"",emZC:""},
+  {nr:18,r:"Noord-Oost Brabant",vz1:"VGZ",vz2:"CZ",own:"",ctDS:"",emDS:"",plt:"KPN HEX",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"KPN HEX (Cacao)",zco:"KPN HEX",vwr:"KPN HEX",roaz:"Netwerk Acute Zorg Brabant",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Verkenning",iAct:"ja",iIZA:"",iScop:"LPZ modules + optibed",iOms:"LPZ modules in mooimaasvallei, aangevuld met optibed",iKnp:"",ctZC:"",emZC:""},
+  {nr:19,r:"Rotterdam",vz1:"Zilveren Kruis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Zuidwest",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Verkenning",iAct:"ja",iIZA:"ja",iScop:"R-ICM",iOms:"Integraal capaciteitsmgt regio Rijnmond",iKnp:"",ctZC:"Anneloes van Veen",emZC:"a.vanveen@nazzuidwest.nl"},
+  {nr:20,r:"Twente",vz1:"Menzis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"Microsoft/KPMG",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"Microsoft/KPMG",zco:"",vwr:"Microsoft/KPMG",roaz:"Acute Zorg Euregio",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Verkenning",iAct:"ja",iIZA:"ja",iScop:"VVT capaciteitsinzicht + OK-samenwerking MSZ",iOms:"Regionaal capaciteitsoverzicht VVT + pilot OK-capaciteit SKB/MST/ZGT/SXB",iKnp:"",ctZC:"",emZC:""},
+  {nr:21,r:"Utrecht / Midden-Nederland",vz1:"Zilveren Kruis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Midden-Nederland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:22,r:"Waardenland",vz1:"VGZ",vz2:"Zilveren Kruis",own:"",ctDS:"",emDS:"",plt:"Digizorg/Boards",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"Digizorg",zco:"n.t.b.",vwr:"Digizorg",roaz:"Netwerk Acute Zorg Zuidwest",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"Anneloes van Veen",emZC:"a.vanveen@nazzuidwest.nl"},
+  {nr:23,r:"West-Brabant",vz1:"CZ",vz2:"VGZ",own:"CZ (Gijs)",ctDS:"Irvin Talboom",emDS:"i.talboom@renwbr.nl",plt:"VIPPLive",sDS:"Verkenning",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"n.t.b.",zco:"n.t.b.",vwr:"n.t.b.",roaz:"Netwerk Acute Zorg Brabant",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Verkenning",iAct:"ja",iIZA:"ja",iScop:"VVT capaciteitsmanagement",iOms:"Regionaal capaciteitsmanagement t.b.v. instroom in VVT",iKnp:"",ctZC:"",emZC:""},
+  {nr:24,r:"Westland Schieland Delfland",vz1:"DSW",vz2:"Zilveren Kruis",own:"",ctDS:"",emDS:"",plt:"ZorgDomein/Boards",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Zuidwest",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"Marianne Pruijssers",emZC:"mariannepruijssers@riga.nl"},
+  {nr:25,r:"Zaanstreek / Waterland",vz1:"Zilveren Kruis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg Noord-Holland/Flevoland",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:26,r:"Zeeland",vz1:"CZ",vz2:"Zilveren Kruis",own:"CZ (Gijs)",ctDS:"Jan Hein Boll",emDS:"",plt:"VIPP Live + Digizorg",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"Digizorg (MSZ)",zco:"ROAZ ZW: Digizorg",vwr:"Digizorg (MSZ)",roaz:"Netwerk Acute Zorg Zuidwest",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Niet gestart",iAct:"nee",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"Anneloes van Veen",emZC:"a.vanveen@nazzuidwest.nl"},
+  {nr:27,r:"Zuid-Holland Noord",vz1:"Zorg en Zekerheid",vz2:"Zilveren Kruis",own:"",ctDS:"",emDS:"",plt:"",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"",zco:"",vwr:"",roaz:"Netwerk Acute Zorg West",kop:"ja",f1m:"ja",f1l:"ja",f1t:"ja",f2v:"n.t.b.",f2g:"x",f2d:"hulpvraag ad-hoc MDO",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"Leonieke van Willigen / Dineke Noort",emZC:"lvanwilligen@sleutelnet.nl"},
+  {nr:28,r:"Zuid-Hollandse Eilanden",vz1:"CZ",vz2:"Zilveren Kruis",own:"CZ (Gijs)",ctDS:"Mariska Adegeest",emDS:"mariska@adegeest-advies.nl",plt:"VIPP Live + Digizorg",sDS:"Verkenning",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"Digizorg",zco:"Digizorg",vwr:"Digizorg",roaz:"Netwerk Acute Zorg Zuidwest",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Verkenning",iAct:"ja",iIZA:"",iScop:"onderdeel ICM Rijnmond",iOms:"",iKnp:"",ctZC:"Anneloes van Veen",emZC:"a.vanveen@nazzuidwest.nl"},
+  {nr:29,r:"Zuid-Limburg",vz1:"CZ",vz2:"VGZ",own:"CZ (Gijs)",ctDS:"Frans Bakers",emDS:"Frans.Bakers@rsozuidlimburg.nl",plt:"OpenEHR (Better/Vitaly)",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"OpenEHR",zco:"OpenEHR",vwr:"OpenEHR",roaz:"Netwerk Acute Zorg Limburg",kop:"ja",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"ja",sICM:"Verkenning",iAct:"ja",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:30,r:"Zuid-Oost Brabant",vz1:"CZ",vz2:"VGZ",own:"CZ (Gijs)",ctDS:"Bart Lamers",emDS:"bart.lamers@rzcc.nl",plt:"HinQ/VIPLive/OZO",sDS:"Niet gestart",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"n.t.b.",zco:"n.t.b.",vwr:"n.t.b.",roaz:"Netwerk Acute Zorg Brabant",kop:"",f1m:"",f1l:"",f1t:"",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""},
+  {nr:31,r:"Zwolle",vz1:"Zilveren Kruis",vz2:"VGZ",own:"",ctDS:"",emDS:"",plt:"HinQ",sDS:"Onbekend",sIA:"Onbekend",sAu:"Onbekend",sTo:"Onbekend",sLo:"Onbekend",sAd:"Onbekend",sLg:"Onbekend",pzp:"HinQ",zco:"HinQ",vwr:"HinQ",roaz:"Netwerk Acute Zorg regio Zwolle",kop:"",f1m:"",f1l:"",f1t:"ja",f2v:"",f2g:"",f2d:"",f2l:"",sICM:"Onbekend",iAct:"onbekend",iIZA:"",iScop:"",iOms:"",iKnp:"",ctZC:"",emZC:""}
+];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function bdg(s){
+  if(!s)return'<span style="color:#ccc">—</span>';
+  const m={
+    'implementatie':'bdg-impl','verkenning':'bdg-verk','pilot':'bdg-pilot','poc':'bdg-poc',
+    'ontwerp':'bdg-ont','onbekend':'bdg-onb','niet gestart':'bdg-ng','schaling':'bdg-sch',
+    'ja':'bdg-ja','nee':'bdg-nee'
+  };
+  const k=s.toLowerCase().trim();
+  const c=m[k]||'bdg-onb';
+  return`<span class="bdg ${c}">${s}</span>`;
+}
+function vp(vz){
+  if(!vz)return'—';
+  const m={'Zilveren Kruis':'vp-zk','VGZ':'vp-vgz','CZ':'vp-cz','Menzis':'vp-menzis','Zorg en Zekerheid':'vp-zenz','DSW':'vp-dsw','Salland':'vp-sal'};
+  for(const[k,c] of Object.entries(m)){if(vz.includes(k))return`<span class="vp ${c}">${vz}</span>`;}
+  return`<span class="vp vp-other">${vz}</span>`;
+}
+function yn(v){if(!v)return'<span style="color:#ccc">—</span>';const l=v.toLowerCase();if(l==='ja')return`<span class="bdg bdg-ja">✓</span>`;if(l==='nee')return`<span class="bdg bdg-nee">✗</span>`;return`<span style="font-size:10px;color:#7f8c8d" title="${v}">${v.length>15?v.slice(0,15)+'…':v}</span>`;}
+function tr(v,mx=18){if(!v)return'—';return v.length>mx?`<span title="${v}">${v.slice(0,mx)}…</span>`:v;}
+
+// ─── FILTER ──────────────────────────────────────────────────────────────────
+let F={vz:'',st:'',rz:'',q:''};
+function applyF(){F={vz:$('fVZ').value,st:$('fStatus').value,rz:$('fROAZ').value,q:$('fSearch').value.toLowerCase()};render();}
+function resetF(){['fVZ','fStatus','fROAZ'].forEach(id=>{$(id).value=''});$('fSearch').value='';F={vz:'',st:'',rz:'',q:''};render();}
+function fd(){return D.filter(r=>{if(F.vz&&!r.vz1.includes(F.vz)&&!r.vz2.includes(F.vz))return false;if(F.st&&r.sDS!==F.st)return false;if(F.rz&&r.roaz!==F.rz)return false;if(F.q&&!r.r.toLowerCase().includes(F.q))return false;return true;});}
+function $(id){return document.getElementById(id);}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function render(){
+  const data=fd();
+  const n=data.length;
+
+  // DS table
+  const dsB=$('dsBody'); if(dsB){
+    $('dsCount').textContent=`${n} van 31 regio's`;
+    dsB.innerHTML=data.map(r=>`<tr>
+      <td class="num">${r.nr}</td><td><strong>${r.r}</strong></td>
+      <td>${vp(r.vz1)}</td><td><span style="font-size:10px;color:#999">${r.vz2}</span></td>
+      <td><span style="font-size:11px">${r.plt||'—'}</span></td><td>${bdg(r.sDS)}</td>
+      <td>${bdg(r.sIA)}</td><td>${bdg(r.sAu)}</td><td>${bdg(r.sTo)}</td>
+      <td>${bdg(r.sLo)}</td><td>${bdg(r.sAd)}</td><td>${bdg(r.sLg)}</td>
+      <td><span style="font-size:10px">${tr(r.pzp)}</span></td>
+      <td><span style="font-size:10px">${tr(r.vwr)}</span></td>
+    </tr>`).join('');
+  }
+
+  // ZC table
+  const zcB=$('zcBody'); if(zcB){
+    $('zcCount').textContent=`${n} van 31 regio's`;
+    zcB.innerHTML=data.map(r=>`<tr>
+      <td class="num">${r.nr}</td><td><strong>${r.r}</strong></td>
+      <td>${vp(r.vz1)}</td>
+      <td><span style="font-size:10px;color:#999">${r.roaz.replace('Netwerk Acute Zorg ','NAZ ').replace('Acute Zorgregio ','AZO ')}</span></td>
+      <td>${r.kop==='ja'?'<span class="bdg bdg-ja">⭐ Ja</span>':'—'}</td>
+      <td>${yn(r.f1m)}</td><td>${yn(r.f1l)}</td><td>${yn(r.f1t)}</td>
+      <td><span style="font-size:10px">${tr(r.f2v)}</span></td>
+      <td>${r.f2g?'<span class="bdg bdg-ja">✓</span>':'—'}</td>
+      <td><span style="font-size:10px">${tr(r.f2d)}</span></td>
+      <td>${yn(r.f2l)}</td>
+    </tr>`).join('');
+  }
+
+  // ICM table
+  const icmB=$('icmBody'); if(icmB){
+    $('icmCount').textContent=`${n} van 31 regio's`;
+    icmB.innerHTML=data.map(r=>`<tr>
+      <td class="num">${r.nr}</td><td><strong>${r.r}</strong></td>
+      <td>${vp(r.vz1)}</td><td>${bdg(r.sICM)}</td><td>${bdg(r.iAct)}</td>
+      <td>${r.iIZA?bdg(r.iIZA):'—'}</td>
+      <td><span style="font-size:10px">${tr(r.iScop,22)}</span></td>
+      <td><span style="font-size:10px">${tr(r.iOms,30)}</span></td>
+      <td><span style="font-size:10px;color:#c0392b">${r.iKnp||'—'}</span></td>
+    </tr>`).join('');
+  }
+
+  // VZ matrix
+  const vzB=$('vzMatrixBody'); if(vzB){
+    vzB.innerHTML=data.map(r=>`<tr>
+      <td><strong>${r.r}</strong></td><td>${vp(r.vz1)}</td>
+      <td><span style="font-size:10px;color:#999">${r.vz2}</span></td>
+      <td><span style="font-size:11px">${r.plt||'—'}</span></td>
+      <td>${bdg(r.sDS)}</td><td>${bdg(r.sICM)}</td>
+    </tr>`).join('');
+  }
+
+  // Contacten
+  const ctB=$('ctBody'); if(ctB){
+    ctB.innerHTML=data.map(r=>`<tr>
+      <td class="num">${r.nr}</td><td><strong>${r.r}</strong></td>
+      <td>${vp(r.vz1)}</td>
+      <td><span style="font-size:11px">${r.own||'—'}</span></td>
+      <td><span style="font-size:11px">${r.ctDS||'—'}</span></td>
+      <td>${r.emDS?`<a href="mailto:${r.emDS}" style="font-size:10px;color:#2980b9">${r.emDS}</a>`:'—'}</td>
+      <td><span style="font-size:11px">${r.ctZC||'—'}</span></td>
+      <td>${r.emZC?`<a href="mailto:${r.emZC}" style="font-size:10px;color:#2980b9">${r.emZC}</a>`:'—'}</td>
+    </tr>`).join('');
+  }
+}
+
+// ─── VERZEKERAAR GRID ────────────────────────────────────────────────────────
+function renderVZGrid(){
+  const vzInfo=[
+    {name:'Zilveren Kruis',cls:'vp-zk',color:'#1a5276'},
+    {name:'VGZ',cls:'vp-vgz',color:'#0e6655'},
+    {name:'CZ',cls:'vp-cz',color:'#7b241c'},
+    {name:'Menzis',cls:'vp-menzis',color:'#6c3483'},
+    {name:'Zorg en Zekerheid',cls:'vp-zenz',color:'#1e8449'},
+    {name:'DSW',cls:'vp-dsw',color:'#935116'},
+    {name:'Salland',cls:'vp-sal',color:'#154360'},
+    {name:'ONVZ',cls:'vp-other',color:'#5d6d7e'},
+    {name:'a.s.r. Zorgverzekering',cls:'vp-other',color:'#5d6d7e'},
+    {name:'Univé / Aevitae',cls:'vp-other',color:'#5d6d7e'}
+  ];
+  const cnt1={},cnt2={};
+  D.forEach(r=>{
+    r.vz1.split('/').forEach(v=>{const k=v.trim();cnt1[k]=(cnt1[k]||0)+1;});
+    r.vz2.split('/').forEach(v=>{const k=v.trim();cnt2[k]=(cnt2[k]||0)+1;});
+  });
+  const grid=$('vzGrid');
+  if(!grid)return;
+  grid.innerHTML=vzInfo.map(v=>{
+    const n1=cnt1[v.name]||0,n2=cnt2[v.name]||0,tot=n1+n2;
+    const pct=tot?Math.round(n1/31*100):0;
+    return`<div class="collab-card">
+      <div class="collab-vz">${v.name}</div>
+      <div class="collab-sub">Deelnemer samenwerkingsverband</div>
+      <div class="collab-stat">
+        <div class="collab-stat-item"><div class="collab-stat-val" style="color:${v.color}">${n1}</div><div class="collab-stat-lbl">1e ZV</div></div>
+        <div class="collab-stat-item"><div class="collab-stat-val" style="color:#7f8c8d">${n2}</div><div class="collab-stat-lbl">2e ZV</div></div>
+        <div class="collab-stat-item"><div class="collab-stat-val">${tot}</div><div class="collab-stat-lbl">Totaal</div></div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${v.color}"></div></div>
+      <div style="font-size:10px;color:#b2bec3;margin-top:3px">${pct}% van 31 regio's</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── PLATFORM GRID ───────────────────────────────────────────────────────────
+function renderPltGrid(){
+  const pmap={};
+  D.forEach(r=>{const p=r.plt||'Geen / Onbekend';if(!pmap[p])pmap[p]={count:0,regs:[]};pmap[p].count++;pmap[p].regs.push(r.r);});
+  const sorted=Object.entries(pmap).sort((a,b)=>b[1].count-a[1].count);
+  const g=$('pltGrid');
+  if(!g)return;
+  g.innerHTML=sorted.map(([n,d])=>`<div class="plt-card">
+    <div class="plt-name">${n}</div>
+    <div class="plt-count">${d.count}</div>
+    <div class="plt-lbl">regio${d.count!==1?"'s":""}</div>
+    <div class="plt-regs">${d.regs.slice(0,4).join(' · ')}${d.regs.length>4?` +${d.regs.length-4} meer`:''}</div>
+  </div>`).join('');
+}
+
+// ─── CHARTS ──────────────────────────────────────────────────────────────────
+let chartsInit=false;
+function initCharts(){
+  if(chartsInit)return; chartsInit=true;
+
+  // Status donut
+  const sc={};D.forEach(r=>{sc[r.sDS]=(sc[r.sDS]||0)+1;});
+  new Chart($('cStatus'),{type:'doughnut',data:{labels:Object.keys(sc),datasets:[{data:Object.values(sc),backgroundColor:['#27ae60','#e67e22','#3498db','#f1c40f','#fadbd8'],borderWidth:2}]},options:{cutout:'62%',plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12}}}}});
+
+  // Platform bar
+  const pm={};D.forEach(r=>{const p=r.plt||'Geen/Onbekend';pm[p]=(pm[p]||0)+1;});
+  const sp=Object.entries(pm).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  new Chart($('cPlatform'),{type:'bar',data:{labels:sp.map(([k])=>k),datasets:[{label:'Regio\'s',data:sp.map(([,v])=>v),backgroundColor:'#2980b9',borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:1}},y:{ticks:{font:{size:10}}}}}});
+
+  // VZ bar
+  const vc={};D.forEach(r=>{r.vz1.split('/').forEach(v=>{const k=v.trim();vc[k]=(vc[k]||0)+1;});});
+  const sv=Object.entries(vc).sort((a,b)=>b[1]-a[1]);
+  const vzColors={'Zilveren Kruis':'#1a5276','VGZ':'#0e6655','CZ':'#7b241c','Menzis':'#6c3483','Zorg en Zekerheid':'#1e8449','DSW':'#935116','Salland':'#154360'};
+  new Chart($('cVZ'),{type:'bar',data:{labels:sv.map(([k])=>k),datasets:[{data:sv.map(([,v])=>v),backgroundColor:sv.map(([k])=>vzColors[k]||'#5d6d7e'),borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:1}},y:{ticks:{font:{size:10}}}}}});
+
+  // ICM donut
+  const ic={};D.forEach(r=>{ic[r.sICM]=(ic[r.sICM]||0)+1;});
+  new Chart($('cICM'),{type:'doughnut',data:{labels:Object.keys(ic),datasets:[{data:Object.values(ic),backgroundColor:['#f39c12','#f1c40f','#fadbd8'],borderWidth:2}]},options:{cutout:'62%',plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12}}}}});
+
+  // Platform detail
+  const sp2=Object.entries(pm).sort((a,b)=>b[1]-a[1]);
+  const colors=['#2980b9','#27ae60','#e74c3c','#f39c12','#9b59b6','#1abc9c','#e67e22','#34495e','#16a085','#8e44ad','#2c3e50','#d35400','#c0392b','#7f8c8d'];
+  new Chart($('cPltDetail'),{type:'bar',data:{labels:sp2.map(([k])=>k),datasets:[{label:"Regio's",data:sp2.map(([,v])=>v),backgroundColor:colors,borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{ticks:{font:{size:10}}}}}});
+}
+
+// ─── TAB NAV ─────────────────────────────────────────────────────────────────
+function showTab(name,el){
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  $(`tab-${name}`).classList.add('on');
+  el.classList.add('on');
+  if(name==='overzicht'||name==='platforms')setTimeout(initCharts,50);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  render();
+  renderVZGrid();
+  renderPltGrid();
+  setTimeout(initCharts,100);
+});
+</script>
+</body>
+</html>
