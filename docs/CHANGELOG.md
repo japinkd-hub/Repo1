@@ -6,6 +6,10 @@ Formaat gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/); versien
 ## [Unreleased]
 
 ### Toegevoegd
+- Hulp en training: onboarding-rondleiding (start automatisch bij eerste bezoek,
+  herstartbaar via de ?-knop), contexthulp per tabblad en een volledige Nederlandse
+  gebruikershandleiding (`docs/HANDLEIDING.md`) met AVG-paragraaf en snelinstructie
+  voor werkgroepsecretarissen.
 - Tabblad **Rapportage**: kwartaalrapportage-view voor bestuurlijke tafels met
   samenvattingstegels, statusverdeling per thematafel en per werkgroep,
   risicotabel en statusupdates per periode; scope instelbaar op periode

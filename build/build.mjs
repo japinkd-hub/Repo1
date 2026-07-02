@@ -13,6 +13,7 @@ const JS_FILES = [
   'src/js/data.js',
   'src/js/ui.js',
   'src/js/export.js',
+  'src/js/help.js',
   'src/js/status.js',
   'src/js/clusters.js',
   'src/js/filters.js',
