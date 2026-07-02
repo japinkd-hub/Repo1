@@ -21,6 +21,12 @@ header h1{font-size:14px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
           transition:background .15s}
 .hnav-btn:hover{background:rgba(255,255,255,.28)}
 .hnav-btn.on{background:#fff;color:var(--primary);font-weight:700}
+.hdr-data{display:flex;align-items:center;gap:6px}
+#data-status{font-size:10px;opacity:.85;white-space:nowrap}
+.hdr-data-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+              color:#fff;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:11px;
+              transition:background .15s;display:inline-flex;align-items:center;gap:3px}
+.hdr-data-btn:hover{background:rgba(255,255,255,.28)}
 
 /* BODY WRAP */
 .body-wrap{display:flex;flex:1;overflow:hidden}

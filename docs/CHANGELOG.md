@@ -5,6 +5,21 @@ Formaat gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/); versien
 
 ## [Unreleased]
 
+### Toegevoegd
+- Datamodel schemaVersion 1: werkgroepen (incl. subwerkgroepen via `parentId`),
+  voortgangslog per afspraak, personen (deelnemers) met AZWA-partij en regionale
+  IZA-AZWA-tafel, bewerkbare referentielijsten en mijlpalen. Zie `docs/DATAMODEL.md`.
+- Data-export (JSON-download), data-import met schemavalidatie en "Herstel" in de
+  header; wijzigingen worden automatisch lokaal bewaard (localStorage).
+- Aanspreekpunten in het detailpaneel tonen nu geregistreerde deelnemers per gremium.
+
+### Opgelost
+- 21 afspraken waren standaard onzichtbaar doordat bron "Passende Zorg" en de
+  onderdelen L/M/N ontbraken in de filterlijsten; onderdeel-labels (B–N) kloppen nu
+  met de werkelijke data.
+- Dubbele statusnormalisatie geconsolideerd naar één indeling: Afgerond / Op schema /
+  Gestart / Nog niet gestart / Aandacht / Geparkeerd (+ Onbekend).
+
 ### Gewijzigd
 - PoC (`AZWA_IZA_Dashboard_v3.html`) gerefactord naar modulaire structuur: data in
   `src/data/dashboard-data.json`, logica in `src/js/`, styles in `src/css/`;

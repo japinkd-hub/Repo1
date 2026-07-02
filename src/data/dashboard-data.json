@@ -1,5 +1,6 @@
 {
- "schemaVersion": 0,
+ "schemaVersion": 1,
+ "laatstGewijzigd": "2026-07-02",
  "afspraken": [
   {
    "nr": "1.1",
@@ -20,7 +21,9 @@
    "mib": "KIA G&Z | Missie III: Meedoen met ziekte/beperking\nOnderwerp: Innovatieplatform medtech — publiek-private samenwerking rondom assistieve en medische technologieën\n+ KIA ST | Imaging, Sensors & Mechatronics",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech (5,2% groei/jr)\nNTS: Imaging Technologies + Mechatronics & Opto-Mechatronics\nNGF: NXTGEN Hightech (biomedische productietechnologie,\n     Lab-on-Chip, Organ-on-Chip)\nInstrument: HHT Strategisch Programma Medische Technologie",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "1.2",
@@ -41,7 +44,9 @@
    "mib": "KIA G&Z | Internationalisering\nOnderwerp: Internationale samenwerking medtech — handelsdiplomatie, Europese markttoegang, export LSH-innovaties",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nInstrument: Handelsdiplomatie + aantrekken buitenlandse\ninvesteringen | Horizon Europe | IPCEI\nDoel: internationale marktpositie NL medtech versterken",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "1.3",
@@ -62,7 +67,9 @@
    "mib": "KIA G&Z | Missie II+III: Zorg in leefomgeving + Meedoen\nOnderwerp: Schaalbare medtech-innovaties — opschaling bewezen toepassingen\nKIA ST | Sensors, Imaging, Mechatronics (enabling tech)\nKIA DIG | IP2: Domein-specifieke foundation-modellen",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nNTS: Imaging, Mechatronics, Biomolecular & Cell Tech\nNGF: NXTGEN Hightech — schaalbaarheid medisch-technologische\n     productie | RegMed XB (cel-/gentherapie, pilot fabrieken)\nInstrument: WBSO + Innovatiekrediet voor opschaling",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "2.1",
@@ -83,7 +90,9 @@
    "mib": "KIA G&Z | Missie II+III: Zorg in leefomgeving + Meedoen\nOnderwerp: Vraaggestuurd innovatieprogramma medtech — market-pull voor PPS\nKIA ST | Biomolecular & Cell Tech, Imaging, Sensors\nKIA DIG | IP2: Domein-AI voor zorg",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nNGF: NXTGEN Hightech — vraaggestuurde innovatieprogramma's\n     biomedische productietechnologie\nInstrument: WBSO + PPS-subsidies EZK/NWO\nDoel: marktcreatie NL medtech via vraag-pull mechanisme",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "2.2",
@@ -104,7 +113,9 @@
    "mib": "KIA G&Z | Randvoorwaarden: Financiering & valorisatie\nOnderwerp: Afstemmen financiering innovatie — cofinanciering publiek/privaat, NGF-instrumenten",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nInstrument: NGF cofinanciering | WBSO | Innovatiekrediet\n            | InvestNL risicokapitaal voor medtech scale-ups\nDoel: afstemming financieringsmix publiek-privaat",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "3.1",
@@ -125,7 +136,9 @@
    "mib": "KIA G&Z | Prioriteit 4: Structurele samenwerking zorgakkoorden\nOnderwerp: Integratie medtech-innovaties in IZA/HLO — aansluiting KIA-programma's op zorgakkoorden-governance",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nDoel: Integratie medtech-innovaties in zorgakkoorden via\n      strategische inkoop overheid (EZK-instrument)\nEZK Industriebeleid: vraagstimulering via overheidsinkoop\n      als doorbraakstrategie voor innovatieve MedTech",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "3.2",
@@ -146,7 +159,9 @@
    "mib": "KIA G&Z | Valorisatie & Marktcreatie\nOnderwerp: MDR/IVDR ondersteuning innovators — markttoegang EU, regulatoire begeleiding LSH-bedrijven",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nNTS: Imaging + Mechatronics (productieregulering MDR/IVDR)\nInstrument: HHT Strategisch Programma Medische Technologie\n            — begeleiding innovators bij CE-markering\nDoel: regulatoir pad voor NL medtech-bedrijven naar EU-markt",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "3.3",
@@ -167,7 +182,9 @@
    "mib": "KIA G&Z | Monitoring & Evaluatie\nOnderwerp: Horizonscan medtech-innovaties — systematische monitoring opkomende medische technologieën",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nNTS: Imaging + Mechatronics (horizonscan sleuteltechnologieën)\nInstrument: NTS Actieagenda's per sleuteltechnologie\nDoel: strategische monitoring opkomende medtech voor\n      EZK-investeringsprioriteiten",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "3.4",
@@ -188,7 +205,9 @@
    "mib": "KIA G&Z | Randvoorwaarden: Betaalbaarheid & kwaliteit\nOnderwerp: Doelmatige inzet dure medtech — waardebeoordeling, kosteneffectiviteit als randvoorwaarde voor opschaling",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nDoel: Doelmatige inzet dure medtech via strategische inkoop\n      overheid en EU (EZK-instrument marktcreatie)\nInstrument: WBSO + kosteneffectiviteitstoetsing voor NGF-\n            investeringsbeslissingen",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "3.5",
@@ -209,7 +228,9 @@
    "mib": "KIA G&Z | Randvoorwaarden: Financiering & valorisatie\nOnderwerp: Financiering bundelen — PPS-financieringsstructuren voor landelijke opschaling medtech",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nNGF: NXTGEN Hightech + RegMed XB — financiering\n     bundelen voor pilot fabrieken en opschaling\nInstrument: EZK PPS-financiering + InvestNL\nDoel: gerichte kapitaalalllocatie voor marktdoorbraak medtech",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "3.6",
@@ -230,7 +251,9 @@
    "mib": "KIA G&Z | Valorisatie & Marktcreatie\nOnderwerp: Waardebepaling medtech-innovaties — Zorgtransformatiemodel, HTA, marktcreatie",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nNTS: Valorisatie sleuteltechnologieën (Imaging, Mechatronics)\nInstrument: HHT Strategisch Programma + NTS Actieagenda\nDoel: marktwaardebepaling als basis voor EZK-\n      investeringsbeslissingen en NGF-toewijzing",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "3.7",
@@ -251,7 +274,9 @@
    "mib": "KIA G&Z | Missie II+III: Opschaling bewezen innovaties\nOnderwerp: Faciliteren opschaling medtech — sleuteltaak KIA G&Z valorisatiestrategie\nKIA ST | Sensors, Imaging, Mechatronics — opschaling enabling tech\nKIA DIG | Neuromorphic computing (sensortoepassingen)",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech — KERN\nNTS: Imaging + Mechatronics + Biomolecular\nNGF: NXTGEN Hightech (biomedische productietechnologie)\n     RegMed XB (regeneratieve geneeskunde pilot fabrieken)\nInstrument: WBSO + Innovatiekrediet + strategische inkoop\nDoel: landelijke opschaling bewezen medtech-hulpmiddelen",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "3.8",
@@ -272,7 +297,9 @@
    "mib": "KIA G&Z | Human Capital\nOnderwerp: Ondersteuning & samenwerking professionals — opleiding, talentontwikkeling, leergemeenschappen zorg & technologie",
    "ezk": "EZK Industriebeleid: Talent & kennis\nDoel: Nederland als magneet voor technisch en digitaal talent\nInstrument: EZK Human Capital beleid, LLO-samenwerking\n            met OCW/SZW | Talent-programma's topsectoren\n            (voortgezet via generieke regelingen na 2026)",
    "src": "Medtech",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_MEDTECH",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-1",
@@ -293,7 +320,9 @@
    "mib": "KIA G&Z | Missie II: Zorg in de leefomgeving\nOnderwerp: Bekostiging hybride zorg — financiële randvoorwaarden voor digitale en hybride zorgverlening\nKIA DIG | IP3: Data & Cloud — bekostigingsinfrastructuur voor DHT",
    "ezk": "— Geen directe EZK-connectie\n(Bekostiging hybride zorg: VWS financieringsbeleid;\nbuiten scope EZK industriebeleid)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-2",
@@ -314,7 +343,9 @@
    "mib": "KIA G&Z | Missie II: Valorisatie hybride zorg\nOnderwerp: Financiering evaluatie passende hybride zorg — evidence-generatie voor zorgpaden\nKIA DIG | IP2: Domein-AI voor evaluatie zorguitkomsten",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNGF: Health-RI data-infrastructuur (financiering evaluaties)\nInstrument: WBSO voor evaluatieonderzoek digitale zorgpaden\nDoel: evidence-base voor opschaling digitale zorg als\n      groeimarkt digitale diensten",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-3",
@@ -335,7 +366,9 @@
    "mib": "KIA G&Z | Missie II: Smart tech for everyone, everywhere\nOnderwerp: Digitale vaardigheden burgers/patiënten — SEP-inclusief gebruik digitale zorg\nKIA DIG | DHT-gebruiksonderzoek, digitale inclusie",
    "ezk": "EZK Industriebeleid: Talent & kennis (digitale vaardigheden)\nGroeimarkt: Digitale diensten (AI) — digitale inclusie\nDoel: Nederland als magneet voor digitaal talent;\n      digitale vaardigheden als randvoorwaarde\n      voor AI-toepassingen in zorg",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-4",
@@ -356,7 +389,9 @@
    "mib": "KIA G&Z | Human Capital\nOnderwerp: Digitale vaardigheden zorgmedewerkers — LLO, opleiding voor gebruik DHT\nKIA DIG | Talent & Capaciteitsopbouw digitalisering",
    "ezk": "EZK Industriebeleid: Talent & kennis\nGroeimarkt: Digitale diensten (AI)\nDoel: digitale vaardigheidsontwikkeling zorgprofessionals\n      als EZK-speerpunt (LLO, arbeidsmarkt)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-5",
@@ -377,7 +412,9 @@
    "mib": "KIA G&Z | Centrale missie: Gezondheidsverschillen reduceren\nOnderwerp: Toegankelijkheid & inclusiviteit hybride zorg — 'Smart tech for everyone' inclusief mensen lage SEP",
    "ezk": "— Geen directe EZK-connectie\n(Toegankelijkheid hybride zorg: VWS/maatschappelijk beleid;\nbuiten scope EZK industriebeleid)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-6",
@@ -398,7 +435,9 @@
    "mib": "KIA DIG | IP3: Data & Cloud-infrastructuur\nOnderwerp: Landelijke voorziening/helpdesk digitale zorg — federatieve data-infrastructuur en cloudoplossingen voor zorg",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — cloud- en data-infrastructuur\nNGF: Health-RI (nationale gezondheidsdata-infrastructuur)\nInstrument: IPCEI cloud | EZK Data & Cloud-programma\nDoel: landelijke digitale zorginfrastructuur als\n      strategisch onderdeel digitale dienstenmarkt",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-7",
@@ -419,7 +458,9 @@
    "mib": "KIA G&Z | Missie II+III: Kwaliteitsstandaarden\nOnderwerp: Richtlijnen & kwaliteitsstandaarden hybride zorg — wetenschappelijke onderbouwing voor DHT-inzet",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech\nNTS: Imaging + Mechatronics (kwaliteitsstandaarden DHT)\nInstrument: NEN-normering + EZK standaardisatiebeleid\nDoel: internationale standaarden voor NL digitale\n      medische hulpmiddelen (concurrentiepositie)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-8",
@@ -440,7 +481,9 @@
    "mib": "— Geen directe MIB/KIA-connectie\n(Contractering hybride zorg is inkoop-/beleidsinstrument; buiten scope technologische innovatie)",
    "ezk": "— Geen directe EZK-connectie\n(Contractering hybride zorg: zorginkoop VWS/NZa;\nbuiten scope EZK industriebeleid)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-9",
@@ -461,7 +504,9 @@
    "mib": "— Geen directe MIB/KIA-connectie\n(Financieringssystematiek is bekostigingsbeleid; buiten scope MIB technologische innovatie)",
    "ezk": "— Geen directe EZK-connectie\n(Financieringssystematiek hybride zorg: VWS bekostigingsbeleid;\nbuiten scope EZK industriebeleid)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-A",
@@ -482,7 +527,9 @@
    "mib": "KIA G&Z | Missie II: Valorisatie & evidencebasis\nOnderwerp: Geaccepteerd bewijs effectiviteit hybride zorg — real-world validation voor opschaling\nKIA DIG | IP2: Domein-AI voor uitkomstmeting",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNGF: Health-RI + AiNed (evidence-generatie AI toepassingen)\nInstrument: WBSO voor effectiviteitsonderzoek DHT\nDoel: real-world validatie als basis voor marktcreatie\n      digitale zorgproducten (groeimarkt)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ__INTENSIVERING",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-B",
@@ -503,7 +550,9 @@
    "mib": "KIA G&Z | Missie II: Zorg in de leefomgeving — KERN\nOnderwerp: Bouwblokken zorgpaden DHZ — implementatie digitale/hybride zorgpaden (tele-monitoring, EMDR, triage)\nKIA DIG | DHT — Digital Health Technology in de praktijk\nKIA ST | Sensors & Imaging voor tele-monitoring",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI) + Machinebouw/MedTech\nNTS: AI & Data + Imaging + Mechatronics\nNGF: NXTGEN Hightech (tele-monitoring sensors/devices)\n     Health-RI (data-infrastructuur zorgpaden)\nInstrument: Strategische overheidsinkoop als\n      vraagstimulering voor digitale zorgpaden\nDoel: opschaling DHT als deel van groeimarkt digitale diensten",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ__INTENSIVERING",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-10",
@@ -524,7 +573,9 @@
    "mib": "KIA G&Z | Missie I: Leefstijl en leefomgeving\nOnderwerp: PGO's en preventieapps — digitale tools voor leefstijlbevordering en preventie buiten Zvw\nKIA DIG | DHT preventieapps, IP3 Health-RI data",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data (preventie-apps, PGO's)\nInstrument: WBSO voor app-ontwikkeling | Innovatiekrediet\nDoel: marktcreatie voor digitale preventietools;\n      aansluitend op groeimarkt digitale diensten",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-11",
@@ -545,7 +596,9 @@
    "mib": "KIA G&Z | Randvoorwaarden: Kwaliteit & veiligheid\nOnderwerp: Toetsingskaders kwaliteit/veiligheid/privacy hybride zorg — regulatoire kaders voor digitale zorgproducten",
    "ezk": "EZK Groeimarkt: Machinebouw / MedTech (MDR/IVDR)\nNTS: Imaging + Mechatronics (kwaliteit/veiligheid DHT)\nInstrument: EZK normering + CE-markering ondersteuning\nDoel: NL als normleider voor digitale medische hulpmiddelen",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-12",
@@ -566,7 +619,9 @@
    "mib": "KIA DIG | IP3: Data & Cloud, federatieve ecosystemen\nOnderwerp: Zorgservicecentra / ZMSC's — digitale zorginfrastructuur, cloudgebaseerde zorgverlening",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data + cloud-infrastructuur\nNGF: Health-RI federatieve data-ecosysteem\nInstrument: IPCEI Cloud | EZK strategische inkoop\nDoel: ZMSC's als onderdeel van digitale zorginfrastructuur\n      (groeimarkt digitale diensten)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-13",
@@ -587,7 +642,9 @@
    "mib": "— Geen directe MIB/KIA-connectie\n(Systeemknelpunten/Barrière Doorbrekers: geparkeerd; beleid/governance-instrument)",
    "ezk": "— Geen directe EZK-connectie\n(Systeemknelpunten geparkeerd: beleid/governance-instrument;\nbuiten scope EZK industriebeleid)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-14",
@@ -608,7 +665,9 @@
    "mib": "— Geen directe MIB/KIA-connectie\n(Informatievoorziening patiënten: geparkeerd; communicatie/beleid)",
    "ezk": "— Geen directe EZK-connectie (geparkeerd)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DHZ-15",
@@ -629,7 +688,9 @@
    "mib": "— Geen directe MIB/KIA-connectie\n(Innovatie-ecosysteem governance: geparkeerd; governance-instrument)",
    "ezk": "— Geen directe EZK-connectie (geparkeerd)",
    "src": "DHZ",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "WG_DHZ",
+   "mijlpalen": []
   },
   {
    "nr": "DIG-1",
@@ -650,7 +711,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "AI",
-   "ond": "D"
+   "ond": "D",
+   "werkgroepId": "WG_DIGITALISERING__GEGEVENSUITWISSELING",
+   "mijlpalen": []
   },
   {
    "nr": "DIG-2",
@@ -671,7 +734,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "AI",
-   "ond": "D"
+   "ond": "D",
+   "werkgroepId": "WG_DIGITALISERING__MEDMIJ_EN_PGO",
+   "mijlpalen": []
   },
   {
    "nr": "E2-1",
@@ -692,7 +757,9 @@
    "mib": "KIA G&Z | Missie II: Zorg in de leefomgeving\nOnderwerp: Opschaling passende zorg — market-pull vanuit samenleving via KIA-leergemeenschappen",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nDoel: ophalen initiatieven met AI/digitale toepassingen\n      als onderdeel groeimarkt digitale diensten\nInstrument: strategische inkoop overheid als vraagstimulering",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_SECT_OVERLEG",
+   "mijlpalen": []
   },
   {
    "nr": "E2-2",
@@ -713,7 +780,9 @@
    "mib": "KIA G&Z | Missie II: Valorisatie & marktcreatie\nOnderwerp: Voorselectie/beoordeling passende zorg-initiatieven — prioritering bewezen kosteneffectieve zorgpaden",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI) / MedTech\nDoel: beoordeling digitale en technologische passende-\n      zorgtoepassingen op EZK-innovatiecriteria\nInstrument: EZK-toetsingskader technologische haalbaarheid",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_SECT_OVERLEG",
+   "mijlpalen": []
   },
   {
    "nr": "E2-3",
@@ -734,7 +803,9 @@
    "mib": "KIA G&Z | Governance: Coalitie & stakeholders\nOnderwerp: Consultatie achterban — brede coalitie KIA-partners (patiënten, zorgprofessionals, industrie)",
    "ezk": "— Geen directe EZK-connectie\n(Consultatie achterban: zorginhoudelijk proces;\nbuiten scope EZK industriebeleid)",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_SECT_OVERLEG",
+   "mijlpalen": []
   },
   {
    "nr": "E2-4",
@@ -755,7 +826,9 @@
    "mib": "KIA G&Z | Governance: Zorgakkoorden aansluiting\nOnderwerp: Besluitvorming passende zorg per sector — aansluiting KIA-prioriteiten op IZA-besluitvorming",
    "ezk": "— Geen directe EZK-connectie\n(Bestuurlijke besluitvorming: VWS/zorgakkoorden-governance)",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_SECT_OVERLEG",
+   "mijlpalen": []
   },
   {
    "nr": "E2-5",
@@ -776,7 +849,9 @@
    "mib": "KIA G&Z | Missie II+III: Kwaliteits- & uitkomstonderzoek\nOnderwerp: Nadere beoordeling ZIN/FMS — evidence-based toetsing toepassingen voor opschaling",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI) / MedTech\nNTS: AI & Data (ZIN-beoordeling AI-toepassingen)\nInstrument: WBSO voor beoordelingsonderzoek\nDoel: EZK-toetsingskader voor vergoeding innovatieve\n      AI-toepassingen in zorg",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_ZIN_FMS_VENVN_NHG_UITVOERING_NADERE_BEOORDELING",
+   "mijlpalen": []
   },
   {
    "nr": "E2-6",
@@ -797,7 +872,9 @@
    "mib": "KIA G&Z | Valorisatie & Marktcreatie\nOnderwerp: Definitieve agendering opschaling — KIA zorgtransformatiemodel als raamwerk",
    "ezk": "— Geen directe EZK-connectie\n(Agendering opschaling: VWS-governance/IZA)",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "TF_OPSCHALING",
+   "mijlpalen": []
   },
   {
    "nr": "E2-7",
@@ -818,7 +895,9 @@
    "mib": "KIA G&Z | Missie II: Opschaling zorg in leefomgeving\nOnderwerp: Landelijk opschalen passende zorg — Smart tech for everyone, everywhere\nKIA DIG | DHT voor digitale/hybride zorgpaden\nKIA ST | Enabling tech voor schaalbaarheid",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI) + Machinebouw/MedTech\nNTS: AI & Data + Imaging + Mechatronics\nNGF: NXTGEN Hightech + AiNed (opschaling)\nInstrument: Strategische overheidsinkoop als\n      vraagstimulering voor opschaling passende zorg\nDoel: landelijke uitrol als marktdoorbraak voor beide groeimarkten",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_ZORGAANBIEDERS_ZORGVERLENERS",
+   "mijlpalen": []
   },
   {
    "nr": "E2-9",
@@ -839,7 +918,9 @@
    "mib": "— Geen directe MIB/KIA-connectie\n(NZa-monitor: regulering en toezicht; buiten scope MIB)",
    "ezk": "— Geen directe EZK-connectie\n(NZa-monitor: toezichts- en reguleringsproces)",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_NZA",
+   "mijlpalen": []
   },
   {
    "nr": "E2-10",
@@ -860,7 +941,9 @@
    "mib": "— Geen directe MIB/KIA-connectie\n(Bekostigingsruimte passende zorg: financieringsbeleid; buiten scope MIB)",
    "ezk": "— Geen directe EZK-connectie\n(Bekostigingsruimte: VWS/NZa financieringsbeleid)",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_VWS_EN_NZA",
+   "mijlpalen": []
   },
   {
    "nr": "E3-A",
@@ -881,7 +964,9 @@
    "mib": "KIA G&Z | Missie II+III: Zorg in leefomgeving + Meedoen\nOnderwerp: Samen beslissen in richtlijnen — patiëntparticipatie, shared decision tools in KIA-innovatieprogramma's",
    "ezk": "— Geen directe EZK-connectie\n(Samen beslissen: zorginhoudelijk/klinisch proces)",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_FMS_NHG_VENVN_RICHTLIJNENPARTIJEN",
+   "mijlpalen": []
   },
   {
    "nr": "E3-B",
@@ -902,7 +987,9 @@
    "mib": "KIA G&Z | Missie II: Smart tech for everyone\nOnderwerp: 'Zelf/thuis/digitaal als het kan' — kernprincipe KIA G&Z voor zorg op afstand\nKIA DIG | DHT als uitvoeringstechnologie",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data (digitale zelfzorgtools, thuis-monitoring)\nNGF: Health-RI + AiNed\nDoel: 'Zelf/thuis/digitaal als het kan' als hefboom\n      voor groeimarkt digitale diensten in zorg",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_FMS_NHG_VENVN_RICHTLIJNENPARTIJEN",
+   "mijlpalen": []
   },
   {
    "nr": "E3-E",
@@ -923,7 +1010,9 @@
    "mib": "— Geen directe MIB/KIA-connectie\n(Afwegingskader kritieke schaarste: beleids-/beheerskader; buiten scope MIB technologische innovatie)",
    "ezk": "— Geen directe EZK-connectie\n(Afwegingskader kritieke schaarste: VWS-beleid)",
    "src": "Passende Zorg",
-   "ond": "B"
+   "ond": "B",
+   "werkgroepId": "WG_VWS_ZIN_FMS_NHG_VENVN",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL1-1",
@@ -944,7 +1033,9 @@
    "mib": "KIA DIG | Actieagenda AI/Data — AI-readiness\nOnderwerp: Handreikingen AI-ready worden — definities, checklist, zelfevaluatie\nKIA G&Z | Human Capital: AI-geletterdheid zorgprofessionals",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data (AI-readiness)\nNGF: AiNed — AI-readiness programma nationaal\nInstrument: WBSO voor AI-implementatieprojecten",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL1-3",
@@ -965,7 +1056,9 @@
    "mib": "KIA DIG | Actieagenda AI/Data — Beleid & governance AI\nOnderwerp: Gezamenlijke visie en beleid AI in zorg — NTS-inbedding, FairTech-principes\nKIA G&Z | Randvoorwaarden: beleid & governance\nKIA ST | AI & Data als sleuteltechnologie",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — beleid en governance\nNGF: AiNed (nationale AI-strategie en governance)\nDoel: gezamenlijke beleidsvisie AI-zorg aansluiting\n      op NTS en EZK-actieagenda's",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL1-4",
@@ -986,7 +1079,9 @@
    "mib": "KIA DIG | Actieagenda AI/Data — Overzicht activiteiten\nOnderwerp: AI-readiness activiteiten veld — communicatie en kennisdeling\nKIA G&Z | Monitoring & Evaluatie",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — monitoring en evaluatie\nNGF: AiNed\nDoel: overzicht AI-readiness als input voor\n      EZK-monitoringsrapportage NTS",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL2-6",
@@ -1007,7 +1102,9 @@
    "mib": "KIA DIG | AA AI/Data IP1: GPT-NL/EU + IP2: Domein-AI\nOnderwerp: Blokkades opschaling SGR & capaciteitsplanning — KIA DIG kernprogramma spraak-AI\nKIA G&Z | Missie II Smart tech + Human Capital\nKIA ST | AI & Data sleuteltechnologie",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI) — KERN\nNTS: AI & Data — spraak-AI, capaciteitsplanning\nNGF: AiNed (SGR/spraakgestuurd rapporteren als\n     nationaal AI-use case voor zorg)\nInstrument: WBSO + Innovatiekrediet voor AI-opschaling\nDoel: arbeidsbesparende AI als doorbraaktoepassing\n      in de groeimarkt digitale diensten",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL2-7",
@@ -1028,7 +1125,9 @@
    "mib": "KIA DIG | Actieagenda AI/Data — Capaciteitsborging\nOnderwerp: Samenbrengen kennis/expertise AI — PPS kennisdeling en capaciteitsopbouw\nKIA G&Z | Human Capital & valorisatie",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — capaciteitsborging PPS\nNGF: AiNed (kennisopbouw en capaciteit)\nInstrument: EZK PPS-financiering + NWO",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL2-8",
@@ -1049,7 +1148,9 @@
    "mib": "KIA DIG | IP3: Data & Cloud, vendor-neutraliteit\nOnderwerp: Gezamenlijke inkoop AI / vendor neutraliteit — FairTech, Europese alternatieven\nKIA ST | AI & Data soevereiniteit\nKIA G&Z | Randvoorwaarden",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — vendor-neutraliteit, digitale soevereiniteit\nInstrument: EZK strategische inkoop + IPCEI AI\nDoel: NL AI-industrie onafhankelijk van\n      niet-Europese leveranciers (EZK-prioriteit)",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL2-9",
@@ -1070,7 +1171,9 @@
    "mib": "KIA DIG | AA AI/Data — AI-architectuur\nOnderwerp: Kennis AI-architectuur modellen — technische kennisbasis voor foundation-modellen\nKIA ST | AI & Data als sleuteltechnologie\nKIA G&Z | Randvoorwaarden",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — AI-architectuur\nNGF: AiNed (technische kennisbasis foundation-modellen)\nDoel: kennisopbouw voor NL AI-industrie als\n      onderdeel van EZK-groeimarktprogramma",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL2-11",
@@ -1091,7 +1194,9 @@
    "mib": "KIA DIG | AA AI/Data — Ethiek & FairTech\nOnderwerp: Ethische kaders operationaliseren AI in zorg — FairTech-principes, verantwoorde AI\nKIA G&Z | Randvoorwaarden: ethische AI in zorg",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — ethische kaders (FairTech)\nNGF: AiNed (verantwoorde AI)\nInstrument: EZK FairTech-beleid + AI Act implementatie\nDoel: vertrouwen als concurrentievoordeel\n      voor NL digitale dienstensector",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL2-12",
@@ -1112,7 +1217,9 @@
    "mib": "KIA DIG | AA AI/Data — Validatie AI\nOnderwerp: Validatieframeworks AI per toepassingsgebied — evidence-based AI-inzet\nKIA ST | AI & Data kwaliteits- en veiligheidsstandaarden\nKIA G&Z | Monitoring & Evaluatie",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — validatie AI-toepassingen\nNGF: AiNed (validatieframeworks)\nInstrument: WBSO voor validatieonderzoek\nDoel: kwaliteitsborging als markttoegangsvereiste\n      voor AI-producten (groeimarkt)",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL3-13",
@@ -1133,7 +1240,9 @@
    "mib": "KIA DIG | AA AI/Data IP1: GPT-NL — Nederlands taalmodel\nOnderwerp: Haalbaarheid Nederlands taalmodel voor zorg — basis voor spraakgestuurd rapporteren\nKIA ST | AI & Data (NTS prioriteit)\nKIA G&Z | Randvoorwaarden: AI-infrastructuur",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI) — KERN\nNTS: AI & Data — Nederlands taalmodel\nNGF: AiNed → GPT-NL (generiek NL taalmodel)\nInstrument: NGF directe financiering taalmodel\nDoel: GPT-NL als basis voor spraakgestuurd rapporteren\n      en andere zorg-AI toepassingen",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL3-14",
@@ -1154,7 +1263,9 @@
    "mib": "KIA DIG | AA AI/Data IP2: Domein-specifieke AI\nOnderwerp: Generieke AI toepassingen zorgbreed — foundation-modellen voor Nederlandse zorg\nKIA ST | AI & Data sleuteltechnologie\nKIA G&Z | Smart tech for everyone",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — generieke AI-toepassingen\nNGF: AiNed (domein-specifieke AI zorg)\nInstrument: WBSO + EZK-subsidies voor AI-haalbaarheidsonderzoek",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL3-16",
@@ -1175,7 +1286,9 @@
    "mib": "KIA DIG | AA AI/Data IP3: Data & Cloud, AI-register\nOnderwerp: AI-register en federatieve learning — Health-RI, FAIR data, gedistribueerd leren\nKIA ST | AI & Data, Microelectronics\nKIA G&Z | Randvoorwaarden: Health-RI",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — federatieve learning\nNGF: AiNed + Health-RI (AI-register, federated learning)\nInstrument: IPCEI Data + EZK Data & Cloud\nDoel: nationaal AI-register als strategisch\n      infrastructuurproject",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL3-17",
@@ -1196,7 +1309,9 @@
    "mib": "KIA DIG | AA AI/Data IP1: GPT-NL template library\nOnderwerp: Nationale template bibliotheek AI — herbruikbare AI-bouwblokken voor zorg\nKIA G&Z | Randvoorwaarden: kennisinfrastructuur",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — template bibliotheek\nNGF: AiNed (herbruikbare AI-bouwblokken)\nInstrument: EZK open-source stimulering\nDoel: gedeelde AI-infrastructuur als publiek goed",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL4-18",
@@ -1217,7 +1332,9 @@
    "mib": "KIA DIG | AA AI/Data — Communicatie\nOnderwerp: AI communicatieprogramma's — bekendheid AI-toepassingen in zorg\nKIA G&Z | Human Capital communicatie",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nEZK Industriebeleid: Talent & kennis\nInstrument: EZK communicatieprogramma's digitale\n            economie + AI-bewustzijn campagnes",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL4-19",
@@ -1238,7 +1355,9 @@
    "mib": "KIA DIG | AA AI/Data + KIA G&Z | Human Capital\nOnderwerp: AI-geletterdheid opleiding doelgroepen — capaciteitsopbouw AI-gebruik in zorg",
    "ezk": "EZK Industriebeleid: Talent & kennis\nGroeimarkt: Digitale diensten (AI)\nNGF: AiNed (AI-geletterdheid)\nDoel: digitaal talent als randvoorwaarde voor\n      NL-concurrentiepositie in AI-groeimarkt",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL4-20",
@@ -1259,7 +1378,9 @@
    "mib": "KIA G&Z | Valorisatie & Marktcreatie\nOnderwerp: Werkbezoeken in de praktijk — verbinding innovatie en zorgpraktijk",
    "ezk": "— Geen directe EZK-connectie\n(Werkbezoeken in de praktijk: operationeel instrument)",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL4-22",
@@ -1280,7 +1401,9 @@
    "mib": "KIA DIG | AA AI/Data — Publiek bewustzijn\nOnderwerp: Publiekscampagne AI in de zorg — maatschappelijk draagvlak AI-toepassingen\nKIA G&Z | Centrale missie gezondheidsverschillen",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nEZK Industriebeleid: Talent & kennis (publiekscampagne)\nDoel: breed publiek bewust maken van AI in zorg\n      als onderdeel van EZK-strategie digitale economie",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL4-23",
@@ -1301,7 +1424,9 @@
    "mib": "KIA DIG | AA AI/Data — Community building\nOnderwerp: Zorgbrede AI community — netwerk KIA-partners, kennisdeling, PPS-ecosysteem\nKIA G&Z | Governance & valorisatie",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNGF: AiNed — AI community building\nInstrument: EZK ecosysteem-versterking\nDoel: netwerk van partijen als fundament voor\n      NL AI-industrie (groeimarkt)",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL5-24",
@@ -1322,7 +1447,9 @@
    "mib": "KIA DIG | AA AI/Data IP2+IP3: Domein-AI + Data\nOnderwerp: Inventarisatie benodigdheden opschaling AI — marktonderzoek, vraagarticulatie\nKIA ST | AI & Data valorisatie\nKIA G&Z | Valorisatie & marktcreatie",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — vraagarticulatie voor opschaling\nNGF: AiNed (implementatiebehoeften)\nInstrument: EZK marktanalyse voor programma-ontwikkeling\nDoel: onderbouwing EZK-programma Digitale diensten/AI",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL5-25",
@@ -1343,7 +1470,9 @@
    "mib": "KIA DIG | AA AI/Data — Implementatiestrategie\nOnderwerp: Gezamenlijke implementatiestrategie AI per toepassingsgebied — sectorbrede uitrol\nKIA ST | AI & Data schaalbaarheid\nKIA G&Z | Missie II Smart tech voor opschaling",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — implementatiestrategie per sector\nNGF: AiNed (implementatieplan)\nInstrument: EZK sectorprogramma's + strategische inkoop\nDoel: uitvoeringsplan als input voor EZK-\n      programma Digitale diensten/AI",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL5-26",
@@ -1364,7 +1493,9 @@
    "mib": "KIA DIG | AA AI/Data — Bestuurlijk commitment\nOnderwerp: Bestuurlijk commitment opschaling AI — governance en mandaat voor KIA-implementatie\nKIA ST | AI & Data governance\nKIA G&Z | Governance zorgakkoorden",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — bestuurlijk commitment\nInstrument: Ministerieel overleg EZK-VWS;\n            AI Actieplan Nederland 2024-2030\nDoel: cross-departementale governance voor\n      AI-opschaling in zorg als groeimarkt",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-PL5-27",
@@ -1385,7 +1516,9 @@
    "mib": "KIA DIG | AA AI/Data — Duurzame financiering\nOnderwerp: Duurzaam financieringsmodel AI in zorg — borging na doorbraakmiddelperiode\nKIA ST | AI & Data valorisatiemodel\nKIA G&Z | Randvoorwaarden financiering",
    "ezk": "EZK Groeimarkt: Digitale diensten (AI)\nNTS: AI & Data — duurzaam financieringsmodel\nNGF: AiNed (financieringsstructuur na NGF-periode)\nInstrument: EZK WBSO + Innovatiekrediet als\n      structurele financieringsbasis post-NGF\nDoel: duurzame AI-industrie onafhankelijk van\n      eenmalige NGF-impulsen",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "AI-DM3",
@@ -1406,7 +1539,9 @@
    "mib": "KIA G&Z (Missie 5: GGZ)  |  KIA Digitalisering — AI geestelijke gezondheid",
    "ezk": "Groeimarkt Digitale diensten/AI  |  NGF AiNed  |  NTS AI & Data",
    "src": "AI",
-   "ond": "AZWA"
+   "ond": "AZWA",
+   "werkgroepId": "TF_DAI",
+   "mijlpalen": []
   },
   {
    "nr": "CT-1",
@@ -1427,7 +1562,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "E"
+   "ond": "E",
+   "werkgroepId": "WG_PASSENDE_CONTRACTERING__ZORGINKOOP",
+   "mijlpalen": []
   },
   {
    "nr": "CT-2",
@@ -1448,7 +1585,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "E"
+   "ond": "E",
+   "werkgroepId": "WG_PASSENDE_CONTRACTERING__ZORGINKOOP",
+   "mijlpalen": []
   },
   {
    "nr": "CT-3",
@@ -1469,7 +1608,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "E"
+   "ond": "E",
+   "werkgroepId": "WG_PASSENDE_CONTRACTERING__MSZ",
+   "mijlpalen": []
   },
   {
    "nr": "CT-4",
@@ -1490,7 +1631,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "E"
+   "ond": "E",
+   "werkgroepId": "WG_PASSENDE_CONTRACTERING__ONGECONTRACTEERDE_ZORG",
+   "mijlpalen": []
   },
   {
    "nr": "CT-5",
@@ -1511,7 +1654,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "E"
+   "ond": "E",
+   "werkgroepId": "WG_PASSENDE_CONTRACTERING__IMPACTVOLLE_TRANSFORMATIES",
+   "mijlpalen": []
   },
   {
    "nr": "RS-1",
@@ -1532,7 +1677,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "F"
+   "ond": "F",
+   "werkgroepId": "WG_REGIONALE_SAMENWERKING__REGIOBEELDEN",
+   "mijlpalen": []
   },
   {
    "nr": "RS-2",
@@ -1553,7 +1700,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "F"
+   "ond": "F",
+   "werkgroepId": "WG_REGIONALE_SAMENWERKING__REGIOPLANNEN",
+   "mijlpalen": []
   },
   {
    "nr": "RS-3",
@@ -1574,7 +1723,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "F"
+   "ond": "F",
+   "werkgroepId": "WG_REGIONALE_SAMENWERKING__BEKOSTIGING",
+   "mijlpalen": []
   },
   {
    "nr": "GGZ-1",
@@ -1595,7 +1746,9 @@
    "mib": "KIA G&Z (Missie 5: GGZ)  |  KIA Digitalisering (consultatie-tools)",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "G"
+   "ond": "G",
+   "werkgroepId": "WG_SAMENWERKING_SOCIAAL_DOMEIN_GGZ_HUISARTSENZORG",
+   "mijlpalen": []
   },
   {
    "nr": "GGZ-2",
@@ -1616,7 +1769,9 @@
    "mib": "KIA G&Z (Missie 5: GGZ)  |  KIA Digitalisering (digitale tools netwerken)",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "G"
+   "ond": "G",
+   "werkgroepId": "WG_SAMENWERKING_SOCIAAL_DOMEIN_GGZ_HUISARTSENZORG",
+   "mijlpalen": []
   },
   {
    "nr": "AR-1",
@@ -1637,7 +1792,9 @@
    "mib": "KIA Digitalisering — Actieagenda AI/Data (administratieve last reductie)",
    "ezk": "Groeimarkt Digitale diensten/AI  |  NTS AI & Data",
    "src": "IZA",
-   "ond": "H"
+   "ond": "H",
+   "werkgroepId": "WG_REGIEGROEP_AANPAK_REGELDRUK",
+   "mijlpalen": []
   },
   {
    "nr": "AZ-1",
@@ -1658,7 +1815,9 @@
    "mib": "KIA G&Z (Missie 3: acute zorg)  |  KIA Digitalisering (capaciteitsplanning AI)",
    "ezk": "Groeimarkt Digitale diensten/AI  |  NTS AI & Data",
    "src": "IZA",
-   "ond": "I"
+   "ond": "I",
+   "werkgroepId": "WG_SAMENWERKING_ACUTE_ZORG__ZORGCOORDINATIE",
+   "mijlpalen": []
   },
   {
    "nr": "PZ-1",
@@ -1679,7 +1838,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "J"
+   "ond": "J",
+   "werkgroepId": "WG_PASSENDE_ZORG__PAKKETBEHEER",
+   "mijlpalen": []
   },
   {
    "nr": "PZ-2",
@@ -1700,7 +1861,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "J"
+   "ond": "J",
+   "werkgroepId": "WG_PASSENDE_ZORG__KWALITEITSREGISTRATIES",
+   "mijlpalen": []
   },
   {
    "nr": "PZ-3",
@@ -1721,7 +1884,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "J"
+   "ond": "J",
+   "werkgroepId": "WG_PASSENDE_ZORG__UITKOMSTINFORMATIE",
+   "mijlpalen": []
   },
   {
    "nr": "CS-1",
@@ -1742,7 +1907,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "K"
+   "ond": "K",
+   "werkgroepId": "WG_CONCENTRATIE_EN_SPREIDING__TOEKOMSTBESTENDIG_ZORGLANDSCHAP",
+   "mijlpalen": []
   },
   {
    "nr": "CS-2",
@@ -1763,7 +1930,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "K"
+   "ond": "K",
+   "werkgroepId": "WG_CONCENTRATIE_EN_SPREIDING__BOVENREGIONALE_FUNCTIES",
+   "mijlpalen": []
   },
   {
    "nr": "EL-1",
@@ -1784,7 +1953,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "L"
+   "ond": "L",
+   "werkgroepId": "WG_EERSTELIJNSZORG__MEER_TIJD_VOOR_DE_PATIENT_MTVP",
+   "mijlpalen": []
   },
   {
    "nr": "EL-2",
@@ -1805,7 +1976,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "L"
+   "ond": "L",
+   "werkgroepId": "WG_EERSTELIJNSZORG__WIJKVERPLEGING",
+   "mijlpalen": []
   },
   {
    "nr": "EL-3",
@@ -1826,7 +1999,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "L"
+   "ond": "L",
+   "werkgroepId": "WG_EERSTELIJNSZORG__PARAMEDISCHE_ZORG",
+   "mijlpalen": []
   },
   {
    "nr": "EL-4",
@@ -1847,7 +2022,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "L"
+   "ond": "L",
+   "werkgroepId": "WG_EERSTELIJNSZORG__VISIE_2030",
+   "mijlpalen": []
   },
   {
    "nr": "PV-1",
@@ -1868,7 +2045,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "M"
+   "ond": "M",
+   "werkgroepId": "WG_PREVENTIE__KETENAANPAKKEN",
+   "mijlpalen": []
   },
   {
    "nr": "PV-2",
@@ -1889,7 +2068,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "M"
+   "ond": "M",
+   "werkgroepId": "WG_PREVENTIE__REGIONALE_INFRASTRUCTUUR",
+   "mijlpalen": []
   },
   {
    "nr": "PV-3",
@@ -1910,7 +2091,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "M"
+   "ond": "M",
+   "werkgroepId": "WG_PREVENTIE__LEEFSTIJL_ALS_BEHANDELING",
+   "mijlpalen": []
   },
   {
    "nr": "AT-1",
@@ -1931,7 +2114,9 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "N"
+   "ond": "N",
+   "werkgroepId": "WG_ARBEIDSMARKT__TAZ_PROGRAMMA",
+   "mijlpalen": []
   },
   {
    "nr": "AT-2",
@@ -1952,69 +2137,1055 @@
    "mib": "— Geen directe KIA-connectie",
    "ezk": "— Geen EZK-connectie",
    "src": "IZA",
-   "ond": "N"
+   "ond": "N",
+   "werkgroepId": "WG_ARBEIDSMARKT__OPLEIDINGSCAPACITEIT",
+   "mijlpalen": []
   }
  ],
- "contacts": [
+ "voortgang": [
+  {
+   "id": "VG-0001",
+   "afspraakNr": "1.1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Nog niet gestart",
+   "toelichting": "VWS in overleg met Zorg voor Innoveren om platform door te ontwikkelen; prognose vernieuwde opdrachtbrief zomer 2026."
+  },
+  {
+   "id": "VG-0002",
+   "afspraakNr": "1.2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Achter op schema",
+   "toelichting": "Werkgroep heeft goedkeuring gegeven voor opdracht aan Zweedse ambassade (ecosysteem in kaart brengen). VWS werkt aan soft landing programma India."
+  },
+  {
+   "id": "VG-0003",
+   "afspraakNr": "1.3",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Op schema",
+   "toelichting": "VWS plant eerste overleg eerste helft april; in combinatie met afspraken Financiering bundelen & Faciliteren."
+  },
+  {
+   "id": "VG-0004",
+   "afspraakNr": "2.1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Gestart",
+   "toelichting": "NWO, ZonMw, RVO en Health Holland schrijven op verzoek VWS een eerste voorstel. Wordt in april aan werkgroep voorgelegd."
+  },
+  {
+   "id": "VG-0005",
+   "afspraakNr": "2.2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Gestart",
+   "toelichting": "NWO, ZonMw, RVO en Health Holland schrijven eerste voorstel (zelfde traject als 2.1). Wordt in april aan werkgroep voorgelegd."
+  },
+  {
+   "id": "VG-0006",
+   "afspraakNr": "3.1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Nog te starten",
+   "toelichting": "VWS maakt korte notitie ter bespreking in werkgroep(en) met belangrijkste verbindingen IZA/AZWA/HLO afspraken digitale en hybride zorg en AI."
+  },
+  {
+   "id": "VG-0007",
+   "afspraakNr": "3.2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Gestart",
+   "toelichting": "VWS geeft opdracht aan RVO om in Europees verband (EU4Health Joint Action) expertise over MDR/IVDR op te doen en via Zorg voor Innoveren te verspreiden. Geraamd: €50.000/jaar."
+  },
+  {
+   "id": "VG-0008",
+   "afspraakNr": "3.3",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Gestart",
+   "toelichting": "Zorginstituut neemt deel aan IHSI. Brengt behoeften voor horizonscanning bij AZWA partners in kaart."
+  },
+  {
+   "id": "VG-0009",
+   "afspraakNr": "3.4",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Nog te starten",
+   "toelichting": "ZN, FMS en FME doen aanzet voor concretiseren afspraak. VWS en Zorginstituut doen eerste duiding in relatie tot VVTB programma en Pakketbeheer."
+  },
+  {
+   "id": "VG-0010",
+   "afspraakNr": "3.5",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Nog te starten",
+   "toelichting": "VWS plant eerste overleg eerste helft april; in combinatie met afspraken 1.3 (Schaalbare innovaties) en 3.7 (Faciliteren opschaling)."
+  },
+  {
+   "id": "VG-0011",
+   "afspraakNr": "3.6",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Nog te starten",
+   "toelichting": "VWS maakt korte notitie met opties voor synergie/samenhang met Digizo.nu, ZE&GG, Cirkel van Gepast Gebruik en AZWA afspraken Passende Zorg E3."
+  },
+  {
+   "id": "VG-0012",
+   "afspraakNr": "3.7",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Nog te starten",
+   "toelichting": "VWS plant eerste overleg eerste helft april; in combinatie met afspraken 3.5 en 1.3."
+  },
+  {
+   "id": "VG-0013",
+   "afspraakNr": "3.8",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Gestart",
+   "toelichting": "Samenwerkingsafspraken gemaakt met AZWA afspraak B3 Strategisch opleiden. Nota voor centrale aansturing ligt voor in thematafel 1 april."
+  },
+  {
+   "id": "VG-0014",
+   "afspraakNr": "DHZ-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Nog niet gestart",
+   "toelichting": "Subwerkgroep Bekostiging in voorbereiding. Afspraak concretiseren en voortbouwen op lopende initiatieven bekostiging; op basis van casuïstiek uit de praktijk via IZA partijen."
+  },
+  {
+   "id": "VG-0015",
+   "afspraakNr": "DHZ-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Achter op schema",
+   "toelichting": "Subwerkgroep Geaccepteerd bewijs in opstart. Haakjes met ZonMw programma VVH, maar ook initiatieven van Vilans, ZE&GG etc."
+  },
+  {
+   "id": "VG-0016",
+   "afspraakNr": "DHZ-3",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Op schema",
+   "toelichting": "Subwerkgroep bouwt voort op en verbindt met alle lopende initiatieven."
+  },
+  {
+   "id": "VG-0017",
+   "afspraakNr": "DHZ-4",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Afgerond",
+   "toelichting": "Subwerkgroep bouwt voort op en verbindt met alle lopende initiatieven."
+  },
+  {
+   "id": "VG-0018",
+   "afspraakNr": "DHZ-5",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "—",
+   "toelichting": "Subwerkgroep bouwt voort op en verbindt met lopende initiatieven."
+  },
+  {
+   "id": "VG-0019",
+   "afspraakNr": "DHZ-6",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "—",
+   "toelichting": "AZWA afspraak. Landelijke voorziening opschalen vanuit huidige (lokale) initiatieven."
+  },
+  {
+   "id": "VG-0020",
+   "afspraakNr": "DHZ-7",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "—",
+   "toelichting": "Na eerdere sectoroverstijgende insteek nu aanpak per sector via wetenschappelijke verenigingen. Haakjes met AZWA afspraken Passende Zorg (E3) en ZonMw programma's."
+  },
+  {
+   "id": "VG-0021",
+   "afspraakNr": "DHZ-8",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "—",
+   "toelichting": "Is deels going business vanuit contracteringsafspraken met stimulans vanuit inkoopkader ZVW en landelijke kaders WLZ en WMO."
+  },
+  {
+   "id": "VG-0022",
+   "afspraakNr": "DHZ-9",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "—",
+   "toelichting": "Is deels going business vanuit contracteringsafspraken met stimulans vanuit inkoopkader ZVW en landelijke kaders WLZ en WMO."
+  },
+  {
+   "id": "VG-0023",
+   "afspraakNr": "DHZ-A",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In opstart",
+   "toelichting": "Subwerkgroep in opstart. Haakjes ZonMw programma VVH, Vilans, ZE&GG. Zie ook DHZ-2."
+  },
+  {
+   "id": "VG-0024",
+   "afspraakNr": "DHZ-B",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In voorbereiding",
+   "toelichting": "Uitwerking per sector in combinatie met intensiveringsagenda onderwerpen. Nog nader te concretiseren."
+  },
+  {
+   "id": "VG-0025",
+   "afspraakNr": "DHZ-10",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Niet geprioriteerd; ongoing",
+   "toelichting": "Haakjes met financiering en bekostiging. Lopende initiatieven zoals DIGAnl."
+  },
+  {
+   "id": "VG-0026",
+   "afspraakNr": "DHZ-11",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Niet geprioriteerd; ongoing",
+   "toelichting": "Geen aparte acties. Met IGJ regulier overleg."
+  },
+  {
+   "id": "VG-0027",
+   "afspraakNr": "DHZ-12",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Niet geprioriteerd; ongoing",
+   "toelichting": "Lopende subwerkgroep ZMSC's. Inventarisatierapport eind 2025. Project 'inrichtingsprincipes' gecoördineerd vanuit VWS (Flex)."
+  },
+  {
+   "id": "VG-0028",
+   "afspraakNr": "DHZ-13",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Geparkeerd",
+   "toelichting": "Initiatief Barrière Doorbrekers gestopt. Na evaluatie bepalen hoe verder, ook irt Zorg voor Innoveren, Team Overheid, Vliegende Brigade."
+  },
+  {
+   "id": "VG-0029",
+   "afspraakNr": "DHZ-14",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Geparkeerd",
+   "toelichting": "Nadere concretisering nodig."
+  },
+  {
+   "id": "VG-0030",
+   "afspraakNr": "DHZ-15",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Geparkeerd",
+   "toelichting": "Nadere concretisering nodig."
+  },
+  {
+   "id": "VG-0031",
+   "afspraakNr": "DIG-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "VIPP GGZ en MSZ afgerond (2024). FHIR-verplichting per 2026 in Regeling Zorgverzekering opgenomen. Nictiz implementatiegids gepubliceerd."
+  },
+  {
+   "id": "VG-0032",
+   "afspraakNr": "DIG-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "MedMij 2.0 live (Q3 2024). 65% Zvw-aanbieders gecertificeerd (meting Q1 2025). Campagne 'Jouw gezondheid, jouw data' gestart."
+  },
+  {
+   "id": "VG-0033",
+   "afspraakNr": "E2-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitwerking",
+   "toelichting": "Voorstel governance en werkwijze v3 (3 mrt 2026) voorgelegd aan BO IZA/AZWA. Uitvraagkader (voorbeeld) opgesteld als bijlage."
+  },
+  {
+   "id": "VG-0034",
+   "afspraakNr": "E2-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitwerking",
+   "toelichting": "Beoordelingsformat en selectiekader (Excel, bijlage) opgesteld. 21 voorbeelden uit Programma Passende Zorgpraktijken ZIN worden meegenomen."
+  },
+  {
+   "id": "VG-0035",
+   "afspraakNr": "E2-4",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitwerking",
+   "toelichting": "Thematafel Opschaling Passende Zorg bereidt besluitvorming voor. BO IZA/AZWA besluit jaarlijks over op te schalen initiatieven op basis van consensus."
+  },
+  {
+   "id": "VG-0036",
+   "afspraakNr": "E2-5",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitwerking",
+   "toelichting": "Werkwijze sluit aan bij AQUA-leidraad. Patiëntenperspectief structureel ingebed."
+  },
+  {
+   "id": "VG-0037",
+   "afspraakNr": "E2-9",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In ontwikkeling",
+   "toelichting": "Plan voor monitoring in opstelling. Idee: contracten 2026 opvragen bij sectoren; 2027 monitoren hoe geselecteerde initiatieven worden opgeschaald. Gelijkgericht handelen zorgverzekeraars te beoordelen."
+  },
+  {
+   "id": "VG-0038",
+   "afspraakNr": "E2-10",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Nader uit te werken",
+   "toelichting": "Nader uit te werken door VWS en NZa."
+  },
+  {
+   "id": "VG-0039",
+   "afspraakNr": "E3-A",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Handreiking 'Samenbeslisondersteunende instrumenten' (Federatie, dec 2025) gepubliceerd. Instructies richtlijnontwikkelaars aangevuld Q1 2026. Training (nieuwe) werkgroepleden."
+  },
+  {
+   "id": "VG-0040",
+   "afspraakNr": "E3-B",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Instructies worden Q1 2026 aangevuld. Aandacht voor veiligheidsaspecten, gebruiksvriendelijkheid en bekostiging als randvoorwaarden bij digitale zorg in richtlijnen."
+  },
+  {
+   "id": "VG-0041",
+   "afspraakNr": "E3-E",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Nader te concretiseren",
+   "toelichting": "Afgesproken in AZWA, breed ingestoken. Bij kritieke vraagstukken m.b.t. schaarste escaleert werkgroep."
+  },
+  {
+   "id": "VG-0042",
+   "afspraakNr": "AI-PL1-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Concept besproken (23 mrt 2026)",
+   "toelichting": "Startpunt: NVZ/NFU stuk. Beoordelen per zorgbranche; gezamenlijk aanvullen. Doelgroepen: I) Bestuurlijk II) Uitvoerend III) Management IV) Administratief."
+  },
+  {
+   "id": "VG-0043",
+   "afspraakNr": "AI-PL1-4",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Concept besproken",
+   "toelichting": "Sharepoint als eventuele eerste stap."
+  },
+  {
+   "id": "VG-0044",
+   "afspraakNr": "AI-PL2-6",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Concept besproken",
+   "toelichting": "SGR en capaciteitsplanning zijn EERSTE prioriteit voor implementatie en opschaling (PL5)."
+  },
+  {
+   "id": "VG-0045",
+   "afspraakNr": "AI-PL2-7",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Concept besproken",
+   "toelichting": "Voorbeeld: aansluiting bij expertise-centrum (co-creatie/co-design). Aansluiten op uitkomsten GENAISIS project en RIGH:T-consortium; ZonMw kennisagenda."
+  },
+  {
+   "id": "VG-0046",
+   "afspraakNr": "AI-PL4-23",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Concept besproken",
+   "toelichting": "Eerst inventariseren wat er al is voor opzet community. Behoeften inventariseren: voor wie, wat gedeeld, op welke manier."
+  },
+  {
+   "id": "VG-0047",
+   "afspraakNr": "AI-DM3",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In voorbereiding",
+   "toelichting": "Modelplan in uitwerking. Inzet GGZ + huisartsen. Afstemming met IZA Mentale gezondheidsnetwerken (GGZ-2)."
+  },
+  {
+   "id": "VG-0048",
+   "afspraakNr": "CT-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Gespreksleidraad cruciale GGZ gepubliceerd (2024). Per regio worden afspraken gemaakt over cruciale GGZ-aanbod."
+  },
+  {
+   "id": "VG-0049",
+   "afspraakNr": "CT-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "Structureel",
+   "toelichting": "Jaarcyclus operationeel. Mijlpalen vastgelegd in NZa-regelgeving."
+  },
+  {
+   "id": "VG-0050",
+   "afspraakNr": "CT-3",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Handreiking en stappenplan gepubliceerd. Praktijkvoorbeelden: Maasstad Ziekenhuis (waardegedreven contractering 3.0)."
+  },
+  {
+   "id": "VG-0051",
+   "afspraakNr": "CT-4",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Wtza in werking; NZa monitort aandeel ongecontracteerd. Onderhandelingsrichtlijn zorgverzekeraars in 2025 bijgesteld."
+  },
+  {
+   "id": "VG-0052",
+   "afspraakNr": "CT-5",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Eerste tranche transformatiemiddelen verdeeld (2023-2024). Kaders tweede tranche vastgesteld. NZa-monitor impactvolle transformaties 2025 gepubliceerd."
+  },
+  {
+   "id": "VG-0053",
+   "afspraakNr": "RS-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Criteriaset gepubliceerd. Meeste regio's hebben regiobeelden. Regiobeelden en -plannen beschikbaar op zorgakkoorden.nl."
+  },
+  {
+   "id": "VG-0054",
+   "afspraakNr": "RS-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Regioplannen beschikbaar. Afstemming met IZA-transformatieplannen en jaarcyclus contractering."
+  },
+  {
+   "id": "VG-0055",
+   "afspraakNr": "RS-3",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Betaaltitel operationeel. Handleiding beschikbaar. Eerste contracten afgesloten (bijv. MESO-zorg huisartsen Tiel)."
+  },
+  {
+   "id": "VG-0056",
+   "afspraakNr": "GGZ-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Bekostiging operationeel. Implementatie loopt in regio's."
+  },
+  {
+   "id": "VG-0057",
+   "afspraakNr": "GGZ-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Werkwijze gepubliceerd. Regio's starten met inrichting netwerken. Afstemming met AI-DM3 Mentaal schakelpunt."
+  },
+  {
+   "id": "VG-0058",
+   "afspraakNr": "AR-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Regiegroep actief. Deels invulling via AI doorbraakmiddelen (spraakgestuurd rapporteren). Voortgang monitored."
+  },
+  {
+   "id": "VG-0059",
+   "afspraakNr": "AZ-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "ROAZ-plannen in uitvoering. Campagne actief. Toegankelijkheid acute zorg staat onder druk; structurele krapte arbeidsmarkt."
+  },
+  {
+   "id": "VG-0060",
+   "afspraakNr": "PZ-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "ZIN publiceert vernieuwde pakketcriteria (2024). Convenant gepast gebruik dure geneesmiddelen in 2025 herzien."
+  },
+  {
+   "id": "VG-0061",
+   "afspraakNr": "PZ-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "DICA-routekaart stroomlijning 2024 vastgesteld. Eerste 15 registraties afgebouwd of samengevoegd (2025)."
+  },
+  {
+   "id": "VG-0062",
+   "afspraakNr": "PZ-3",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In voorbereiding",
+   "toelichting": "Kader 'inkopen op uitkomsten' in 2025 opgesteld (ZN/NVZ). Pilot 5 aandoeningen gestart."
+  },
+  {
+   "id": "VG-0063",
+   "afspraakNr": "CS-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Regiovisies voor 8 regio's gereed (2024). Eerste concentratieafspraken oncologie vastgelegd. Stuurgroep Toekomstbestendig Zorglandschap operationeel."
+  },
+  {
+   "id": "VG-0064",
+   "afspraakNr": "CS-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "NZa-kaders bovenregionale functies gepubliceerd (2024). Inkoopafspraken Level 1 traumacentra vastgelegd voor 2025."
+  },
+  {
+   "id": "VG-0065",
+   "afspraakNr": "EL-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "MTVP-programmabureau operationeel. Eind 2024: 85% van huisartsenpraktijken aangesloten. Businesscase taakherschikking gepubliceerd (2025)."
+  },
+  {
+   "id": "VG-0066",
+   "afspraakNr": "EL-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Kader 'Wijkteams Wijkverpleging' gepubliceerd (2025). Pilots in 12 regio's gestart. NZa past bekostiging aan (2026)."
+  },
+  {
+   "id": "VG-0067",
+   "afspraakNr": "EL-3",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Convenant paramedische zorg & preventie ondertekend (2024). Pilot versterkte apothekersrol in ketenzorg (10 regio's) gestart."
+  },
+  {
+   "id": "VG-0068",
+   "afspraakNr": "EL-4",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In voorbereiding",
+   "toelichting": "Startdocument 'Visie Eerstelijnszorg 2030' gepubliceerd voor consultatie (Q1 2025). Definitieve visie verwacht Q3 2025."
+  },
+  {
+   "id": "VG-0069",
+   "afspraakNr": "PV-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "GLI: 250.000 deelnemers in 2025 (doel bereikt). Valpreventie: opschaling via 25 koplopers-regio's. Welzijn op Recept: 250 gemeenten aangesloten (2025)."
+  },
+  {
+   "id": "VG-0070",
+   "afspraakNr": "PV-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Regionale preventieakkoorden in 31 van 35 regio's actief (2025). GALA (Gezond en Actief Leven Akkoord) als financieringskader voor gemeenten."
+  },
+  {
+   "id": "VG-0071",
+   "afspraakNr": "PV-3",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "NHG-standaard diabetes herzien met leefstijlmodule (2024). Bekostiging leefstijlcoach in Zvw per 2026 (besluit NZa)."
+  },
+  {
+   "id": "VG-0072",
+   "afspraakNr": "AT-1",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "TAZ-tussenrapportage 2024: 40.000 extra functies ingevuld via zij-instroom. Sectorplan Zorg & Welzijn 2025-2026 gepubliceerd."
+  },
+  {
+   "id": "VG-0073",
+   "afspraakNr": "AT-2",
+   "datum": "2026-07-02",
+   "auteur": "Migratie PoC v3",
+   "status": "In uitvoering",
+   "toelichting": "Capaciteitsorgaan: advies 85.000 extra opleidingsplaatsen (2025). Subsidieregeling taakherschikking opgehoogd (€ 50 mln, 2025)."
+  }
+ ],
+ "werkgroepen": [
   {
    "id": "WG_MEDTECH",
-   "label": "Werkgroep Medische Technologie",
-   "toel": "ZN vertegenwoordiging",
-   "personen": []
+   "naam": "Werkgroep Medische Technologie",
+   "tafel": "T1",
+   "parentId": null,
+   "toelichting": "ZN vertegenwoordiging",
+   "gremium": true
   },
   {
    "id": "WG_HLO_TECH",
-   "label": "HLO Werkgroep Technologie (cluster 8)",
-   "toel": "HLO specifiek",
-   "personen": []
+   "naam": "HLO Werkgroep Technologie (cluster 8)",
+   "tafel": "T1",
+   "parentId": null,
+   "toelichting": "HLO specifiek",
+   "gremium": true
   },
   {
    "id": "WG_DHZ",
-   "label": "Werkgroep Digitale en Hybride Zorg",
-   "toel": "",
-   "personen": []
+   "naam": "Werkgroep Digitale en Hybride Zorg",
+   "tafel": "T1",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": true
   },
   {
    "id": "BO_MEDTECH",
-   "label": "Bureauoverleg Thematafel Medtech & Digitale Zorg",
-   "toel": "coördinatie IZA/AZWA/HLO",
-   "personen": []
+   "naam": "Bureauoverleg Thematafel Medtech & Digitale Zorg",
+   "tafel": "T1",
+   "parentId": null,
+   "toelichting": "coördinatie IZA/AZWA/HLO",
+   "gremium": true
   },
   {
    "id": "TF_OPSCHALING",
-   "label": "Thematafel Opschaling Passende Zorg",
-   "toel": "",
-   "personen": []
+   "naam": "Thematafel Opschaling Passende Zorg",
+   "tafel": "T2",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": true
   },
   {
    "id": "TF_DAI",
-   "label": "Werkgroep Realisatie AI in de Zorg",
-   "toel": "onder Thematafel Databeschikbaarheid en AI",
-   "personen": []
+   "naam": "Werkgroep Realisatie AI in de Zorg",
+   "tafel": "T3",
+   "parentId": null,
+   "toelichting": "onder Thematafel Databeschikbaarheid en AI",
+   "gremium": true
   },
   {
    "id": "IBZ",
-   "label": "Informatieberaad Zorg",
-   "toel": "onder Thematafel Databeschikbaarheid en AI",
-   "personen": []
+   "naam": "Informatieberaad Zorg",
+   "tafel": "T3",
+   "parentId": null,
+   "toelichting": "onder Thematafel Databeschikbaarheid en AI",
+   "gremium": true
   },
   {
    "id": "TF_ARBEIDSMARKT",
-   "label": "Thematafel Arbeidsmarkt en opleiden",
-   "toel": "",
-   "personen": []
+   "naam": "Thematafel Arbeidsmarkt en opleiden",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": true
   },
   {
    "id": "TF_1LIJN",
-   "label": "Thematafel Versterken 1e lijn",
-   "toel": "incl. HLO-specifieke onderwerpen",
-   "personen": []
+   "naam": "Thematafel Versterken 1e lijn",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "incl. HLO-specifieke onderwerpen",
+   "gremium": true
   },
   {
    "id": "TF_ACUTE",
-   "label": "Thematafel Versterken acute zorg en MSZ",
-   "toel": "incl. Project C1 Triage MSZ",
-   "personen": []
+   "naam": "Thematafel Versterken acute zorg en MSZ",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "incl. Project C1 Triage MSZ",
+   "gremium": true
+  },
+  {
+   "id": "WG_SECT_OVERLEG",
+   "naam": "Sectorale / sectoroverstijgende overleggen",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "coördinatie: FMS, NVZ, UMC’s (NFU), V&VN",
+   "gremium": false
+  },
+  {
+   "id": "WG_DHZ__INTENSIVERING",
+   "naam": "Intensiveringsagenda DHZ",
+   "tafel": "T1",
+   "parentId": "WG_DHZ",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_DIGITALISERING",
+   "naam": "Digitalisering",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_DIGITALISERING__GEGEVENSUITWISSELING",
+   "naam": "Gegevensuitwisseling",
+   "tafel": "IZA",
+   "parentId": "WG_DIGITALISERING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_DIGITALISERING__MEDMIJ_EN_PGO",
+   "naam": "MedMij & PGO",
+   "tafel": "IZA",
+   "parentId": "WG_DIGITALISERING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_ZIN_FMS_VENVN_NHG_UITVOERING_NADERE_BEOORDELING",
+   "naam": "ZIN / FMS / V&VN / NHG (uitvoering nadere beoordeling)",
+   "tafel": "T2",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_ZORGAANBIEDERS_ZORGVERLENERS",
+   "naam": "Zorgaanbieders / Zorgverleners",
+   "tafel": "T2",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_NZA",
+   "naam": "NZa",
+   "tafel": "T2",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_VWS_EN_NZA",
+   "naam": "VWS en NZa",
+   "tafel": "T2",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_FMS_NHG_VENVN_RICHTLIJNENPARTIJEN",
+   "naam": "FMS / NHG / V&VN (richtlijnenpartijen)",
+   "tafel": "T2",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_VWS_ZIN_FMS_NHG_VENVN",
+   "naam": "VWS / ZIN / FMS / NHG / V&VN",
+   "tafel": "T2",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PASSENDE_CONTRACTERING",
+   "naam": "Passende Contractering",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PASSENDE_CONTRACTERING__ZORGINKOOP",
+   "naam": "Zorginkoop",
+   "tafel": "IZA",
+   "parentId": "WG_PASSENDE_CONTRACTERING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PASSENDE_CONTRACTERING__MSZ",
+   "naam": "MSZ",
+   "tafel": "IZA",
+   "parentId": "WG_PASSENDE_CONTRACTERING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PASSENDE_CONTRACTERING__ONGECONTRACTEERDE_ZORG",
+   "naam": "Ongecontracteerde Zorg",
+   "tafel": "IZA",
+   "parentId": "WG_PASSENDE_CONTRACTERING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PASSENDE_CONTRACTERING__IMPACTVOLLE_TRANSFORMATIES",
+   "naam": "Impactvolle Transformaties",
+   "tafel": "IZA",
+   "parentId": "WG_PASSENDE_CONTRACTERING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_REGIONALE_SAMENWERKING",
+   "naam": "Regionale Samenwerking",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_REGIONALE_SAMENWERKING__REGIOBEELDEN",
+   "naam": "Regiobeelden",
+   "tafel": "IZA",
+   "parentId": "WG_REGIONALE_SAMENWERKING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_REGIONALE_SAMENWERKING__REGIOPLANNEN",
+   "naam": "Regioplannen",
+   "tafel": "IZA",
+   "parentId": "WG_REGIONALE_SAMENWERKING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_REGIONALE_SAMENWERKING__BEKOSTIGING",
+   "naam": "Bekostiging",
+   "tafel": "IZA",
+   "parentId": "WG_REGIONALE_SAMENWERKING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_SAMENWERKING_SOCIAAL_DOMEIN_GGZ_HUISARTSENZORG",
+   "naam": "Samenwerking Sociaal Domein / GGZ / Huisartsenzorg",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_REGIEGROEP_AANPAK_REGELDRUK",
+   "naam": "Regiegroep Aanpak Regeldruk",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_SAMENWERKING_ACUTE_ZORG",
+   "naam": "Samenwerking Acute Zorg",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_SAMENWERKING_ACUTE_ZORG__ZORGCOORDINATIE",
+   "naam": "Zorgcoördinatie",
+   "tafel": "IZA",
+   "parentId": "WG_SAMENWERKING_ACUTE_ZORG",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PASSENDE_ZORG",
+   "naam": "Passende Zorg",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PASSENDE_ZORG__PAKKETBEHEER",
+   "naam": "Pakketbeheer",
+   "tafel": "IZA",
+   "parentId": "WG_PASSENDE_ZORG",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PASSENDE_ZORG__KWALITEITSREGISTRATIES",
+   "naam": "Kwaliteitsregistraties",
+   "tafel": "IZA",
+   "parentId": "WG_PASSENDE_ZORG",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PASSENDE_ZORG__UITKOMSTINFORMATIE",
+   "naam": "Uitkomstinformatie",
+   "tafel": "IZA",
+   "parentId": "WG_PASSENDE_ZORG",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_CONCENTRATIE_EN_SPREIDING",
+   "naam": "Concentratie en Spreiding",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_CONCENTRATIE_EN_SPREIDING__TOEKOMSTBESTENDIG_ZORGLANDSCHAP",
+   "naam": "Toekomstbestendig Zorglandschap",
+   "tafel": "IZA",
+   "parentId": "WG_CONCENTRATIE_EN_SPREIDING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_CONCENTRATIE_EN_SPREIDING__BOVENREGIONALE_FUNCTIES",
+   "naam": "Bovenregionale Functies",
+   "tafel": "IZA",
+   "parentId": "WG_CONCENTRATIE_EN_SPREIDING",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_EERSTELIJNSZORG",
+   "naam": "Eerstelijnszorg",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_EERSTELIJNSZORG__MEER_TIJD_VOOR_DE_PATIENT_MTVP",
+   "naam": "Meer Tijd voor de Patiënt (MTVP)",
+   "tafel": "IZA",
+   "parentId": "WG_EERSTELIJNSZORG",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_EERSTELIJNSZORG__WIJKVERPLEGING",
+   "naam": "Wijkverpleging",
+   "tafel": "IZA",
+   "parentId": "WG_EERSTELIJNSZORG",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_EERSTELIJNSZORG__PARAMEDISCHE_ZORG",
+   "naam": "Paramedische Zorg",
+   "tafel": "IZA",
+   "parentId": "WG_EERSTELIJNSZORG",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_EERSTELIJNSZORG__VISIE_2030",
+   "naam": "Visie 2030",
+   "tafel": "IZA",
+   "parentId": "WG_EERSTELIJNSZORG",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PREVENTIE",
+   "naam": "Preventie",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PREVENTIE__KETENAANPAKKEN",
+   "naam": "Ketenaanpakken",
+   "tafel": "IZA",
+   "parentId": "WG_PREVENTIE",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PREVENTIE__REGIONALE_INFRASTRUCTUUR",
+   "naam": "Regionale Infrastructuur",
+   "tafel": "IZA",
+   "parentId": "WG_PREVENTIE",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_PREVENTIE__LEEFSTIJL_ALS_BEHANDELING",
+   "naam": "Leefstijl als Behandeling",
+   "tafel": "IZA",
+   "parentId": "WG_PREVENTIE",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_ARBEIDSMARKT",
+   "naam": "Arbeidsmarkt",
+   "tafel": "IZA",
+   "parentId": null,
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_ARBEIDSMARKT__TAZ_PROGRAMMA",
+   "naam": "TAZ-Programma",
+   "tafel": "IZA",
+   "parentId": "WG_ARBEIDSMARKT",
+   "toelichting": "",
+   "gremium": false
+  },
+  {
+   "id": "WG_ARBEIDSMARKT__OPLEIDINGSCAPACITEIT",
+   "naam": "Opleidingscapaciteit",
+   "tafel": "IZA",
+   "parentId": "WG_ARBEIDSMARKT",
+   "toelichting": "",
+   "gremium": false
   }
- ]
+ ],
+ "personen": [],
+ "referentie": {
+  "azwaPartijen": [
+   "VWS",
+   "ZN (Zorgverzekeraars Nederland)",
+   "ActiZ",
+   "de Nederlandse ggz",
+   "FMS (Federatie Medisch Specialisten)",
+   "InEen",
+   "KNMP",
+   "LHV",
+   "NFU",
+   "NVZ",
+   "Patiëntenfederatie Nederland",
+   "V&VN",
+   "VGN",
+   "VNG",
+   "ZKN",
+   "Zorgthuisnl"
+  ],
+  "regioTafels": [
+   "Noord-Nederland",
+   "Oost-Nederland",
+   "Zwolle e.o.",
+   "Midden-Nederland",
+   "Noord-Holland & Flevoland",
+   "Amsterdam e.o.",
+   "West-Nederland",
+   "Zuidwest-Nederland",
+   "Brabant",
+   "Limburg",
+   "Utrecht e.o."
+  ]
+ }
 }

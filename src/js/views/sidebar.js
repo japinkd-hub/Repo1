@@ -75,16 +75,17 @@ function renderContacts(groups) {
   let allEmails = [];
   let h = '<div class="dp-contacts">';
   for (const cg of groups) {
+    const personen = personenVoorWerkgroep(cg.id);
     h += '<div class="dp-contact-group">';
-    h += `<div class="dp-contact-group-label">${esc(cg.label)}${cg.toel?`<span class="dp-contact-toel"> — ${esc(cg.toel)}</span>`:''}</div>`;
-    if (!cg.personen.length) {
-      h += '<div class="dp-contact-empty">Nog niet ingevuld — branches vullen contactpersoon in</div>';
+    h += `<div class="dp-contact-group-label">${esc(cg.naam)}${cg.toelichting?`<span class="dp-contact-toel"> — ${esc(cg.toelichting)}</span>`:''}</div>`;
+    if (!personen.length) {
+      h += '<div class="dp-contact-empty">Nog niet ingevuld — voeg deelnemers toe via het tabblad Deelnemers</div>';
     } else {
-      for (const p of cg.personen) {
+      for (const p of personen) {
         if (p.email) allEmails.push(p.email);
         h += `<div class="dp-contact-person">`;
-        if (p.branche) h += `<span class="dp-contact-branche">${esc(p.branche)}</span>`;
-        h += `<span class="dp-contact-naam">${esc(p.naam||'—')}</span>`;
+        if (p.organisatie) h += `<span class="dp-contact-branche">${esc(p.organisatie)}</span>`;
+        h += `<span class="dp-contact-naam">${esc(p.naam||'—')}${p.rol?` <span style="color:#888;font-weight:400">(${esc(p.rol)})</span>`:''}</span>`;
         if (p.email) h += `<span class="dp-contact-email" onclick="cpEmail(event,'${p.email.replace(/'/g,"\'")}')">✉ ${esc(p.email)}</span>`;
         h += '</div>';
       }
@@ -162,7 +163,7 @@ function renderHloSidebar() {
 function renderProgressBars() {
   const el = document.getElementById('tf-progress-bars');
   if (!el) return;
-  const NORM_CATS = ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend"];
+  const NORM_CATS = [...STATUS_CATS, "Onbekend"];
   let html = '<div style="display:flex;flex-wrap:wrap;gap:8px">';
   for (const [tfKey, tfMeta] of Object.entries(TF_META)) {
     const tfAgrs = AGRS.filter(a => a.tf === tfKey);
@@ -171,7 +172,7 @@ function renderProgressBars() {
     NORM_CATS.forEach(c => counts[c] = 0);
     tfAgrs.forEach(a => { const ns = normStatus(a.status); counts[ns] = (counts[ns]||0)+1; });
     const total = tfAgrs.length;
-    const onTrack = (counts["Actief"]||0) + (counts["Op schema"]||0);
+    const onTrack = (counts["Afgerond"]||0) + (counts["Op schema"]||0) + (counts["Gestart"]||0);
     const pct = total ? Math.round(onTrack/total*100) : 0;
     let barSegs = NORM_CATS.map(cat => {
       const cnt = counts[cat]||0;
@@ -182,7 +183,7 @@ function renderProgressBars() {
     html += `<div style="flex:1;min-width:180px;background:#fff;border-radius:4px;border:1px solid #ddd;padding:6px 8px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
         <span style="font-size:10px;font-weight:700;color:${tfMeta.color}">${esc(tfMeta.short)}</span>
-        <span style="font-size:10px;color:#888">${onTrack}/${total} (${pct}% actief/schema)</span>
+        <span style="font-size:10px;color:#888">${onTrack}/${total} (${pct}% loopt of klaar)</span>
       </div>
       <div style="height:8px;border-radius:4px;overflow:hidden;background:#eee;display:flex">${barSegs}</div>
     </div>`;

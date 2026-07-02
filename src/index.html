@@ -15,6 +15,12 @@
     <button class="hnav-btn" id="navL" onclick="setView('lijst')">Lijst</button>
     <button class="hnav-btn" id="navO" onclick="setView('onderdelen')">Onderdelen</button>
   </nav>
+  <div class="hdr-data">
+    <span id="data-status"></span>
+    <button class="hdr-data-btn" onclick="exporteerDB()" title="Download alle dashboarddata als JSON-bestand">&#11015; Exporteer</button>
+    <label class="hdr-data-btn" title="Laad een eerder geëxporteerd JSON-databestand">&#11014; Importeer<input type="file" accept="application/json,.json" hidden onchange="importeerDB(this.files[0]); this.value='';"></label>
+    <button class="hdr-data-btn" onclick="herstelDB()" title="Wis lokale wijzigingen en laad de meegeleverde data">&#8634; Herstel</button>
+  </div>
 </header>
 
 <div class="body-wrap">
@@ -69,10 +75,11 @@
     <div class="sb-divider"></div>
     <div class="sb-section">
       <div class="sb-title">Legenda Status</div>
-      <div class="leg-row"><span class="leg-dot" style="background:#0277BD"></span> Actief</div>
-      <div class="leg-row"><span class="leg-dot" style="background:#2E7D32"></span> Op schema</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#2E7D32"></span> Afgerond</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#0277BD"></span> Op schema</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#F57C00"></span> Gestart</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#888"></span> Nog niet gestart</div>
       <div class="leg-row"><span class="leg-dot" style="background:#C00000"></span> Aandacht</div>
-      <div class="leg-row"><span class="leg-dot" style="background:#888"></span> Niet gestart</div>
       <div class="leg-row"><span class="leg-dot" style="background:#aaa"></span> Geparkeerd</div>
       <div class="leg-row"><span class="leg-dot" style="background:#bbb"></span> Onbekend</div>
     </div>
@@ -131,12 +138,12 @@
 
 <!-- STATUS BAR -->
 <div class="status-bar">
-  <span><span class="stat-dot" style="background:#0277BD"></span>Actief</span>
-  <span><span class="stat-dot" style="background:#2E7D32"></span>Op schema</span>
+  <span><span class="stat-dot" style="background:#2E7D32"></span>Afgerond</span>
+  <span><span class="stat-dot" style="background:#0277BD"></span>Op schema</span>
+  <span><span class="stat-dot" style="background:#F57C00"></span>Gestart</span>
+  <span><span class="stat-dot" style="background:#888"></span>Nog niet gestart</span>
   <span><span class="stat-dot" style="background:#C00000"></span>Aandacht</span>
-  <span><span class="stat-dot" style="background:#888"></span>Niet gestart</span>
   <span><span class="stat-dot" style="background:#aaa"></span>Geparkeerd</span>
-  <span><span class="stat-dot" style="background:#bbb"></span>Onbekend</span>
   <span class="sb-hint">Esc = sluit paneel &nbsp;|&nbsp; Klik op afspraak voor details</span>
 </div>
 

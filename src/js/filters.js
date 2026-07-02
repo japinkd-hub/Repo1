@@ -8,7 +8,7 @@ let activeClusterId = null;  // null = geen cluster-filter
 
 const activeTFs = new Set(["T1","T2","T3","IZA"]);
 const activeSrcs = new Set(Object.keys(SRC_LABELS));
-const activeStats = new Set(["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"]);
+const activeStats = new Set(ALL_STATUS_FILTER_KEYS);
 const activeOnds = new Set(Object.keys(OND_LABELS));
 
 // === URL FILTER STATE ===
@@ -16,7 +16,7 @@ function getFilterParams(){
   const params = new URLSearchParams();
   if(activeTFs.size < Object.keys(TF_META).length) params.set('tf',[...activeTFs].join(','));
   if(activeSrcs.size < Object.keys(SRC_LABELS).length) params.set('src',[...activeSrcs].join(','));
-  const allStats = ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"];
+  const allStats = ALL_STATUS_FILTER_KEYS;
   if(activeStats.size < allStats.length) params.set('status',[...activeStats].join(','));
   if(activeOnds.size < Object.keys(OND_LABELS).length) params.set('ond',[...activeOnds].join(','));
   const q = document.getElementById('q')?.value||'';
@@ -67,11 +67,11 @@ const GROUP_CONFIG_V2 = {
   },
   stat: {
     set: () => activeStats,
-    keys: () => ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"],
+    keys: () => ALL_STATUS_FILTER_KEYS,
     onStyle: (k) => { const col = k==="⚠ Deadlinerisico" ? "#C00000" : (STATUS_NORM_COLORS[k]||"#555"); return { bg: col, color: '#fff', border: col }; },
     offStyle: () => { return { bg: '', color: '#444', border: '' }; },
     selector: '#stat-chips .chip',
-    keyOf: (c, i) => ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"][i]
+    keyOf: (c, i) => ALL_STATUS_FILTER_KEYS[i]
   },
   ond: {
     set: () => activeOnds,
@@ -182,7 +182,7 @@ function buildChips() {
 
   // Stat chips — 6 normalized categories + deadline risk
   const statEl = document.getElementById('stat-chips');
-  const NORM_STAT_KEYS = ["Actief","Op schema","Aandacht","Niet gestart","Geparkeerd","Onbekend","⚠ Deadlinerisico"];
+  const NORM_STAT_KEYS = ALL_STATUS_FILTER_KEYS;
   for (const g of NORM_STAT_KEYS) {
     const c = document.createElement('span');
     c.className = 'chip chip-stat on';

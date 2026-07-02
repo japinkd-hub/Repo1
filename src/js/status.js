@@ -18,34 +18,40 @@ function hloTextColor(val) {
   const first = val.split('/')[0].trim().split(' ')[0];
   return HLO_TEXT_COLORS[first] || '#333';
 }
+// Eén statusnormalisatie (v1): ruwe PoC-statussen → zes categorieën + Onbekend.
+// Nieuwe statusupdates gebruiken de categorieën zelf als status.
+const STATUS_CATS = ["Afgerond","Op schema","Gestart","Nog niet gestart","Aandacht","Geparkeerd"];
 const STATUS_MAP = {
-  "Gestart":                           "Actief",
-  "In uitvoering":                     "Actief",
-  "In uitwerking":                     "Actief",
-  "In opstart":                        "Actief",
-  "In voorbereiding":                  "Actief",
-  "Concept besproken":                 "Actief",
-  "Concept besproken (23 mrt 2026)":   "Actief",
-  "In ontwikkeling":                   "Actief",
-  "Nader uit te werken":               "Actief",
-  "Nader te concretiseren":            "Actief",
+  "Afgerond":                          "Afgerond",
+  "Structureel":                       "Afgerond",
   "Op schema":                         "Op schema",
-  "Structureel":                       "Op schema",
+  "In uitvoering":                     "Op schema",
+  "Gestart":                           "Gestart",
+  "In voorbereiding":                  "Gestart",
+  "In opstart":                        "Gestart",
+  "Concept besproken":                 "Gestart",
+  "Concept besproken (23 mrt 2026)":   "Gestart",
+  "In uitwerking":                     "Gestart",
+  "In ontwikkeling":                   "Gestart",
+  "Nog niet gestart":                  "Nog niet gestart",
+  "Nog te starten":                    "Nog niet gestart",
+  "Nader te concretiseren":            "Nog niet gestart",
+  "Nader uit te werken":               "Nog niet gestart",
   "Achter op schema":                  "Aandacht",
-  "Nog niet gestart":                  "Niet gestart",
-  "Nog te starten":                    "Niet gestart",
   "Geparkeerd":                        "Geparkeerd",
   "Niet geprioriteerd; ongoing":       "Geparkeerd",
   "—":                                 "Onbekend"
 };
 const STATUS_NORM_COLORS = {
-  "Actief":       "#0277BD",
-  "Op schema":    "#2E7D32",
-  "Aandacht":     "#C00000",
-  "Niet gestart": "#888",
-  "Geparkeerd":   "#aaa",
-  "Onbekend":     "#bbb"
+  "Afgerond":         "#2E7D32",
+  "Op schema":        "#0277BD",
+  "Gestart":          "#F57C00",
+  "Nog niet gestart": "#888",
+  "Aandacht":         "#C00000",
+  "Geparkeerd":       "#aaa",
+  "Onbekend":         "#bbb"
 };
+const ALL_STATUS_FILTER_KEYS = [...STATUS_CATS, "Onbekend", "⚠ Deadlinerisico"];
 function normStatus(raw){ return STATUS_MAP[raw] || "Onbekend"; }
 function isDeadlineRisk(a){
   const dl = (a.deadline||"").toLowerCase();
@@ -60,44 +66,34 @@ const TF_META = {
   IZA:{label:"IZA — Overige Afspraken",color:"#86004D",short:"IZA Overig"}
 };
 
+// Bron- en onderdeellijsten volgen de werkelijke datawaarden (v1-fix: in het
+// PoC ontbraken 'Passende Zorg' en L/M/N, waardoor 21 afspraken standaard
+// verborgen waren; ook klopten enkele onderdeel-labels niet met de data).
 const SRC_COLORS = {
-  Medtech:"#1565C0", DHZ:"#2E75B6", E2:"#2E7D32", E3:"#558B2F",
-  AI:"#6A1B9A", IZA:"#86004D", Overig:"#555"
+  Medtech:"#1565C0", DHZ:"#2E75B6", "Passende Zorg":"#375623",
+  AI:"#6A1B9A", IZA:"#86004D"
 };
 
 const SRC_LABELS = {
-  Medtech:"Medtech", DHZ:"DHZ", E2:"AZWA E2", E3:"AZWA E3",
-  AI:"AI", IZA:"IZA Overig", Overig:"Overig"
+  Medtech:"Medtech", DHZ:"DHZ", "Passende Zorg":"Passende Zorg",
+  AI:"AI", IZA:"IZA Overig"
 };
 
 const OND_LABELS = {
-  AZWA:"AZWA", A:"A — Passende zorg", B:"B — Regionale samenwerking",
-  C:"C — Acute zorg", D:"D — Concentratie & spreiding",
-  E:"E — Eerstelijnszorg", F:"F — GGZ & Sociaal domein",
-  G:"G — Preventie", H:"H — Arbeidsmarkt", I:"I — Digitalisering",
-  J:"J — Contractering", K:"K — Financiën"
+  AZWA:"AZWA",
+  B:"B — Opschaling passende zorg (E2/E3)",
+  D:"D — Digitalisering & gegevensuitwisseling",
+  E:"E — Passende contractering",
+  F:"F — Regionale samenwerking",
+  G:"G — GGZ & sociaal domein",
+  H:"H — Aanpak regeldruk",
+  I:"I — Acute zorg",
+  J:"J — Passende zorg",
+  K:"K — Concentratie & spreiding",
+  L:"L — Eerstelijnszorg",
+  M:"M — Preventie",
+  N:"N — Arbeidsmarkt"
 };
-
-const STAT_GROUPS = {
-  "Afgerond":[/^afgerond$/i,/^structureel$/i,/^niet geprioriteerd; ongoing$/i],
-  "Op schema":[/^op schema$/i,/^in uitvoering$/i],
-  "Gestart":[/^gestart$/i,/^in voorbereiding$/i,/^in opstart$/i,
-              /^concept besproken/i,/^in uitwerking$/i,/^in ontwikkeling$/i],
-  "Nog niet gestart":[/^nog niet gestart$/i,/^nog te starten$/i,
-                       /^nader te concretiseren$/i,/^nader uit te werken$/i],
-  "Aandacht":[/^achter op schema$/i,/^geparkeerd$/i]
-};
-
-const STAT_COLORS = {
-  "Afgerond":"#2E7D32","Op schema":"#0277BD","Gestart":"#F57C00",
-  "Nog niet gestart":"#888","Aandacht":"#C00000","—":"#bbb"
-};
-
-function statGroup(status) {
-  for (const [g, pats] of Object.entries(STAT_GROUPS))
-    if (pats.some(p => p.test(status))) return g;
-  return "—";
-}
 
 function statColor(status) {
   return STATUS_NORM_COLORS[normStatus(status)] || "#bbb";

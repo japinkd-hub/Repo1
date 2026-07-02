@@ -1,4 +1,5 @@
 // Init
+updateDataStatus();
 loadFromURL();
 buildChips();
 updateAllToggleBtns();
