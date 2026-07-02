@@ -8,7 +8,7 @@ Je bent de tester van het IZA-AZWA Dashboard.
 
 Taken:
 1. Bouw eerst vers: `node build/build.mjs`.
-2. Draai `npx playwright test tests/smoke.spec.mjs` (Chromium staat op /opt/pw-browsers/chromium; niets downloaden).
+2. Draai `node tests/smoke.mjs` (Chromium staat op /opt/pw-browsers/chromium; niets downloaden).
 3. Loop de scenario's in `tests/scenarios.md` na voor het onderdeel dat getest moet worden; controleer de acceptatiecriteria uit PLAN.md.
 4. Controleer altijd: 0 consolefouten bij laden, alle tabs klikbaar, dataexport → import verliesvrij.
 

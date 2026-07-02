@@ -15,6 +15,7 @@
   --radius:6px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
 body{font-family:'Segoe UI',Arial,sans-serif;font-size:13px;
      display:flex;flex-direction:column;height:100vh;overflow:hidden;background:var(--bg)}
 
@@ -462,7 +463,7 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
       <div class="leg-row"><span class="leg-dot" style="background:#2E7D32"></span> Afgerond</div>
       <div class="leg-row"><span class="leg-dot" style="background:#0277BD"></span> Op schema</div>
       <div class="leg-row"><span class="leg-dot" style="background:#F57C00"></span> Gestart</div>
-      <div class="leg-row"><span class="leg-dot" style="background:#888"></span> Nog niet gestart</div>
+      <div class="leg-row"><span class="leg-dot" style="background:#757575"></span> Nog niet gestart</div>
       <div class="leg-row"><span class="leg-dot" style="background:#C00000"></span> Aandacht</div>
       <div class="leg-row"><span class="leg-dot" style="background:#aaa"></span> Geparkeerd</div>
       <div class="leg-row"><span class="leg-dot" style="background:#bbb"></span> Onbekend</div>
@@ -557,10 +558,10 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
   <span><span class="stat-dot" style="background:#2E7D32"></span>Afgerond</span>
   <span><span class="stat-dot" style="background:#0277BD"></span>Op schema</span>
   <span><span class="stat-dot" style="background:#F57C00"></span>Gestart</span>
-  <span><span class="stat-dot" style="background:#888"></span>Nog niet gestart</span>
+  <span><span class="stat-dot" style="background:#757575"></span>Nog niet gestart</span>
   <span><span class="stat-dot" style="background:#C00000"></span>Aandacht</span>
   <span><span class="stat-dot" style="background:#aaa"></span>Geparkeerd</span>
-  <span class="sb-hint">Esc = sluit paneel &nbsp;|&nbsp; Klik op afspraak voor details</span>
+  <span class="sb-hint">v1.0.0 &nbsp;|&nbsp; Esc = sluit paneel &nbsp;|&nbsp; Klik op afspraak voor details</span>
 </div>
 
 <div id="modalRoot"></div>
@@ -948,6 +949,7 @@ const STATUS_MAP = {
   "Nog te starten":                    "Nog niet gestart",
   "Nader te concretiseren":            "Nog niet gestart",
   "Nader uit te werken":               "Nog niet gestart",
+  "Aandacht":                          "Aandacht",
   "Achter op schema":                  "Aandacht",
   "Geparkeerd":                        "Geparkeerd",
   "Niet geprioriteerd; ongoing":       "Geparkeerd",
@@ -957,13 +959,18 @@ const STATUS_NORM_COLORS = {
   "Afgerond":         "#2E7D32",
   "Op schema":        "#0277BD",
   "Gestart":          "#F57C00",
-  "Nog niet gestart": "#888",
+  "Nog niet gestart": "#757575",
   "Aandacht":         "#C00000",
   "Geparkeerd":       "#aaa",
   "Onbekend":         "#bbb"
 };
 const ALL_STATUS_FILTER_KEYS = [...STATUS_CATS, "Onbekend", "⚠ Deadlinerisico"];
-function normStatus(raw){ return STATUS_MAP[raw] || "Onbekend"; }
+function normStatus(raw){ return STATUS_MAP[raw] || (STATUS_CATS.includes(raw) ? raw : "Onbekend"); }
+// Donkere tekst op lichte statuskleuren (WCAG AA-contrast)
+function statusTextColor(status){
+  const ns = normStatus(status);
+  return (ns === "Geparkeerd" || ns === "Onbekend") ? "#222" : "#fff";
+}
 // Zet een deadline-tekst om naar een datum (einde van de genoemde periode).
 // "Q2 2026" → 2026-06-30; "2026–2028" → 2028-12-31; "2027" → 2027-12-31;
 // "Doorlopend", "n.t.b.", "—" e.d. → null (geen toetsbare deadline).
@@ -1127,7 +1134,7 @@ const GROUP_CONFIG_V2 = {
   stat: {
     set: () => activeStats,
     keys: () => ALL_STATUS_FILTER_KEYS,
-    onStyle: (k) => { const col = k==="⚠ Deadlinerisico" ? "#C00000" : (STATUS_NORM_COLORS[k]||"#555"); return { bg: col, color: '#fff', border: col }; },
+    onStyle: (k) => { const col = k==="⚠ Deadlinerisico" ? "#C00000" : (STATUS_NORM_COLORS[k]||"#555"); return { bg: col, color: k==="⚠ Deadlinerisico" ? '#fff' : statusTextColor(k), border: col }; },
     offStyle: () => { return { bg: '', color: '#444', border: '' }; },
     selector: '#stat-chips .chip',
     keyOf: (c, i) => ALL_STATUS_FILTER_KEYS[i]
@@ -1247,7 +1254,8 @@ function buildChips() {
     c.className = 'chip chip-stat on';
     c.textContent = g;
     const gColor = g === "⚠ Deadlinerisico" ? "#C00000" : (STATUS_NORM_COLORS[g] || "#555");
-    c.style.background = gColor; c.style.color='#fff'; c.style.borderColor=gColor;
+    const gText = g === "⚠ Deadlinerisico" ? '#fff' : statusTextColor(g);
+    c.style.background = gColor; c.style.color=gText; c.style.borderColor=gColor;
     c.setAttribute('role','checkbox');
     c.setAttribute('aria-checked','true');
     c.setAttribute('tabindex','0');
@@ -1255,7 +1263,7 @@ function buildChips() {
     c.onclick = () => {
       activeStats.has(g) ? activeStats.delete(g) : activeStats.add(g);
       c.style.background = activeStats.has(g) ? gColor : '';
-      c.style.color = activeStats.has(g) ? '#fff' : '#444';
+      c.style.color = activeStats.has(g) ? gText : '#444';
       c.setAttribute('aria-checked', activeStats.has(g) ? 'true' : 'false');
       syncURL();
       applyFilters();
@@ -1430,7 +1438,7 @@ function renderLijst(visible) {
       <td class="tf-cell"><span style="background:${tfc}">${TF_META[a.tf]?.short||a.tf}</span></td>
       <td class="src-cell"><span style="background:${srcc}">${esc(SRC_LABELS[a.src]||a.src)}</span></td>
       <td style="color:#555;font-size:11px">${esc(wgShort)}</td>
-      <td><span class="status-pill" style="background:${sc}">${esc(a.status)}</span></td>
+      <td><span class="status-pill" style="background:${sc};color:${statusTextColor(a.status)}">${esc(a.status)}</span></td>
       <td style="color:#555;font-size:11px;white-space:nowrap">${esc(a.deadline)}</td>`;
     tr.onclick = () => showDetail(a.nr);
     tbody.appendChild(tr);
@@ -1485,7 +1493,7 @@ function makeAgrTag(a, color) {
     <div>
       <div class="agr-titel">${esc(a.t)}</div>
       <div class="agr-meta">
-        <span class="status-pill" style="background:${sc}">${esc(a.status)}</span>
+        <span class="status-pill" style="background:${sc};color:${statusTextColor(a.status)}">${esc(a.status)}</span>
         ${a.deadline ? `<span style="font-size:10px;color:#888">${esc(a.deadline)}</span>` : ''}
       </div>
     </div>`;
@@ -1924,7 +1932,7 @@ function voortgangSectieHtml(a) {
       <div class="dp-label dp-label-rij">Status
         <button class="dp-mini-btn" onclick="openStatusUpdateForm('${nrVeilig(a.nr)}')">＋ Statusupdate</button>
       </div>
-      <div><span class="status-pill" style="background:${sc}">${esc(a.status)}</span>
+      <div><span class="status-pill" style="background:${sc};color:${statusTextColor(a.status)}">${esc(a.status)}</span>
         ${isDeadlineRisk(a) ? '<span class="risk-badge" title="Deadline nabij of mijlpaal verstreken terwijl de afspraak niet op koers is">⚠ Deadlinerisico</span>' : ''}
       </div>
     </div>`;
@@ -1936,7 +1944,7 @@ function voortgangSectieHtml(a) {
         <span class="vg-dot" style="background:${statColor(u.status)}"></span>
         <div class="vg-inhoud">
           <div class="vg-kop"><b>${esc(u.datum)}</b> · ${esc(u.auteur || '—')} ·
-            <span class="status-pill" style="background:${statColor(u.status)}">${esc(u.status)}</span>
+            <span class="status-pill" style="background:${statColor(u.status)};color:${statusTextColor(u.status)}">${esc(u.status)}</span>
             <button class="vg-del" onclick="verwijderVoortgang('${esc(u.id)}')" title="Verwijder deze update" aria-label="Verwijder statusupdate van ${esc(u.datum)}">✕</button>
           </div>
           ${u.toelichting ? `<div class="vg-toel">${esc(u.toelichting)}</div>` : ''}
@@ -2468,7 +2476,7 @@ function renderRapportage() {
         : 'deadline nabij of verstreken';
       h += `<tr><td>${esc(a.nr)}</td><td>${esc(a.t)}</td><td>${esc(TF_META[a.tf]?.short || a.tf)}</td>
         <td>${esc(werkgroepNaam(a.werkgroepId))}</td>
-        <td><span class="status-pill" style="background:${statColor(a.status)}">${esc(normStatus(a.status))}</span></td>
+        <td><span class="status-pill" style="background:${statColor(a.status)};color:${statusTextColor(a.status)}">${esc(normStatus(a.status))}</span></td>
         <td>${esc(a.deadline || '—')}</td><td>${esc(signaal)}</td></tr>`;
     }
     h += '</tbody></table>';
@@ -2484,7 +2492,7 @@ function renderRapportage() {
       const a = AGRS.find(x => x.nr === u.afspraakNr);
       h += `<tr><td style="white-space:nowrap">${esc(u.datum)}</td>
         <td><b>${esc(u.afspraakNr)}</b> ${esc(a?.t || '')}</td>
-        <td><span class="status-pill" style="background:${statColor(u.status)}">${esc(u.status)}</span></td>
+        <td><span class="status-pill" style="background:${statColor(u.status)};color:${statusTextColor(u.status)}">${esc(u.status)}</span></td>
         <td>${esc(u.auteur || '—')}</td><td>${esc(u.toelichting || '')}</td></tr>`;
     }
     h += '</tbody></table>';

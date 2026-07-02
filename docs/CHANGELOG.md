@@ -5,6 +5,15 @@ Formaat gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/); versien
 
 ## [Unreleased]
 
+_(nog niets)_
+
+## [1.0.0] — 2026-07-02
+
+Eerste operationele release, gebouwd vanuit het proof of concept
+`AZWA_IZA_Dashboard_v3.html`. Oplevering: `dist/AZWA_IZA_Dashboard.html`
+(één zelfstandig HTML-bestand, geen server nodig). Eindtest: 24/24
+geautomatiseerde checks geslaagd, 0 consolefouten, export/import verliesvrij.
+
 ### Toegevoegd
 - Hulp en training: onboarding-rondleiding (start automatisch bij eerste bezoek,
   herstartbaar via de ?-knop), contexthulp per tabblad en een volledige Nederlandse
@@ -38,6 +47,11 @@ Formaat gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/); versien
   met de werkelijke data.
 - Dubbele statusnormalisatie geconsolideerd naar één indeling: Afgerond / Op schema /
   Gestart / Nog niet gestart / Aandacht / Geparkeerd (+ Onbekend).
+- `normStatus("Aandacht")` viel terug op "Onbekend" doordat de categorie zelf geen
+  sleutel in de statusmap was; nieuwe statusupdates met "Aandacht" tellen nu goed mee.
+- Toegankelijkheid (WCAG AA): donkere tekst op lichte statuskleuren (Geparkeerd,
+  Onbekend), donkerder grijs voor "Nog niet gestart" en zichtbare focusring voor
+  toetsenbordbediening.
 
 ### Gewijzigd
 - PoC (`AZWA_IZA_Dashboard_v3.html`) gerefactord naar modulaire structuur: data in

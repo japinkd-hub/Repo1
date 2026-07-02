@@ -18,7 +18,7 @@ function voortgangSectieHtml(a) {
       <div class="dp-label dp-label-rij">Status
         <button class="dp-mini-btn" onclick="openStatusUpdateForm('${nrVeilig(a.nr)}')">＋ Statusupdate</button>
       </div>
-      <div><span class="status-pill" style="background:${sc}">${esc(a.status)}</span>
+      <div><span class="status-pill" style="background:${sc};color:${statusTextColor(a.status)}">${esc(a.status)}</span>
         ${isDeadlineRisk(a) ? '<span class="risk-badge" title="Deadline nabij of mijlpaal verstreken terwijl de afspraak niet op koers is">⚠ Deadlinerisico</span>' : ''}
       </div>
     </div>`;
@@ -30,7 +30,7 @@ function voortgangSectieHtml(a) {
         <span class="vg-dot" style="background:${statColor(u.status)}"></span>
         <div class="vg-inhoud">
           <div class="vg-kop"><b>${esc(u.datum)}</b> · ${esc(u.auteur || '—')} ·
-            <span class="status-pill" style="background:${statColor(u.status)}">${esc(u.status)}</span>
+            <span class="status-pill" style="background:${statColor(u.status)};color:${statusTextColor(u.status)}">${esc(u.status)}</span>
             <button class="vg-del" onclick="verwijderVoortgang('${esc(u.id)}')" title="Verwijder deze update" aria-label="Verwijder statusupdate van ${esc(u.datum)}">✕</button>
           </div>
           ${u.toelichting ? `<div class="vg-toel">${esc(u.toelichting)}</div>` : ''}

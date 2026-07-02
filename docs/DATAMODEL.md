@@ -69,7 +69,7 @@ Eén indeling (`STATUS_MAP` in `src/js/status.js`); het PoC had er twee naast el
 | Afgerond | `#2E7D32` | Afgerond, Structureel |
 | Op schema | `#0277BD` | Op schema, In uitvoering |
 | Gestart | `#F57C00` | Gestart, In voorbereiding, In opstart, Concept besproken*, In uitwerking, In ontwikkeling |
-| Nog niet gestart | `#888` | Nog niet gestart, Nog te starten, Nader te concretiseren, Nader uit te werken |
+| Nog niet gestart | `#757575` | Nog niet gestart, Nog te starten, Nader te concretiseren, Nader uit te werken |
 | Aandacht | `#C00000` | Achter op schema |
 | Geparkeerd | `#aaa` | Geparkeerd, Niet geprioriteerd; ongoing |
 | Onbekend | `#bbb` | — (leeg) |

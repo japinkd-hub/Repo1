@@ -7,6 +7,7 @@
   --radius:6px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
 body{font-family:'Segoe UI',Arial,sans-serif;font-size:13px;
      display:flex;flex-direction:column;height:100vh;overflow:hidden;background:var(--bg)}
 

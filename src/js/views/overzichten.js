@@ -68,7 +68,7 @@ function renderLijst(visible) {
       <td class="tf-cell"><span style="background:${tfc}">${TF_META[a.tf]?.short||a.tf}</span></td>
       <td class="src-cell"><span style="background:${srcc}">${esc(SRC_LABELS[a.src]||a.src)}</span></td>
       <td style="color:#555;font-size:11px">${esc(wgShort)}</td>
-      <td><span class="status-pill" style="background:${sc}">${esc(a.status)}</span></td>
+      <td><span class="status-pill" style="background:${sc};color:${statusTextColor(a.status)}">${esc(a.status)}</span></td>
       <td style="color:#555;font-size:11px;white-space:nowrap">${esc(a.deadline)}</td>`;
     tr.onclick = () => showDetail(a.nr);
     tbody.appendChild(tr);
@@ -123,7 +123,7 @@ function makeAgrTag(a, color) {
     <div>
       <div class="agr-titel">${esc(a.t)}</div>
       <div class="agr-meta">
-        <span class="status-pill" style="background:${sc}">${esc(a.status)}</span>
+        <span class="status-pill" style="background:${sc};color:${statusTextColor(a.status)}">${esc(a.status)}</span>
         ${a.deadline ? `<span style="font-size:10px;color:#888">${esc(a.deadline)}</span>` : ''}
       </div>
     </div>`;

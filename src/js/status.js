@@ -37,6 +37,7 @@ const STATUS_MAP = {
   "Nog te starten":                    "Nog niet gestart",
   "Nader te concretiseren":            "Nog niet gestart",
   "Nader uit te werken":               "Nog niet gestart",
+  "Aandacht":                          "Aandacht",
   "Achter op schema":                  "Aandacht",
   "Geparkeerd":                        "Geparkeerd",
   "Niet geprioriteerd; ongoing":       "Geparkeerd",
@@ -46,13 +47,18 @@ const STATUS_NORM_COLORS = {
   "Afgerond":         "#2E7D32",
   "Op schema":        "#0277BD",
   "Gestart":          "#F57C00",
-  "Nog niet gestart": "#888",
+  "Nog niet gestart": "#757575",
   "Aandacht":         "#C00000",
   "Geparkeerd":       "#aaa",
   "Onbekend":         "#bbb"
 };
 const ALL_STATUS_FILTER_KEYS = [...STATUS_CATS, "Onbekend", "⚠ Deadlinerisico"];
-function normStatus(raw){ return STATUS_MAP[raw] || "Onbekend"; }
+function normStatus(raw){ return STATUS_MAP[raw] || (STATUS_CATS.includes(raw) ? raw : "Onbekend"); }
+// Donkere tekst op lichte statuskleuren (WCAG AA-contrast)
+function statusTextColor(status){
+  const ns = normStatus(status);
+  return (ns === "Geparkeerd" || ns === "Onbekend") ? "#222" : "#fff";
+}
 // Zet een deadline-tekst om naar een datum (einde van de genoemde periode).
 // "Q2 2026" → 2026-06-30; "2026–2028" → 2028-12-31; "2027" → 2027-12-31;
 // "Doorlopend", "n.t.b.", "—" e.d. → null (geen toetsbare deadline).

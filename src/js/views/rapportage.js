@@ -111,7 +111,7 @@ function renderRapportage() {
         : 'deadline nabij of verstreken';
       h += `<tr><td>${esc(a.nr)}</td><td>${esc(a.t)}</td><td>${esc(TF_META[a.tf]?.short || a.tf)}</td>
         <td>${esc(werkgroepNaam(a.werkgroepId))}</td>
-        <td><span class="status-pill" style="background:${statColor(a.status)}">${esc(normStatus(a.status))}</span></td>
+        <td><span class="status-pill" style="background:${statColor(a.status)};color:${statusTextColor(a.status)}">${esc(normStatus(a.status))}</span></td>
         <td>${esc(a.deadline || '—')}</td><td>${esc(signaal)}</td></tr>`;
     }
     h += '</tbody></table>';
@@ -127,7 +127,7 @@ function renderRapportage() {
       const a = AGRS.find(x => x.nr === u.afspraakNr);
       h += `<tr><td style="white-space:nowrap">${esc(u.datum)}</td>
         <td><b>${esc(u.afspraakNr)}</b> ${esc(a?.t || '')}</td>
-        <td><span class="status-pill" style="background:${statColor(u.status)}">${esc(u.status)}</span></td>
+        <td><span class="status-pill" style="background:${statColor(u.status)};color:${statusTextColor(u.status)}">${esc(u.status)}</span></td>
         <td>${esc(u.auteur || '—')}</td><td>${esc(u.toelichting || '')}</td></tr>`;
     }
     h += '</tbody></table>';

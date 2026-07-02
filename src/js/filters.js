@@ -68,7 +68,7 @@ const GROUP_CONFIG_V2 = {
   stat: {
     set: () => activeStats,
     keys: () => ALL_STATUS_FILTER_KEYS,
-    onStyle: (k) => { const col = k==="⚠ Deadlinerisico" ? "#C00000" : (STATUS_NORM_COLORS[k]||"#555"); return { bg: col, color: '#fff', border: col }; },
+    onStyle: (k) => { const col = k==="⚠ Deadlinerisico" ? "#C00000" : (STATUS_NORM_COLORS[k]||"#555"); return { bg: col, color: k==="⚠ Deadlinerisico" ? '#fff' : statusTextColor(k), border: col }; },
     offStyle: () => { return { bg: '', color: '#444', border: '' }; },
     selector: '#stat-chips .chip',
     keyOf: (c, i) => ALL_STATUS_FILTER_KEYS[i]
@@ -188,7 +188,8 @@ function buildChips() {
     c.className = 'chip chip-stat on';
     c.textContent = g;
     const gColor = g === "⚠ Deadlinerisico" ? "#C00000" : (STATUS_NORM_COLORS[g] || "#555");
-    c.style.background = gColor; c.style.color='#fff'; c.style.borderColor=gColor;
+    const gText = g === "⚠ Deadlinerisico" ? '#fff' : statusTextColor(g);
+    c.style.background = gColor; c.style.color=gText; c.style.borderColor=gColor;
     c.setAttribute('role','checkbox');
     c.setAttribute('aria-checked','true');
     c.setAttribute('tabindex','0');
@@ -196,7 +197,7 @@ function buildChips() {
     c.onclick = () => {
       activeStats.has(g) ? activeStats.delete(g) : activeStats.add(g);
       c.style.background = activeStats.has(g) ? gColor : '';
-      c.style.color = activeStats.has(g) ? '#fff' : '#444';
+      c.style.color = activeStats.has(g) ? gText : '#444';
       c.setAttribute('aria-checked', activeStats.has(g) ? 'true' : 'false');
       syncURL();
       applyFilters();
