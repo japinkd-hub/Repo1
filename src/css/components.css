@@ -204,3 +204,27 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
 .mp-datum{font-weight:700;color:#555;white-space:nowrap}
 .mp-laat{background:#fdecea;color:#C00000;border-radius:8px;padding:0 6px;
   font-size:9.5px;font-weight:700;margin-left:4px}
+
+/* ─── Rapportage ─── */
+.rp-rapport{background:#fff;border:1px solid #ddd;border-radius:var(--radius);padding:18px 22px;max-width:1000px}
+.rp-titelblok h2{font-size:18px;color:var(--primary)}
+.rp-sub{font-size:12px;color:#555;margin-top:2px}
+.rp-meta{font-size:10.5px;color:#999;margin-top:2px}
+.rp-tegels{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.rp-tegel{border:1px solid #ddd;border-top:3px solid #555;border-radius:4px;
+  padding:7px 12px;min-width:86px;text-align:center;background:#fafafa}
+.rp-tegel-n{font-size:19px;font-weight:800;color:#333}
+.rp-tegel-l{font-size:10px;color:#666;margin-top:1px}
+.rp-h3{font-size:13px;color:var(--primary);margin:16px 0 6px;border-bottom:1px solid #eee;padding-bottom:3px}
+.rp-balken{display:flex;flex-direction:column;gap:5px}
+.rp-balkrij{display:flex;align-items:center;gap:8px}
+.rp-balklabel{width:280px;flex-shrink:0;font-size:11px;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rp-balk{flex:1;height:12px;border-radius:6px;overflow:hidden;background:#eee;display:flex}
+.rp-balk>div{height:100%;min-width:2px}
+.rp-balkinfo{width:110px;flex-shrink:0;font-size:10px;color:#888;text-align:right}
+.rp-tabel{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px}
+.rp-tabel th{background:var(--primary-light);color:var(--primary);text-align:left;
+  padding:5px 7px;border-bottom:2px solid #d4a8c8;font-size:10.5px}
+.rp-tabel td{padding:5px 7px;border-bottom:1px solid #eee;vertical-align:top}
+.rp-leeg{font-size:11px;color:#888;font-style:italic}

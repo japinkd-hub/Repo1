@@ -1,0 +1,14 @@
+/* Afdrukken / PDF: alleen de actieve hoofdview, geoptimaliseerd voor A4 */
+@media print {
+  header, .sidebar-left, .status-bar, .detail-panel, #tf-progress-bars,
+  .dl-toolbar, #dpSettingsPanel, #modalRoot, #toast { display: none !important; }
+  body { display: block; height: auto; overflow: visible; background: #fff; font-size: 11px; }
+  .body-wrap { display: block; overflow: visible; }
+  .main-area { display: block; overflow: visible; padding: 0; }
+  .hidden { display: none !important; }
+  .rp-rapport { box-shadow: none; border: none; padding: 0; }
+  .rp-tabel { page-break-inside: auto; }
+  .rp-tabel tr { page-break-inside: avoid; }
+  .rp-h3 { page-break-after: avoid; }
+  a { text-decoration: none; color: inherit; }
+}

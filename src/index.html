@@ -15,6 +15,7 @@
     <button class="hnav-btn" id="navL" onclick="setView('lijst')">Lijst</button>
     <button class="hnav-btn" id="navO" onclick="setView('onderdelen')">Onderdelen</button>
     <button class="hnav-btn" id="navD" onclick="setView('deelnemers')">Deelnemers</button>
+    <button class="hnav-btn" id="navR" onclick="setView('rapportage')">Rapportage</button>
   </nav>
   <div class="hdr-data">
     <span id="data-status"></span>
@@ -142,6 +143,18 @@
         <button class="btn-secondary" onclick="openReferentieBeheer()" title="Beheer de lijsten met AZWA-partijen en regiotafels">⚙ Lijsten</button>
       </div>
       <div id="dlBody"></div>
+    </div>
+    <!-- Rapportage view -->
+    <div id="viewRapportage" class="hidden">
+      <div class="dl-toolbar rp-toolbar">
+        <select id="rpPeriode" onchange="renderRapportage()" aria-label="Periode"></select>
+        <select id="rpTafel" onchange="renderRapportage()" aria-label="Thematafel"></select>
+        <select id="rpWg" onchange="renderRapportage()" aria-label="Werkgroep"></select>
+        <span class="dl-count"></span>
+        <button class="btn-primary" onclick="printRapport()" title="Druk het rapport af of bewaar het als PDF (kies 'Opslaan als PDF' als printer)">🖨 PDF / afdrukken</button>
+        <button class="btn-secondary" onclick="exporteerRapportCsv()" title="Exporteer de statustabel als CSV (opent in Excel)">⬇ CSV</button>
+      </div>
+      <div id="rpBody"></div>
     </div>
   </main>
 

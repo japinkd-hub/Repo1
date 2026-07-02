@@ -329,6 +329,46 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
 .mp-laat{background:#fdecea;color:#C00000;border-radius:8px;padding:0 6px;
   font-size:9.5px;font-weight:700;margin-left:4px}
 
+/* ─── Rapportage ─── */
+.rp-rapport{background:#fff;border:1px solid #ddd;border-radius:var(--radius);padding:18px 22px;max-width:1000px}
+.rp-titelblok h2{font-size:18px;color:var(--primary)}
+.rp-sub{font-size:12px;color:#555;margin-top:2px}
+.rp-meta{font-size:10.5px;color:#999;margin-top:2px}
+.rp-tegels{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.rp-tegel{border:1px solid #ddd;border-top:3px solid #555;border-radius:4px;
+  padding:7px 12px;min-width:86px;text-align:center;background:#fafafa}
+.rp-tegel-n{font-size:19px;font-weight:800;color:#333}
+.rp-tegel-l{font-size:10px;color:#666;margin-top:1px}
+.rp-h3{font-size:13px;color:var(--primary);margin:16px 0 6px;border-bottom:1px solid #eee;padding-bottom:3px}
+.rp-balken{display:flex;flex-direction:column;gap:5px}
+.rp-balkrij{display:flex;align-items:center;gap:8px}
+.rp-balklabel{width:280px;flex-shrink:0;font-size:11px;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rp-balk{flex:1;height:12px;border-radius:6px;overflow:hidden;background:#eee;display:flex}
+.rp-balk>div{height:100%;min-width:2px}
+.rp-balkinfo{width:110px;flex-shrink:0;font-size:10px;color:#888;text-align:right}
+.rp-tabel{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px}
+.rp-tabel th{background:var(--primary-light);color:var(--primary);text-align:left;
+  padding:5px 7px;border-bottom:2px solid #d4a8c8;font-size:10.5px}
+.rp-tabel td{padding:5px 7px;border-bottom:1px solid #eee;vertical-align:top}
+.rp-leeg{font-size:11px;color:#888;font-style:italic}
+
+/* ── src/css/print.css ── */
+/* Afdrukken / PDF: alleen de actieve hoofdview, geoptimaliseerd voor A4 */
+@media print {
+  header, .sidebar-left, .status-bar, .detail-panel, #tf-progress-bars,
+  .dl-toolbar, #dpSettingsPanel, #modalRoot, #toast { display: none !important; }
+  body { display: block; height: auto; overflow: visible; background: #fff; font-size: 11px; }
+  .body-wrap { display: block; overflow: visible; }
+  .main-area { display: block; overflow: visible; padding: 0; }
+  .hidden { display: none !important; }
+  .rp-rapport { box-shadow: none; border: none; padding: 0; }
+  .rp-tabel { page-break-inside: auto; }
+  .rp-tabel tr { page-break-inside: avoid; }
+  .rp-h3 { page-break-after: avoid; }
+  a { text-decoration: none; color: inherit; }
+}
+
 </style>
 </head>
 <body>
@@ -340,6 +380,7 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
     <button class="hnav-btn" id="navL" onclick="setView('lijst')">Lijst</button>
     <button class="hnav-btn" id="navO" onclick="setView('onderdelen')">Onderdelen</button>
     <button class="hnav-btn" id="navD" onclick="setView('deelnemers')">Deelnemers</button>
+    <button class="hnav-btn" id="navR" onclick="setView('rapportage')">Rapportage</button>
   </nav>
   <div class="hdr-data">
     <span id="data-status"></span>
@@ -467,6 +508,18 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
         <button class="btn-secondary" onclick="openReferentieBeheer()" title="Beheer de lijsten met AZWA-partijen en regiotafels">⚙ Lijsten</button>
       </div>
       <div id="dlBody"></div>
+    </div>
+    <!-- Rapportage view -->
+    <div id="viewRapportage" class="hidden">
+      <div class="dl-toolbar rp-toolbar">
+        <select id="rpPeriode" onchange="renderRapportage()" aria-label="Periode"></select>
+        <select id="rpTafel" onchange="renderRapportage()" aria-label="Thematafel"></select>
+        <select id="rpWg" onchange="renderRapportage()" aria-label="Werkgroep"></select>
+        <span class="dl-count"></span>
+        <button class="btn-primary" onclick="printRapport()" title="Druk het rapport af of bewaar het als PDF (kies 'Opslaan als PDF' als printer)">🖨 PDF / afdrukken</button>
+        <button class="btn-secondary" onclick="exporteerRapportCsv()" title="Exporteer de statustabel als CSV (opent in Excel)">⬇ CSV</button>
+      </div>
+      <div id="rpBody"></div>
     </div>
   </main>
 
@@ -2146,6 +2199,208 @@ function exporteerDeelnemersCsv() {
     lijst.map(p => [p.naam, p.organisatie, p.rol, p.email, p.azwaPartij, p.regioTafel,
       (p.lidmaatschappen || []).map(l => `${werkgroepNaam(l.werkgroepId)} (${l.rol || 'Lid'})`).join(' | ')]));
   toon(`${lijst.length} deelnemers geëxporteerd als CSV. Let op: het bestand bevat persoonsgegevens.`);
+}
+
+// ── src/js/views/rapportage.js ──
+// Rapportagemodule: kwartaalrapportage voor bestuurlijke tafels,
+// scope per thematafel/werkgroep/periode, PDF via afdrukken en CSV-export.
+
+function kwartaalVan(datum) {
+  if (!datum) return null;
+  const [j, m] = datum.split('-').map(Number);
+  return `${j} Q${Math.ceil(m / 3)}`;
+}
+
+function kwartaalOpties() {
+  const set = new Set(DB.voortgang.map(v => kwartaalVan(v.datum)).filter(Boolean));
+  set.add(kwartaalVan(vandaag()));
+  return [...set].sort().reverse();
+}
+
+function rpScope() {
+  return {
+    periode: document.getElementById('rpPeriode')?.value || '',
+    tf: document.getElementById('rpTafel')?.value || '',
+    wgId: document.getElementById('rpWg')?.value || '',
+  };
+}
+
+function rpAfspraken() {
+  const { tf, wgId } = rpScope();
+  return AGRS.filter(a => {
+    if (tf && a.tf !== tf) return false;
+    if (wgId && !(a.werkgroepId === wgId || werkgroep(a.werkgroepId)?.parentId === wgId)) return false;
+    return true;
+  });
+}
+
+function rpUpdates(afspraken) {
+  const { periode } = rpScope();
+  const nrs = new Set(afspraken.map(a => a.nr));
+  return DB.voortgang
+    .filter(v => nrs.has(v.afspraakNr) && (!periode || kwartaalVan(v.datum) === periode))
+    .sort((x, y) => (y.datum || '').localeCompare(x.datum || ''));
+}
+
+function renderRapportage() {
+  vulRpSelects();
+  const { periode, tf, wgId } = rpScope();
+  const afspraken = rpAfspraken();
+  const updates = rpUpdates(afspraken);
+  const risicos = afspraken.filter(isDeadlineRisk);
+
+  const counts = {};
+  [...STATUS_CATS, 'Onbekend'].forEach(c => counts[c] = 0);
+  afspraken.forEach(a => counts[normStatus(a.status)]++);
+
+  const scopeTekst = [
+    tf ? TF_META[tf]?.label || tf : 'alle thematafels',
+    wgId ? `werkgroep ${werkgroepNaam(wgId)}` : null,
+    periode ? `periode ${periode}` : 'alle perioden',
+  ].filter(Boolean).join(' · ');
+
+  let h = `<div class="rp-rapport" id="rpRapport">
+    <div class="rp-titelblok">
+      <h2>Kwartaalrapportage IZA-AZWA</h2>
+      <div class="rp-sub">${esc(scopeTekst)}</div>
+      <div class="rp-meta">Gegenereerd op ${esc(vandaag())} · datastand ${esc(DB.laatstGewijzigd)} · ${afspraken.length} afspraken in scope</div>
+    </div>`;
+
+  // Samenvatting
+  h += '<div class="rp-tegels">';
+  h += rpTegel(afspraken.length, 'afspraken', '#555');
+  for (const c of [...STATUS_CATS, 'Onbekend'])
+    if (counts[c]) h += rpTegel(counts[c], c, STATUS_NORM_COLORS[c]);
+  h += rpTegel(risicos.length, '⚠ deadlinerisico', '#C00000');
+  h += rpTegel(updates.length, periode ? `updates in ${periode}` : 'statusupdates totaal', 'var(--primary)');
+  h += '</div>';
+
+  // Statusverdeling per thematafel
+  if (!wgId) {
+    h += '<h3 class="rp-h3">Statusverdeling per thematafel</h3><div class="rp-balken">';
+    for (const [tfKey, meta] of Object.entries(TF_META)) {
+      if (tf && tfKey !== tf) continue;
+      const lijst = afspraken.filter(a => a.tf === tfKey);
+      if (!lijst.length) continue;
+      h += rpStatusBalk(meta.label, lijst, meta.color);
+    }
+    h += '</div>';
+  }
+
+  // Per werkgroep
+  const perWg = new Map();
+  for (const a of afspraken) {
+    const hoofdId = werkgroep(a.werkgroepId)?.parentId || a.werkgroepId;
+    if (!perWg.has(hoofdId)) perWg.set(hoofdId, []);
+    perWg.get(hoofdId).push(a);
+  }
+  if (perWg.size > 1) {
+    h += '<h3 class="rp-h3">Per werkgroep</h3><div class="rp-balken">';
+    for (const [id, lijst] of [...perWg.entries()].sort((x, y) => y[1].length - x[1].length))
+      h += rpStatusBalk(werkgroepNaam(id), lijst, '#777');
+    h += '</div>';
+  }
+
+  // Risico's
+  h += `<h3 class="rp-h3">Afspraken met deadlinerisico (${risicos.length})</h3>`;
+  if (!risicos.length) h += '<p class="rp-leeg">Geen afspraken met deadlinerisico binnen deze scope.</p>';
+  else {
+    h += `<table class="rp-tabel"><thead><tr><th scope="col">Nr.</th><th scope="col">Afspraak</th>
+      <th scope="col">Tafel</th><th scope="col">Werkgroep</th><th scope="col">Status</th>
+      <th scope="col">Deadline</th><th scope="col">Signaal</th></tr></thead><tbody>`;
+    for (const a of risicos) {
+      const mpLaat = (a.mijlpalen || []).filter(m => !m.gehaald && m.datum && m.datum < vandaag());
+      const signaal = mpLaat.length
+        ? `mijlpaal verstreken: ${mpLaat[0].titel}${mpLaat.length > 1 ? ` (+${mpLaat.length - 1})` : ''}`
+        : 'deadline nabij of verstreken';
+      h += `<tr><td>${esc(a.nr)}</td><td>${esc(a.t)}</td><td>${esc(TF_META[a.tf]?.short || a.tf)}</td>
+        <td>${esc(werkgroepNaam(a.werkgroepId))}</td>
+        <td><span class="status-pill" style="background:${statColor(a.status)}">${esc(normStatus(a.status))}</span></td>
+        <td>${esc(a.deadline || '—')}</td><td>${esc(signaal)}</td></tr>`;
+    }
+    h += '</tbody></table>';
+  }
+
+  // Statusupdates in periode
+  h += `<h3 class="rp-h3">Statusupdates ${periode ? `in ${esc(periode)}` : '(alle)'} — ${updates.length}</h3>`;
+  if (!updates.length) h += '<p class="rp-leeg">Geen statusupdates in deze periode.</p>';
+  else {
+    h += `<table class="rp-tabel"><thead><tr><th scope="col">Datum</th><th scope="col">Afspraak</th>
+      <th scope="col">Status</th><th scope="col">Auteur</th><th scope="col">Toelichting</th></tr></thead><tbody>`;
+    for (const u of updates.slice(0, 200)) {
+      const a = AGRS.find(x => x.nr === u.afspraakNr);
+      h += `<tr><td style="white-space:nowrap">${esc(u.datum)}</td>
+        <td><b>${esc(u.afspraakNr)}</b> ${esc(a?.t || '')}</td>
+        <td><span class="status-pill" style="background:${statColor(u.status)}">${esc(u.status)}</span></td>
+        <td>${esc(u.auteur || '—')}</td><td>${esc(u.toelichting || '')}</td></tr>`;
+    }
+    h += '</tbody></table>';
+  }
+
+  h += '</div>';
+  document.getElementById('rpBody').innerHTML = h;
+}
+
+function rpTegel(n, label, kleur) {
+  return `<div class="rp-tegel" style="border-top-color:${kleur}">
+    <div class="rp-tegel-n">${n}</div><div class="rp-tegel-l">${esc(label)}</div></div>`;
+}
+
+function rpStatusBalk(label, lijst, labelKleur) {
+  const cats = [...STATUS_CATS, 'Onbekend'];
+  const totaal = lijst.length;
+  const segs = cats.map(c => {
+    const n = lijst.filter(a => normStatus(a.status) === c).length;
+    if (!n) return '';
+    return `<div title="${esc(c)}: ${n}" style="width:${(n / totaal * 100).toFixed(1)}%;background:${STATUS_NORM_COLORS[c]}"></div>`;
+  }).join('');
+  const klaar = lijst.filter(a => ['Afgerond', 'Op schema', 'Gestart'].includes(normStatus(a.status))).length;
+  return `<div class="rp-balkrij">
+    <div class="rp-balklabel" style="color:${labelKleur}">${esc(label)}</div>
+    <div class="rp-balk">${segs}</div>
+    <div class="rp-balkinfo">${klaar}/${totaal} loopt of klaar</div>
+  </div>`;
+}
+
+function vulRpSelects() {
+  const per = document.getElementById('rpPeriode');
+  if (per && !per.dataset.gevuld) {
+    per.innerHTML = '<option value="">Alle perioden</option>' +
+      kwartaalOpties().map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
+    per.dataset.gevuld = '1';
+  }
+  const tfSel = document.getElementById('rpTafel');
+  if (tfSel && !tfSel.dataset.gevuld) {
+    tfSel.innerHTML = '<option value="">Alle thematafels</option>' +
+      Object.entries(TF_META).map(([k, m]) => `<option value="${k}">${esc(m.label)}</option>`).join('');
+    tfSel.dataset.gevuld = '1';
+  }
+  const wgSel = document.getElementById('rpWg');
+  if (wgSel) {
+    const huidig = wgSel.value;
+    wgSel.innerHTML = '<option value="">Alle werkgroepen</option>' + werkgroepOpties();
+    if ([...wgSel.options].some(o => o.value === huidig)) wgSel.value = huidig;
+  }
+}
+
+function printRapport() {
+  window.print();
+}
+
+function exporteerRapportCsv() {
+  const afspraken = rpAfspraken();
+  csvDownload(`rapportage_${vandaag()}.csv`,
+    ['Nr', 'Titel', 'Thematafel', 'Werkgroep', 'Status (ruw)', 'Statuscategorie', 'Deadline',
+     'Deadlinerisico', 'Mijlpalen (gehaald/totaal)', 'Laatste update', 'Laatste auteur', 'Laatste toelichting'],
+    afspraken.map(a => {
+      const u = voortgangVoorAfspraak(a.nr)[0];
+      const mps = a.mijlpalen || [];
+      return [a.nr, a.t, TF_META[a.tf]?.label || a.tf, werkgroepNaam(a.werkgroepId),
+        a.status, normStatus(a.status), a.deadline,
+        isDeadlineRisk(a) ? 'ja' : 'nee', `${mps.filter(m => m.gehaald).length}/${mps.length}`,
+        u?.datum || '', u?.auteur || '', u?.toelichting || ''];
+    }));
+  toon(`${afspraken.length} afspraken geëxporteerd als CSV.`);
 }
 
 // ── src/js/settings.js ──

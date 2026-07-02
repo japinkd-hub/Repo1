@@ -6,6 +6,11 @@ Formaat gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/); versien
 ## [Unreleased]
 
 ### Toegevoegd
+- Tabblad **Rapportage**: kwartaalrapportage-view voor bestuurlijke tafels met
+  samenvattingstegels, statusverdeling per thematafel en per werkgroep,
+  risicotabel en statusupdates per periode; scope instelbaar op periode
+  (kwartaal), thematafel of werkgroep. Export als PDF (print-geoptimaliseerde
+  weergave) en CSV.
 - Voortgangsrapportage per afspraak: statusupdates met datum, auteur en toelichting;
   tijdlijn (statushistorie) in het detailpaneel; mijlpalen met deadline en afvinken;
   risicosignalering (⚠) bij verstreken mijlpalen of een deadline binnen 90 dagen
