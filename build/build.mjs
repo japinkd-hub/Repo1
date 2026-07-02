@@ -11,12 +11,15 @@ const read = p => readFileSync(r(p), 'utf8');
 const CSS_FILES = ['src/css/base.css', 'src/css/components.css', 'src/css/print.css'];
 const JS_FILES = [
   'src/js/data.js',
+  'src/js/ui.js',
+  'src/js/export.js',
   'src/js/status.js',
   'src/js/clusters.js',
   'src/js/filters.js',
   'src/js/views/overzichten.js',
   'src/js/views/detail.js',
   'src/js/views/sidebar.js',
+  'src/js/views/deelnemers.js',
   'src/js/settings.js',
   'src/js/main.js',
 ];

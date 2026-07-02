@@ -199,5 +199,7 @@ function closeDetail() {
 
 // === KEYBOARD ===
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeDetail();
+  if (e.key !== 'Escape') return;
+  if (modalIsOpen()) { sluitModal(); return; }
+  closeDetail();
 });

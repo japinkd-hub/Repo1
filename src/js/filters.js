@@ -264,6 +264,8 @@ function matches(a) {
 }
 
 function applyFilters() {
+  if (curView === 'deelnemers') { renderDeelnemers(); return; }
+  if (curView === 'rapportage' && typeof renderRapportage === 'function') { renderRapportage(); return; }
   updateAllToggleBtns();
   syncURL();
   const visible = AGRS.filter(matches);
@@ -274,13 +276,26 @@ function applyFilters() {
 }
 
 // === VIEW SWITCHER ===
+// Afspraakviews delen de linkerzijbalk met filters; beheerviews (deelnemers,
+// rapportage) hebben eigen filters en verbergen zijbalk + voortgangsbalken.
+const VIEW_CONFIG = {
+  thematafels: { btn: 'navT', el: 'viewThematafels' },
+  lijst:       { btn: 'navL', el: 'viewLijst' },
+  onderdelen:  { btn: 'navO', el: 'viewOnderdelen' },
+  deelnemers:  { btn: 'navD', el: 'viewDeelnemers', beheer: true },
+  rapportage:  { btn: 'navR', el: 'viewRapportage', beheer: true },
+};
 function setView(v) {
+  if (!VIEW_CONFIG[v]) return;
   curView = v;
-  ['T','L','O'].forEach(x => { const b=document.getElementById('nav'+x); if(b) b.className='hnav-btn'; });
-  const map={thematafels:'T',lijst:'L',onderdelen:'O'};
-  const nb=document.getElementById('nav'+map[v]); if(nb) nb.className='hnav-btn on';
-  document.getElementById('viewThematafels').className = v==='thematafels' ? '' : 'hidden';
-  document.getElementById('viewLijst').className = v==='lijst' ? '' : 'hidden';
-  document.getElementById('viewOnderdelen').className = v==='onderdelen' ? '' : 'hidden';
+  for (const [key, cfg] of Object.entries(VIEW_CONFIG)) {
+    const b = document.getElementById(cfg.btn);
+    if (b) b.className = 'hnav-btn' + (key === v ? ' on' : '');
+    const el = document.getElementById(cfg.el);
+    if (el) el.className = key === v ? '' : 'hidden';
+  }
+  const beheer = !!VIEW_CONFIG[v].beheer;
+  document.getElementById('tf-progress-bars').style.display = beheer ? 'none' : '';
+  document.body.classList.toggle('view-beheer', beheer);
   applyFilters();
 }

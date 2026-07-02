@@ -6,6 +6,11 @@ Formaat gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/); versien
 ## [Unreleased]
 
 ### Toegevoegd
+- Tabblad **Deelnemers**: registratie en beheer van personen (naam, organisatie,
+  rol, zakelijk e-mailadres) met herkomst AZWA-partij en regionale IZA-AZWA-tafel,
+  lidmaatschappen van (sub)werkgroepen, zoeken en filteren, overzichten "wie zit
+  waar" per partij / regio / werkgroep en CSV-export. Referentielijsten (partijen,
+  regiotafels) zijn in het dashboard te beheren.
 - Datamodel schemaVersion 1: werkgroepen (incl. subwerkgroepen via `parentId`),
   voortgangslog per afspraak, personen (deelnemers) met AZWA-partij en regionale
   IZA-AZWA-tafel, bewerkbare referentielijsten en mijlpalen. Zie `docs/DATAMODEL.md`.
