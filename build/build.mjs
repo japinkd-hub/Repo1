@@ -19,6 +19,7 @@ const JS_FILES = [
   'src/js/views/overzichten.js',
   'src/js/views/detail.js',
   'src/js/views/sidebar.js',
+  'src/js/views/voortgang.js',
   'src/js/views/deelnemers.js',
   'src/js/settings.js',
   'src/js/main.js',

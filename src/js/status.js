@@ -53,11 +53,30 @@ const STATUS_NORM_COLORS = {
 };
 const ALL_STATUS_FILTER_KEYS = [...STATUS_CATS, "Onbekend", "⚠ Deadlinerisico"];
 function normStatus(raw){ return STATUS_MAP[raw] || "Onbekend"; }
+// Zet een deadline-tekst om naar een datum (einde van de genoemde periode).
+// "Q2 2026" → 2026-06-30; "2026–2028" → 2028-12-31; "2027" → 2027-12-31;
+// "Doorlopend", "n.t.b.", "—" e.d. → null (geen toetsbare deadline).
+function parseDeadline(dl) {
+  if (!dl) return null;
+  const kw = /Q([1-4])\s*(20\d{2})/.exec(dl);
+  if (kw) return new Date(Number(kw[2]), Number(kw[1]) * 3, 0); // laatste dag van het kwartaal
+  const jaren = String(dl).match(/20\d{2}/g);
+  if (jaren) return new Date(Number(jaren[jaren.length - 1]), 12, 0); // 31 december van het laatste jaar
+  return null;
+}
+
+const RISICO_DAGEN = 90;
+// Risico: (a) een mijlpaal is verstreken zonder gehaald te zijn, of
+// (b) de deadline valt binnen 90 dagen (of is verstreken) terwijl de afspraak
+// nog niet gestart is of aandacht vraagt. Afgerond/geparkeerd is nooit risico.
 function isDeadlineRisk(a){
-  const dl = (a.deadline||"").toLowerCase();
-  const riskDl = dl.includes("q1 2026") || dl.includes("q2 2026") || dl.includes("q1") || dl.includes("q2");
-  const riskStat = ["Niet gestart","Aandacht"].includes(normStatus(a.status));
-  return riskDl && riskStat;
+  const ns = normStatus(a.status);
+  if (ns === "Afgerond" || ns === "Geparkeerd") return false;
+  const nu = new Date();
+  if ((a.mijlpalen || []).some(m => !m.gehaald && m.datum && new Date(m.datum) < nu)) return true;
+  if (!["Nog niet gestart", "Aandacht", "Onbekend"].includes(ns)) return false;
+  const d = parseDeadline(a.deadline);
+  return d !== null && (d.getTime() - nu.getTime()) < RISICO_DAGEN * 86400000;
 }
 const TF_META = {
   T1:{label:"T1 — Medische technologie & digitale zorg",color:"#1565C0",short:"Medtech & DHZ"},

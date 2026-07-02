@@ -178,3 +178,29 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
 #toast{position:fixed;right:16px;bottom:44px;background:#2b2b2b;color:#fff;padding:9px 14px;
   border-radius:6px;font-size:12px;z-index:300;opacity:0;transition:opacity .25s;pointer-events:none;max-width:340px}
 #toast.zichtbaar{opacity:.95}
+
+/* ─── Voortgang & mijlpalen (detailpaneel) ─── */
+.dp-label-rij{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.dp-mini-btn{background:var(--primary);color:#fff;border:none;border-radius:4px;
+  padding:2px 8px;font-size:10px;cursor:pointer;font-weight:600;white-space:nowrap}
+.dp-mini-btn:hover{background:var(--primary-dark)}
+.risk-badge{display:inline-block;margin-left:6px;background:#fdecea;color:#C00000;
+  border:1px solid #C00000;border-radius:8px;padding:1px 7px;font-size:10px;font-weight:700}
+.vg-tijdlijn{border-left:2px solid #e0c4d6;margin:4px 0 0 5px;padding-left:10px;
+  display:flex;flex-direction:column;gap:8px}
+.vg-item{position:relative;display:flex;gap:6px}
+.vg-dot{position:absolute;left:-16px;top:3px;width:9px;height:9px;border-radius:50%;
+  border:2px solid #fff;box-shadow:0 0 0 1px #ccc}
+.vg-inhoud{flex:1;min-width:0}
+.vg-kop{font-size:10.5px;color:#555;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.vg-toel{font-size:11px;color:#444;margin-top:2px;white-space:pre-line}
+.vg-del{background:none;border:none;color:#bbb;cursor:pointer;font-size:10px;
+  padding:0 3px;margin-left:auto}
+.vg-del:hover{color:#C00000}
+.mp-item{display:flex;align-items:baseline;gap:6px;font-size:11px;padding:3px 0}
+.mp-item input[type=checkbox]{width:auto}
+.mp-item.gehaald label{text-decoration:line-through;color:#999}
+.mp-item label{cursor:pointer}
+.mp-datum{font-weight:700;color:#555;white-space:nowrap}
+.mp-laat{background:#fdecea;color:#C00000;border-radius:8px;padding:0 6px;
+  font-size:9.5px;font-weight:700;margin-left:4px}

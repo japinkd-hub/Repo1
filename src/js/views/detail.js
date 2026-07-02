@@ -50,18 +50,8 @@ function showDetail(nr) {
       <div class="dp-value" style="font-size:11px;color:#444">${esc(a.kern)}</div>
     </div></div>`;
 
-  html += `<div data-dpsec="status"><div class="dp-divider"></div>
-    <div class="dp-field">
-      <div class="dp-label">Status</div>
-      <div><span class="status-pill" style="background:${sc}">${esc(a.status)}</span></div>
-    </div>`;
-
-  if (a.vg && a.vg !== '—') html += `
-    <div class="dp-field">
-      <div class="dp-label">Voortgang / Toelichting</div>
-      <div class="dp-value" style="font-size:11px;color:#444">${esc(a.vg)}</div>
-    </div>`;
-  html += `</div>`;
+  html += voortgangSectieHtml(a);
+  html += mijlpalenSectieHtml(a);
 
   html += `<div data-dpsec="meta"><div class="dp-field">
       <div class="dp-label">Trekker</div>
@@ -184,6 +174,7 @@ function showDetail(nr) {
     const cell = tr.querySelector('.nr-cell span');
     if (cell && cell.textContent === nr) tr.classList.add('selected');
   });
+  applyDpVis();
 }
 
 function navBack() {

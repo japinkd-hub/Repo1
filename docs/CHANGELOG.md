@@ -6,6 +6,11 @@ Formaat gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/); versien
 ## [Unreleased]
 
 ### Toegevoegd
+- Voortgangsrapportage per afspraak: statusupdates met datum, auteur en toelichting;
+  tijdlijn (statushistorie) in het detailpaneel; mijlpalen met deadline en afvinken;
+  risicosignalering (⚠) bij verstreken mijlpalen of een deadline binnen 90 dagen
+  terwijl de afspraak niet op koers is. Deadline-teksten (Q-notatie, jaarbereiken)
+  worden nu echt geparseerd; het PoC markeerde elk "Q1/Q2" als risico.
 - Tabblad **Deelnemers**: registratie en beheer van personen (naam, organisatie,
   rol, zakelijk e-mailadres) met herkomst AZWA-partij en regionale IZA-AZWA-tafel,
   lidmaatschappen van (sub)werkgroepen, zoeken en filteren, overzichten "wie zit
