@@ -201,37 +201,37 @@ header{background:var(--navy);color:#fff;padding:0 24px;height:60px;display:flex
 
 <script>
 const DATA = [
-  {nr:2, regio:"Amstelland-Meerlanden",   vz1:"Zorg en Zekerheid",vz2:"Zilveren Kruis",eigenaar:"",contact:"",email:"",platform:"Boards",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:""},
-  {nr:27,regio:"Zuid-Holland Noord",      vz1:"Zorg en Zekerheid",vz2:"Zilveren Kruis",eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform nog aanvullen"},
-  {nr:1, regio:"'t Gooi",                vz1:"Zilveren Kruis",   vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"VIPPLive",status:"Implementatie",pzp:"VIPPLive",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
-  {nr:3, regio:"Amsterdam",              vz1:"Zilveren Kruis",   vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"Boards",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:""},
-  {nr:4, regio:"Apeldoorn/Zutphen",      vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
-  {nr:6, regio:"Drenthe",                vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
-  {nr:7, regio:"Flevoland",              vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
-  {nr:8, regio:"Friesland",              vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
-  {nr:11,regio:"Kennemerland",            vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
-  {nr:19,regio:"Rotterdam",              vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
-  {nr:21,regio:"Utrecht / Midden-Nederland",vz1:"Zilveren Kruis",vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
-  {nr:25,regio:"Zaanstreek / Waterland", vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
-  {nr:31,regio:"Zwolle",                 vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"HinQ",status:"Onbekend",pzp:"HinQ",zorgco:"HinQ",viewer:"HinQ",overig:"",ap:""},
-  {nr:15,regio:"Nijmegen Rivierenland",  vz1:"VGZ / Menzis",     vz2:"CZ / VGZ",       eigenaar:"",contact:"",email:"",platform:"deels VIPPLive/OZO",status:"Onbekend",pzp:"n.t.b.",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
-  {nr:12,regio:"Midden-Brabant",         vz1:"VGZ",              vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"geen dataplatform",status:"Onbekend",pzp:"Phoqus Prysma",zorgco:"Phoqus Prysma",viewer:"Phoqus Prysma",overig:"",ap:""},
-  {nr:13,regio:"Midden-Holland",         vz1:"VGZ",              vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"KPN HEX",status:"Onbekend",pzp:"KPN HEX (Cacao)",zorgco:"KPN HEX",viewer:"KPN HEX",overig:"",ap:""},
-  {nr:16,regio:"Noord- en Midden-Limburg",vz1:"VGZ",             vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"KPN HEX",status:"Onbekend",pzp:"KPN HEX (Cacao)",zorgco:"KPN HEX",viewer:"KPN HEX",overig:"",ap:""},
-  {nr:17,regio:"Noord-Holland-Noord",    vz1:"VGZ",              vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"HinQ",status:"Onbekend",pzp:"n.t.b.",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
-  {nr:18,regio:"Noord-Oost Brabant",     vz1:"VGZ",              vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"KPN HEX",status:"Onbekend",pzp:"KPN HEX (Cacao)",zorgco:"KPN HEX",viewer:"KPN HEX",overig:"",ap:""},
-  {nr:22,regio:"Waardenland",            vz1:"VGZ",              vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"Digizorg, Boards",status:"Onbekend",pzp:"Digizorg",zorgco:"n.t.b.",viewer:"Digizorg",overig:"",ap:""},
-  {nr:14,regio:"Midden-IJssel / Salland",vz1:"Zilveren Kruis",   vz2:"",               eigenaar:"",contact:"",email:"",platform:"",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
-  {nr:5, regio:"Arnhem",                 vz1:"Menzis",           vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"VIPPLive",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:""},
-  {nr:9, regio:"Groningen / Regio Noord",vz1:"Menzis",           vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"Zorgviewer",status:"Onbekend",pzp:"Zorgviewer",zorgco:"",viewer:"Zorgviewer",overig:"",ap:""},
-  {nr:20,regio:"Twente",                 vz1:"Menzis",           vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"Microsoft KPMG",status:"Onbekend",pzp:"Microsoft KPMG",zorgco:"",viewer:"Microsoft KPMG",overig:"",ap:""},
-  {nr:24,regio:"Westland Schieland Delfland",vz1:"DSW",          vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"ZorgDomein / Boards",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:""},
-  {nr:10,regio:"Haaglanden",             vz1:"CZ",               vz2:"VGZ",            eigenaar:"CZ (Gijs)",contact:"Erik Schuppers",email:"erik.schuppers@transmuralezorg.nl",platform:"HinQ (pilot)",status:"Niet gestart",pzp:"selectietraject volgt (Digizorg kansrijk)",zorgco:"selectietraject volgt",viewer:"selectietraject volgt",overig:"",ap:""},
-  {nr:23,regio:"West-Brabant",           vz1:"CZ",               vz2:"VGZ",            eigenaar:"CZ (Gijs)",contact:"Irvin Talboom",email:"i.talboom@renwbr.nl",platform:"VIPPLive",status:"Verkenning",pzp:"n.t.b.",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
-  {nr:26,regio:"Zeeland",                vz1:"CZ",               vz2:"Zilveren Kruis", eigenaar:"CZ (Gijs)",contact:"Jan Hein Boll",email:"",platform:"VIPPLive / Digizorg + ZorgbijJou",status:"Onbekend",pzp:"Digizorg voor MSZ",zorgco:"ROAZ ZW: Digizorg subregio Rijnmond",viewer:"Digizorg voor MSZ",overig:"",ap:""},
-  {nr:28,regio:"Zuid-Hollandse Eilanden",vz1:"CZ",               vz2:"Zilveren Kruis", eigenaar:"CZ (Gijs)",contact:"Mariska Adegeest",email:"mariska@adegeest-advies.nl",platform:"VIPP Live + Digizorg",status:"Verkenning",pzp:"Digizorg",zorgco:"Digizorg",viewer:"Digizorg",overig:"",ap:""},
-  {nr:29,regio:"Zuid-Limburg",           vz1:"CZ",               vz2:"VGZ",            eigenaar:"CZ (Gijs)",contact:"Frans Bakers",email:"Frans.Bakers@rsozuidlimburg.nl",platform:"OpenEHR via Better en Vitaly viewer",status:"Onbekend",pzp:"OpenEHR/Better/Vitaly",zorgco:"OpenEHR/Better/Vitaly",viewer:"OpenEHR/Better/Vitaly",overig:"",ap:""},
-  {nr:30,regio:"Zuid-Oost Brabant",      vz1:"CZ",               vz2:"VGZ",            eigenaar:"CZ (Gijs)",contact:"Bart Lamers",email:"bart.lamers@rzcc.nl",platform:"HinQ / VIPPLive / OZO",status:"Niet gestart",pzp:"n.t.b.",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
+  {nr:2, regio:"Amstelland-Meerlanden",   kaart:"Boards",          vz1:"Zorg en Zekerheid",vz2:"Zilveren Kruis",eigenaar:"",contact:"",email:"",platform:"Boards",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:""},
+  {nr:27,regio:"Zuid-Holland Noord",      kaart:"Ntb",             vz1:"Zorg en Zekerheid",vz2:"Zilveren Kruis",eigenaar:"",contact:"",email:"",platform:"ntb",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform nog aanvullen"},
+  {nr:1, regio:"'t Gooi",                kaart:"VIPPLive",        vz1:"Zilveren Kruis",   vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"VIPPLive",status:"Implementatie",pzp:"VIPPLive",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
+  {nr:3, regio:"Amsterdam",              kaart:"Divers",          vz1:"Zilveren Kruis",   vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"Diverse dataplatformen",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:""},
+  {nr:4, regio:"Apeldoorn/Zutphen",      kaart:"Ntb",             vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"ntb",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
+  {nr:6, regio:"Drenthe",                kaart:"NewCo",           vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"Zorgviewer",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
+  {nr:7, regio:"Flevoland",              kaart:"Ntb",             vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"ntb",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
+  {nr:8, regio:"Friesland",              kaart:"NewCo",           vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"Zorgviewer",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
+  {nr:11,regio:"Kennemerland",            kaart:"Ntb",             vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"ntb",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
+  {nr:19,regio:"Rotterdam",              kaart:"NewCo",           vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"Digizorg",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
+  {nr:21,regio:"Utrecht / Midden-Nederland",kaart:"NewCo",        vz1:"Zilveren Kruis",vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"Digizorg, ntb",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
+  {nr:25,regio:"Zaanstreek / Waterland", kaart:"NewCo",           vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"Digizorg, diverse",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
+  {nr:31,regio:"Zwolle",                 kaart:"HinQ",            vz1:"Zilveren Kruis",   vz2:"VGZ",            eigenaar:"",contact:"",email:"",platform:"HinQ",status:"Onbekend",pzp:"HinQ",zorgco:"HinQ",viewer:"HinQ",overig:"",ap:""},
+  {nr:15,regio:"Nijmegen Rivierenland",  kaart:"VIPPLive",        vz1:"VGZ / Menzis",     vz2:"CZ / VGZ",       eigenaar:"",contact:"",email:"",platform:"deels VIPPLive/OZO",status:"Onbekend",pzp:"n.t.b.",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
+  {nr:12,regio:"Midden-Brabant",         kaart:"Ntb",             vz1:"VGZ",              vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"geen dataplatform",status:"Onbekend",pzp:"Phoqus Prysma",zorgco:"Phoqus Prysma",viewer:"Phoqus Prysma",overig:"",ap:""},
+  {nr:13,regio:"Midden-Holland",         kaart:"KPN",             vz1:"VGZ",              vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"KPN HEX",status:"Onbekend",pzp:"KPN HEX (Cacao)",zorgco:"KPN HEX",viewer:"KPN HEX",overig:"",ap:""},
+  {nr:16,regio:"Noord- en Midden-Limburg",kaart:"KPN",            vz1:"VGZ",             vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"KPN HEX",status:"Onbekend",pzp:"KPN HEX (Cacao)",zorgco:"KPN HEX",viewer:"KPN HEX",overig:"",ap:""},
+  {nr:17,regio:"Noord-Holland-Noord",    kaart:"HinQ",            vz1:"VGZ",              vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"HinQ",status:"Onbekend",pzp:"n.t.b.",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
+  {nr:18,regio:"Noord-Oost Brabant",     kaart:"KPN",             vz1:"VGZ",              vz2:"CZ",             eigenaar:"",contact:"",email:"",platform:"KPN HEX",status:"Onbekend",pzp:"KPN HEX (Cacao)",zorgco:"KPN HEX",viewer:"KPN HEX",overig:"",ap:""},
+  {nr:22,regio:"Waardenland",            kaart:"NewCo",           vz1:"VGZ",              vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"Digizorg, Boards",status:"Onbekend",pzp:"Digizorg",zorgco:"n.t.b.",viewer:"Digizorg",overig:"",ap:""},
+  {nr:14,regio:"Midden-IJssel / Salland",kaart:"Ntb",             vz1:"Zilveren Kruis",   vz2:"",               eigenaar:"",contact:"",email:"",platform:"ntb",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:"Dataplatform aanvullen"},
+  {nr:5, regio:"Arnhem",                 kaart:"Ntb",             vz1:"Menzis",           vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"ntb",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:""},
+  {nr:9, regio:"Groningen / Regio Noord",kaart:"NewCo",           vz1:"Menzis",           vz2:"Zilveren Kruis", eigenaar:"",contact:"Jan Joost van Walsum",email:"c.j.j.van.walsum@umcg.nl",platform:"Zorgviewer, NewCo",status:"Onbekend",pzp:"Zorgviewer",zorgco:"",viewer:"Zorgviewer",overig:"",ap:""},
+  {nr:20,regio:"Twente",                 kaart:"NewCo",           vz1:"Menzis",           vz2:"VGZ",            eigenaar:"",contact:"Steven Bosems",email:"Steven.Bosems@mst.nl",platform:"Microsoft KPMG",status:"Onbekend",pzp:"Microsoft KPMG",zorgco:"",viewer:"Microsoft KPMG",overig:"",ap:""},
+  {nr:24,regio:"Westland Schieland Delfland",kaart:"Boards",      vz1:"DSW",              vz2:"Zilveren Kruis", eigenaar:"",contact:"",email:"",platform:"ZorgDomein Boards",status:"Onbekend",pzp:"",zorgco:"",viewer:"",overig:"",ap:""},
+  {nr:10,regio:"Haaglanden",             kaart:"HinQ",            vz1:"CZ",               vz2:"VGZ",            eigenaar:"CZ (Gijs)",contact:"Erik Schuppers",email:"erik.schuppers@transmuralezorg.nl",platform:"HinQ (pilot)",status:"Niet gestart",pzp:"selectietraject volgt (Digizorg kansrijk)",zorgco:"selectietraject volgt",viewer:"selectietraject volgt",overig:"",ap:""},
+  {nr:23,regio:"West-Brabant",           kaart:"VIPPLive",        vz1:"CZ",               vz2:"VGZ",            eigenaar:"CZ (Gijs)",contact:"Irvin Talboom",email:"i.talboom@renwbr.nl",platform:"VIPPLive",status:"Verkenning",pzp:"n.t.b.",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
+  {nr:26,regio:"Zeeland",                kaart:"NewCo + VIPPLive",vz1:"CZ",               vz2:"Zilveren Kruis", eigenaar:"CZ (Gijs)",contact:"Jan Hein Boll",email:"",platform:"Huisartsen VIPPLive / Ziekenhuis: Digizorg en ZorgbijJou",status:"Onbekend",pzp:"Digizorg voor MSZ",zorgco:"ROAZ ZW: Digizorg subregio Rijnmond",viewer:"Digizorg voor MSZ",overig:"",ap:""},
+  {nr:28,regio:"Zuid-Hollandse Eilanden",kaart:"NewCo + VIPPLive",vz1:"CZ",               vz2:"Zilveren Kruis", eigenaar:"CZ (Gijs)",contact:"Mariska Adegeest",email:"mariska@adegeest-advies.nl",platform:"VIPPLive + Digizorg",status:"Verkenning",pzp:"Digizorg",zorgco:"Digizorg",viewer:"Digizorg",overig:"",ap:""},
+  {nr:29,regio:"Zuid-Limburg",           kaart:"OpenEHR",         vz1:"CZ",               vz2:"VGZ",            eigenaar:"CZ (Gijs)",contact:"Frans Bakers",email:"Frans.Bakers@rsozuidlimburg.nl",platform:"OpenEHR via Better en Vitaly viewer",status:"Onbekend",pzp:"OpenEHR/Better/Vitaly",zorgco:"OpenEHR/Better/Vitaly",viewer:"OpenEHR/Better/Vitaly",overig:"",ap:""},
+  {nr:30,regio:"Zuid-Oost Brabant",      kaart:"Divers",          vz1:"CZ",               vz2:"VGZ",            eigenaar:"CZ (Gijs)",contact:"Bart Lamers",email:"bart.lamers@rzcc.nl",platform:"HinQ / VIPPLive / OZO",status:"Niet gestart",pzp:"n.t.b.",zorgco:"n.t.b.",viewer:"n.t.b.",overig:"",ap:""},
 ];
 
 const STATUSCFG = {
@@ -241,6 +241,19 @@ const STATUSCFG = {
   "Implementatie":{c:"#27ae60",l:"#e8f8ef"},
   "Pilot":       {c:"#9b59b6",l:"#f5eef8"},
 };
+
+const KAARTCFG = {
+  "Ntb":              {c:"#f2c500", label:"Ntb"},
+  "Divers":           {c:"#98a0ae", label:"Divers"},
+  "Boards":           {c:"#8e44ad", label:"Boards"},
+  "VIPPLive":         {c:"#5dade2", label:"VIPPLive"},
+  "NewCo":            {c:"#1a3e8f", label:"NewCo"},
+  "NewCo + VIPPLive": {c:"#2e86de", label:"NewCo + VIPPLive"},
+  "HinQ":             {c:"#e67e22", label:"HinQ"},
+  "KPN":              {c:"#17a548", label:"KPN"},
+  "OpenEHR":          {c:"#d63031", label:"OpenEHR"},
+};
+
 
 const UCCFG = {
   pzp:    {label:"PZP",            key:"pzp",    color:"#2980b9",bg:"#eaf3fb"},
@@ -329,7 +342,7 @@ function updateFilterUI() {
     document.getElementById('movDotFilled').style.background = cfg.color;
     ov.classList.add('show');
   } else {
-    hint.textContent = ucArr.length > 1 ? 'Kaart toont initiatiefstatus' : '';
+    hint.textContent = ucArr.length > 1 ? 'Kaart toont dataplatform per regio' : '';
     ov.classList.remove('show');
   }
 }
@@ -343,11 +356,11 @@ function isUCFilled(val) {
 }
 
 /* ---------- MAP COLORS ---------- */
-function getStatusColor(sn) {
+function getKaartColor(sn) {
   var rn = resolve(sn);
   var d = byRegio[rn];
-  var s = d ? d.status : 'Onbekend';
-  return (STATUSCFG[s] || {c:'#ccd0e0'}).c;
+  if (!d || !d.kaart) return '#ccd0e0';
+  return (KAARTCFG[d.kaart] || {c:'#ccd0e0'}).c;
 }
 
 function getUCColor(sn, uc) {
@@ -363,7 +376,7 @@ function getUCColor(sn, uc) {
 function getColor(sn) {
   var ucArr = Array.from(activeUCs);
   if (ucArr.length === 1) return getUCColor(sn, ucArr[0]);
-  return getStatusColor(sn);
+  return getKaartColor(sn);
 }
 
 function updateMapColors() {
@@ -375,22 +388,22 @@ function updateMapColors() {
 /* ---------- STATS / LEGEND ---------- */
 function renderStats() {
   var cnt = {};
-  DATA.forEach(function(d){ cnt[d.status] = (cnt[d.status]||0)+1; });
+  DATA.forEach(function(d){ cnt[d.kaart] = (cnt[d.kaart]||0)+1; });
   var h = '<div style="display:flex;align-items:center;gap:6px"><div class="snum">'
     + DATA.length + '</div><div class="slbl">IZA<br>regio\'s</div></div><div class="sdiv"></div>';
-  Object.entries(STATUSCFG).forEach(function([k,v]) {
+  Object.entries(KAARTCFG).forEach(function([k,v]) {
     if (cnt[k]) h += '<div style="display:flex;align-items:center;gap:6px">'
       + '<div style="width:9px;height:9px;border-radius:50%;background:'+v.c+'"></div>'
-      + '<div><div class="snum" style="color:'+v.c+';font-size:15px">'+cnt[k]+'</div>'
-      + '<div class="slbl">'+k+'</div></div></div>';
+      + '<div><div class="snum" style="color:#1a1d3a;font-size:15px">'+cnt[k]+'</div>'
+      + '<div class="slbl">'+v.label+'</div></div></div>';
   });
   document.getElementById('statsbar').innerHTML = h;
 }
 
 function renderLegend() {
   var h = '';
-  Object.entries(STATUSCFG).forEach(function([k,v]) {
-    h += '<div class="leg"><div class="ldot" style="background:'+v.c+'"></div>'+k+'</div>';
+  Object.entries(KAARTCFG).forEach(function([k,v]) {
+    h += '<div class="leg"><div class="ldot" style="background:'+v.c+'"></div>'+v.label+'</div>';
   });
   document.getElementById('legend').innerHTML = h;
 }
@@ -426,6 +439,12 @@ function openPanel(sn) {
     +'<div class="bdot" style="background:'+sc.c+'"></div>'+status+'</div>';
 
   var vzh = '';
+  if (row && row.kaart) {
+    var kc = KAARTCFG[row.kaart] || {c:'#ccd0e0',label:row.kaart};
+    vzh += '<span class="vtag" style="background:'+kc.c+'22;color:#fff;border-color:'+kc.c+'">'
+      +'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+kc.c+';margin-right:4px"></span>'
+      +kc.label+'</span>';
+  }
   if (row && row.vz1) vzh += '<span class="vtag">'+row.vz1+'</span>';
   if (row && row.vz2) vzh += '<span class="vtag">'+row.vz2+'</span>';
   document.getElementById('pvz').innerHTML = vzh;
@@ -513,6 +532,7 @@ function buildBody(r) {
     +'<div class="acc-ttl">Dataplatform &amp; initiatief</div></div>'
     +'<div class="acc-arr">&#9660;</div></div>'
     +'<div class="acc-body"><div class="acc-inner">'
+    +'<div class="frow"><div class="flbl">Landkaart categorie</div>'+(r.kaart?'<span class="schip" style="background:'+((KAARTCFG[r.kaart]||{c:'#ccd0e0'}).c)+'1a;color:#1a1d3a"><span class="scd" style="background:'+((KAARTCFG[r.kaart]||{c:'#ccd0e0'}).c)+'"></span>'+r.kaart+'</span>':'<div class="fval empty">Niet ingevuld</div>')+'</div>'
     +'<div class="frow"><div class="flbl">Platform / initiatief</div>'+(platform?'<div class="fval">'+platform+'</div>':'<div class="fval empty">Niet ingevuld</div>')+'</div>'
     +'<div class="frow"><div class="flbl">Status initiatief</div>'+chip(r.status)+'</div>'
     +'</div></div></div>'
@@ -613,8 +633,10 @@ function initMap() {
             +'<span>'+val+'</span></div>';
         }).join('');
       }
+      var kc = row && row.kaart ? (KAARTCFG[row.kaart] || {c:'#ccd0e0',label:row.kaart}) : null;
       tip.innerHTML = '<div class="tn">'+rn+'</div>'
         + '<div class="ts" style="color:'+sc.c+'">'+s+'</div>'
+        + (kc ? '<div class="tuc-row"><div class="tuc-dot" style="background:'+kc.c+'"></div><span>'+kc.label+'</span></div>' : '')
         + (row && row.platform && ucArr.length===0 ? '<div class="tp">&#x1F4E1; '+row.platform+'</div>' : '')
         + ucHtml;
       tip.classList.add('show');
