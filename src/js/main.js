@@ -1,5 +1,6 @@
 // Init
 updateDataStatus();
+updateDeelKnop();
 loadFromURL();
 buildChips();
 updateAllToggleBtns();

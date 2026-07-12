@@ -22,10 +22,18 @@ const HELP_TEKSTEN = {
     <ul><li>Kies periode (kwartaal), thematafel en/of werkgroep als scope.</li>
     <li><b>🖨 PDF / afdrukken</b> geeft een nette afdrukversie — kies "Opslaan als PDF" als printer.</li>
     <li><b>⬇ CSV</b> exporteert de statustabel met risico's en laatste updates.</li></ul>`,
+  beheer: `<p><b>Beheer</b> is voor de dashboardbeheerder (secretaris/coördinator).</p>
+    <ul><li><b>Aanleveringen samenvoegen</b>: verwerk de aanleverbestanden uit de Teams-map
+    in één keer; dubbele updates worden automatisch overgeslagen.</li>
+    <li><b>Excel-aanleversjabloon</b>: download het sjabloon per werkgroep en lees het
+    ingevulde CSV-bestand weer in.</li>
+    <li><b>Werkgroepen</b>: hernoem of voeg (sub)werkgroepen samen — afspraken, deelnemers
+    en historie gaan automatisch mee.</li></ul>`,
   algemeen: `<p><b>Gegevens bewaren en delen.</b> Wijzigingen worden automatisch in deze browser
-    bewaard. Gebruik <b>⬇ Exporteer</b> (header) om alles als JSON-bestand te bewaren of te delen;
-    een collega laadt dat bestand via <b>⬆ Importeer</b>. <b>↺ Herstel</b> zet de meegeleverde
-    data terug.</p>
+    bewaard. Met <b>📤 Deel wijzigingen</b> download je alleen je eigen updates als klein
+    aanleverbestand voor de Teams-map "Aanleveringen"; de beheerder voegt die samen via het
+    tabblad Beheer. <b>⬇ Exporteer</b> downloadt de complete datastand; een collega laadt die
+    via <b>⬆ Importeer</b>. <b>↺ Herstel</b> zet de meegeleverde data terug.</p>
     <p><b>Sneltoetsen.</b> Esc sluit het detailpaneel of een venster.</p>
     <p>De volledige handleiding staat in <code>docs/HANDLEIDING.md</code> in de projectmap.</p>`,
 };
@@ -38,7 +46,7 @@ function openHelp() {
     <button class="btn-primary" onclick="sluitModal()">Sluiten</button>`;
   openModal('Hulp — ' + (VIEW_CONFIG[curView] ? {
     thematafels: 'Thematafels', lijst: 'Lijst', onderdelen: 'Onderdelen',
-    deelnemers: 'Deelnemers', rapportage: 'Rapportage' }[curView] : 'Dashboard'), body, footer);
+    deelnemers: 'Deelnemers', rapportage: 'Rapportage', beheer: 'Beheer' }[curView] : 'Dashboard'), body, footer);
 }
 
 // ── Rondleiding ──
@@ -58,7 +66,7 @@ const TOUR_STAPPEN = [
   { doel: '#navR', titel: 'Rapportage',
     tekst: 'Maak per kwartaal, thematafel of werkgroep een bestuurlijke rapportage en exporteer die als PDF of CSV.' },
   { doel: '.hdr-data', titel: 'Gegevens bewaren en delen',
-    tekst: 'Wijzigingen worden automatisch in deze browser bewaard. Exporteer regelmatig een JSON-bestand als back-up of om te delen; importeren kan met één klik.' },
+    tekst: 'Wijzigingen worden automatisch in deze browser bewaard. Met "Deel wijzigingen" download je jouw updates als klein aanleverbestand voor de Teams-map; de beheerder voegt alle aanleveringen samen via het tabblad Beheer.' },
   { titel: 'Klaar!',
     tekst: 'Klik rechtsboven op ? voor hulp per scherm. Veel succes!' },
 ];
@@ -128,7 +136,21 @@ function eindigTour() {
   try { localStorage.setItem('izaTourGezien', '1'); } catch (e) { /* niets */ }
 }
 
+// Eerste bezoek: vraag of de gebruiker uitleg wil, in plaats van de
+// rondleiding automatisch te starten. "Nee" sluit direct; daarna wordt
+// de vraag nooit meer gesteld (herstarten kan altijd via de ?-knop).
 function startTourAlsNieuw() {
   try { if (localStorage.getItem('izaTourGezien')) return; } catch (e) { return; }
-  startTour();
+  const body = `
+    <p style="font-size:13px;line-height:1.55">Welkom bij het IZA-AZWA Dashboard.
+    Wil je een korte uitleg (rondleiding van ±1 minuut) langs de belangrijkste functies?</p>
+    <p class="frm-hint" style="margin-top:6px">Je kunt de rondleiding later altijd starten via de <b>?</b>-knop rechtsboven.</p>`;
+  const footer = `
+    <button class="btn-secondary" onclick="markeerTourGezien(); sluitModal()">Nee, direct beginnen</button>
+    <button class="btn-primary" onclick="markeerTourGezien(); sluitModal(); startTour()">Ja, geef me de uitleg</button>`;
+  openModal('Wil je uitleg bij het dashboard?', body, footer);
+}
+
+function markeerTourGezien() {
+  try { localStorage.setItem('izaTourGezien', '1'); } catch (e) { /* niets */ }
 }

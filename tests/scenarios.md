@@ -3,14 +3,14 @@
 Draai na elke wijziging minimaal de geautomatiseerde smoketest; loop bij wijzigingen aan
 een module ook de bijbehorende handmatige scenario's na.
 
-**Geautomatiseerd:** `node build/build.mjs && node tests/smoke.mjs` (24 checks, alles moet PASS zijn).
+**Geautomatiseerd:** `node build/build.mjs && node tests/smoke.mjs` (29 checks, alles moet PASS zijn).
 
 ## A. Basis (altijd)
 
 | # | Scenario | Verwacht |
 |---|---|---|
 | A1 | Open `dist/AZWA_IZA_Dashboard.html` in de browser | Dashboard laadt, geen consolefouten (F12), "93 van 93 afspraken" |
-| A2 | Wissel alle vijf tabbladen | Elke view rendert; zijbalk verdwijnt bij Deelnemers/Rapportage |
+| A2 | Wissel alle zes tabbladen | Elke view rendert; zijbalk verdwijnt bij Deelnemers/Rapportage/Beheer |
 | A3 | Herlaad de pagina | Zelfde stand als voor het herladen |
 
 ## B. Filters & detailpaneel
@@ -64,10 +64,23 @@ een module ook de bijbehorende handmatige scenario's na.
 
 | # | Scenario | Verwacht |
 |---|---|---|
-| G1 | Eerste bezoek (of localStorage wissen) | Rondleiding start automatisch; 8 stappen; daarna nooit meer automatisch |
+| G1 | Eerste bezoek (of localStorage wissen) | Vraag "Wil je uitleg?" (zie I1); rondleiding via *Ja* heeft 8 stappen |
 | G2 | ?-knop per tabblad | Contextuele hulptekst |
 | G3 | Bedien filters en formulieren met alleen het toetsenbord | Tab-volgorde logisch, focus zichtbaar, Enter/spatie togglet chips, Esc sluit |
 | G4 | Browser-zoom 200% | Interface blijft bruikbaar |
+
+## I. Aanleveringen & beheer (v1.1)
+
+| # | Scenario | Verwacht |
+|---|---|---|
+| I1 | Eerste bezoek (vers profiel) | Vraag "Wil je uitleg?"; *Nee* → direct werkbaar; *Ja* → rondleiding; vraag komt niet terug |
+| I2 | Statusupdate met 💡-vinkje | Badge in tijdlijn; sectie "Signalen & nieuwe inzichten" in rapportage |
+| I3 | Doe 2 wijzigingen → 📤 Deel wijzigingen | Badge telt 2; klein aanleverbestand gedownload |
+| I4 | Beheer → Aanleveringen samenvoegen met dat bestand (op andere pc/profiel) | Verslag klopt; status en deelnemers overgenomen |
+| I5 | Zelfde bestand nogmaals samenvoegen | "al aanwezig (overgeslagen)" — geen dubbelingen |
+| I6 | Sjabloon downloaden per werkgroep, invullen, inlezen | Updates verwerkt; foute status/datum netjes gemeld |
+| I7 | Werkgroep samenvoegen (sub → hoofd) | Afspraken, deelnemers en historie mee; bron weg; data valide |
+| I8 | Werkgroep hernoemen en lege werkgroep verwijderen | Naam overal bijgewerkt; verwijderen alleen als leeg |
 
 ## H. Cross-browser (bij release)
 

@@ -244,3 +244,16 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
 .tour-tekst{font-size:12px;line-height:1.5;color:#333}
 .tour-voet{display:flex;align-items:center;gap:6px;margin-top:12px;justify-content:flex-end}
 .tour-teller{font-size:10.5px;color:#999;margin-right:auto}
+
+/* ─── v1.1: aanleveringen, signalen, beheer ─── */
+.deel-badge{background:#fff;color:var(--primary);border-radius:8px;padding:0 5px;
+  font-size:9.5px;font-weight:800;margin-left:4px}
+.signaal-badge{background:#FFF8E1;color:#8a6d00;border:1px solid #B8860B;border-radius:8px;
+  padding:0 6px;font-size:9.5px;font-weight:700;white-space:nowrap}
+.bh-kaarten{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:10px;margin-bottom:10px}
+.bh-kaart{background:#fff;border:1px solid #ddd;border-radius:var(--radius);padding:14px 16px}
+.bh-kaart h3{font-size:13px;color:var(--primary);margin-bottom:6px}
+.bh-kaart p{font-size:11.5px;color:#444;line-height:1.5;margin-bottom:8px}
+.bh-rij{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.bh-rij select{padding:5px 6px;border:1px solid #ccc;border-radius:4px;font-size:12px;max-width:240px}
+.bh-file-btn{display:inline-block;cursor:pointer}

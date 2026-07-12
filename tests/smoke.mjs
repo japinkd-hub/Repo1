@@ -112,6 +112,34 @@ await page.waitForTimeout(200);
 res['herstel zet meegeleverde data terug'] = await page.evaluate(() =>
   DB.personen.length === 0 && AGRS.find(a => a.nr === '1.1').status === 'Nog niet gestart');
 
+// ── v1.1: beheer, aanleveringen, signaal ──
+await page.click('#navB');
+await page.waitForTimeout(200);
+res['beheertab rendert werkgroepen'] = (await page.innerHTML('#bhWerkgroepen')).includes('Werkgroep');
+res['delta-merge is idempotent'] = await page.evaluate(() => {
+  const d = { type: 'iza-azwa-aanlevering', schemaVersion: 1, voortgang: [
+    { id: 'VG-SMOKE', afspraakNr: '1.2', datum: '2026-01-05', auteur: 'Smoke', status: 'Op schema', toelichting: 'smoke', signaal: true }] };
+  const r1 = verwerkAanlevering(d);
+  const r2 = verwerkAanlevering(d);
+  return r1.updates === 1 && r2.updates === 0 && r2.dubbel === 1 &&
+    AGRS.find(a => a.nr === '1.2') && valideerDB(DB).length === 0;
+});
+await page.click('#navR');
+await page.waitForTimeout(200);
+res['signalen-sectie in rapportage'] = (await page.innerHTML('#rpBody')).includes('Signalen');
+
+// Welkomvraag: vers profiel zonder tour-flag
+const versContext = await browser.newContext();
+const versPage = await versContext.newPage();
+await versPage.goto(DASHBOARD_URL);
+await versPage.waitForTimeout(400);
+res['welkomvraag bij eerste bezoek'] = (await versPage.textContent('#modalRoot')).includes('Wil je uitleg');
+await versPage.click('text=Nee, direct beginnen');
+res['nee = direct werkbaar, geen tour'] = await versPage.evaluate(() =>
+  !document.querySelector('#modalRoot .modal-overlay') && !document.getElementById('tourOverlay') &&
+  localStorage.getItem('izaTourGezien') === '1');
+await versContext.close();
+
 res['0 consolefouten'] = errors.length === 0 || errors.join(' | ');
 
 let fail = 0;

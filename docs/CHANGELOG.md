@@ -7,6 +7,32 @@ Formaat gebaseerd op [Keep a Changelog](https://keepachangelog.com/nl/); versien
 
 _(nog niets)_
 
+## [1.1.0] — 2026-07-12
+
+Gericht op het werken vanuit de Teams-omgeving (werkwijze "optie A"):
+aanleveren via een gedeelde map, zonder server. Tests: 29/29 smoke-checks
+en 28/28 v1.1-checks geslaagd.
+
+### Toegevoegd
+- **📤 Deel wijzigingen** (header): exporteert alleen de eigen wijzigingen als klein
+  aanleverbestand voor de Teams-map "Aanleveringen"; teller toont openstaande wijzigingen.
+- Tabblad **Beheer** met **Aanleveringen samenvoegen**: verwerkt meerdere
+  aanleverbestanden in één keer, idempotent (dubbele updates worden overgeslagen),
+  met samenvoegverslag.
+- **Excel-aanleversjabloon** per werkgroep (download + inlezen van het ingevulde
+  CSV-bestand, met duidelijke foutmeldingen per rij).
+- **💡 Signaalvinkje** op het statusupdate-formulier ("Signaleren aan de thematafel");
+  gesignaleerde updates krijgen een badge in de tijdlijn en een eigen sectie
+  "Signalen & nieuwe inzichten" (plus tegel) in de kwartaalrapportage.
+- **Werkgroepbeheer** (Beheer): (sub)werkgroepen hernoemen, samenvoegen (afspraken,
+  deelnemers en historie gaan mee; lidmaatschappen worden ontdubbeld), toevoegen en
+  lege werkgroepen verwijderen.
+
+### Gewijzigd
+- De rondleiding start niet meer automatisch: bij het eerste bezoek vraagt het dashboard
+  "Wil je uitleg?" met *Ja* (rondleiding) of *Nee, direct beginnen*; de vraag verschijnt
+  daarna nooit meer en de rondleiding blijft beschikbaar via de ?-knop.
+
 ## [1.0.0] — 2026-07-02
 
 Eerste operationele release, gebouwd vanuit het proof of concept

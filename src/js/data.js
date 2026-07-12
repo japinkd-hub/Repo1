@@ -108,6 +108,7 @@ function importeerDB(file) {
       return;
     }
     setDB(d);
+    wisDeltaLog(); // volledige import vervangt alles; eigen delta is verwerkt of achterhaald
     bewaarDB();
     herrenderAlles();
     alert(`Data geïmporteerd: ${d.afspraken.length} afspraken, ${d.personen.length} deelnemers, ${d.voortgang.length} voortgangsrecords.`);
@@ -118,6 +119,7 @@ function importeerDB(file) {
 function herstelDB() {
   if (!confirm('Alle lokale wijzigingen wissen en terug naar de meegeleverde data? Exporteer eerst als je je wijzigingen wilt bewaren.')) return;
   try { localStorage.removeItem(LS_KEY); } catch (e) { /* niets */ }
+  wisDeltaLog();
   setDB(JSON.parse(JSON.stringify(DATA)));
   updateDataStatus();
   herrenderAlles();

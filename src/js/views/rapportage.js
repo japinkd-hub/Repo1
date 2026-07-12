@@ -43,6 +43,7 @@ function renderRapportage() {
   const { periode, tf, wgId } = rpScope();
   const afspraken = rpAfspraken();
   const updates = rpUpdates(afspraken);
+  const signalen = updates.filter(u => u.signaal);
   const risicos = afspraken.filter(isDeadlineRisk);
 
   const counts = {};
@@ -68,6 +69,7 @@ function renderRapportage() {
   for (const c of [...STATUS_CATS, 'Onbekend'])
     if (counts[c]) h += rpTegel(counts[c], c, STATUS_NORM_COLORS[c]);
   h += rpTegel(risicos.length, '⚠ deadlinerisico', '#C00000');
+  if (signalen.length) h += rpTegel(signalen.length, '💡 signalen', '#B8860B');
   h += rpTegel(updates.length, periode ? `updates in ${periode}` : 'statusupdates totaal', 'var(--primary)');
   h += '</div>';
 
@@ -95,6 +97,20 @@ function renderRapportage() {
     for (const [id, lijst] of [...perWg.entries()].sort((x, y) => y[1].length - x[1].length))
       h += rpStatusBalk(werkgroepNaam(id), lijst, '#777');
     h += '</div>';
+  }
+
+  // Signalen: door werkgroepen gemarkeerde nieuwe inzichten/aandachtspunten
+  if (signalen.length) {
+    h += `<h3 class="rp-h3">💡 Signalen &amp; nieuwe inzichten (${signalen.length})</h3>
+      <table class="rp-tabel"><thead><tr><th scope="col">Datum</th><th scope="col">Afspraak</th>
+      <th scope="col">Auteur</th><th scope="col">Signaal</th></tr></thead><tbody>`;
+    for (const u of signalen) {
+      const a = AGRS.find(x => x.nr === u.afspraakNr);
+      h += `<tr><td style="white-space:nowrap">${esc(u.datum)}</td>
+        <td><b>${esc(u.afspraakNr)}</b> ${esc(a?.t || '')}</td>
+        <td>${esc(u.auteur || '—')}</td><td>${esc(u.toelichting || '—')}</td></tr>`;
+    }
+    h += '</tbody></table>';
   }
 
   // Risico's

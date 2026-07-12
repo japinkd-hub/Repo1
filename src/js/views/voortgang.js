@@ -31,6 +31,7 @@ function voortgangSectieHtml(a) {
         <div class="vg-inhoud">
           <div class="vg-kop"><b>${esc(u.datum)}</b> · ${esc(u.auteur || '—')} ·
             <span class="status-pill" style="background:${statColor(u.status)};color:${statusTextColor(u.status)}">${esc(u.status)}</span>
+            ${u.signaal ? '<span class="signaal-badge" title="Gesignaleerd aan de thematafel">💡 signaal</span>' : ''}
             <button class="vg-del" onclick="verwijderVoortgang('${esc(u.id)}')" title="Verwijder deze update" aria-label="Verwijder statusupdate van ${esc(u.datum)}">✕</button>
           </div>
           ${u.toelichting ? `<div class="vg-toel">${esc(u.toelichting)}</div>` : ''}
@@ -85,6 +86,7 @@ function openStatusUpdateForm(nr) {
       </div>
       <div class="frm-veld"><label>Nieuwe status *<select id="vgStatus">${opties}</select></label></div>
       <div class="frm-veld"><label>Toelichting<textarea id="vgToel" rows="4" placeholder="Wat is er gebeurd of besloten? Wat is de volgende stap?"></textarea></label></div>
+      <div class="frm-veld"><label style="font-weight:400;font-size:12px;color:#333"><input type="checkbox" id="vgSignaal" style="width:auto;margin-right:6px">💡 Signaleren aan de thematafel — deze update bevat een nieuw inzicht of aandachtspunt</label></div>
     </form>`;
   const footer = `
     <button class="btn-secondary" onclick="sluitModal()">Annuleren</button>
@@ -100,7 +102,10 @@ function slaStatusUpdateOp(nr) {
   const status = document.getElementById('vgStatus').value;
   const toelichting = document.getElementById('vgToel').value.trim();
   if (!datum || !auteur || !status) return;
-  DB.voortgang.push({ id: nieuwId('VG', DB.voortgang), afspraakNr: nr, datum, auteur, status, toelichting });
+  const rec = { id: nieuwId('VG', DB.voortgang), afspraakNr: nr, datum, auteur, status, toelichting };
+  if (document.getElementById('vgSignaal')?.checked) rec.signaal = true;
+  DB.voortgang.push(rec);
+  registreerDelta('voortgang', rec.id);
   werkAfspraakStatusBij(a);
   try { localStorage.setItem('izaAuteur', auteur); } catch (e) { /* niets */ }
   bewaarDB();
@@ -154,7 +159,9 @@ function slaMijlpaalOp(nr) {
   const datum = document.getElementById('mpDatum').value;
   if (!titel || !datum) return;
   a.mijlpalen = a.mijlpalen || [];
-  a.mijlpalen.push({ id: nieuwId('MP', a.mijlpalen), titel, datum, gehaald: document.getElementById('mpGehaald').checked });
+  const mp = { id: nieuwId('MP', a.mijlpalen), titel, datum, gehaald: document.getElementById('mpGehaald').checked };
+  a.mijlpalen.push(mp);
+  registreerDelta('mijlpaal', { afspraakNr: nr, id: mp.id });
   bewaarDB();
   sluitModal();
   herrenderAlles();
@@ -165,6 +172,7 @@ function toggleMijlpaal(nr, id, gehaald) {
   const m = (AGRS.find(x => x.nr === nr)?.mijlpalen || []).find(x => x.id === id);
   if (!m) return;
   m.gehaald = gehaald;
+  registreerDelta('mijlpaal', { afspraakNr: nr, id });
   bewaarDB();
   herrenderAlles();
 }

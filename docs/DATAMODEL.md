@@ -33,8 +33,9 @@ In de browser leeft een werkkopie in localStorage; delen en back-uppen gaat via
     "datum": "2026-07-02",                  // JJJJ-MM-DD
     "auteur": "…",
     "status": "Op schema",                  // één van de statuscategorieën (of ruwe PoC-status)
-    "toelichting": "…"
-  }],
+    "toelichting": "…",
+    "signaal": true                         // v1.1, optioneel: nieuw inzicht/aandachtspunt,
+  }],                                       // krijgt eigen sectie in de kwartaalrapportage
 
   "werkgroepen": [{                         // v1: genormaliseerd uit wg-strings + gremia
     "id": "WG_EERSTELIJNSZORG__VISIE_2030",
@@ -96,3 +97,28 @@ staat in de scriptoutput). Kernbeslissingen:
 
 Bij een volgende schemawijziging: `schemaVersion` ophogen, migratielogica toevoegen
 en dit document bijwerken.
+
+## Aanleverbestand (delta, v1.1)
+
+`📤 Deel wijzigingen` exporteert alleen de eigen wijzigingen; `Beheer → Aanleveringen
+samenvoegen` verwerkt ze idempotent (dubbel verwerken verandert niets).
+
+```jsonc
+{
+  "type": "iza-azwa-aanlevering",
+  "schemaVersion": 1,
+  "gemaaktOp": "2026-07-12",
+  "auteur": "…",
+  "voortgang": [ /* voortgangsrecords */ ],
+  "personen": [ /* volledige persoonsrecords */ ],
+  "personenVerwijderd": [ "P-0002" ],
+  "mijlpalen": [ { "afspraakNr": "1.1", "record": { /* mijlpaal */ } } ],
+  "referentie": { /* volledige lijsten; worden per waarde samengevoegd */ }
+}
+```
+
+Samenvoegregels: voortgang wordt ontdubbeld op (afspraakNr, datum, auteur, status,
+toelichting); botsende ids krijgen een nieuw id; personen matchen op id of op
+(naam + e-mail), laatste aanlevering wint; onbekende afspraaknummers worden
+overgeslagen en gerapporteerd. Werkgroep-structuurwijzigingen reizen bewust niet mee
+in aanleveringen — die doet de beheerder via Beheer → Werkgroepen.

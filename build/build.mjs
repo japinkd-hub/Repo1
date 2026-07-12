@@ -14,6 +14,7 @@ const JS_FILES = [
   'src/js/ui.js',
   'src/js/export.js',
   'src/js/help.js',
+  'src/js/delta.js',
   'src/js/status.js',
   'src/js/clusters.js',
   'src/js/filters.js',
@@ -23,6 +24,7 @@ const JS_FILES = [
   'src/js/views/voortgang.js',
   'src/js/views/deelnemers.js',
   'src/js/views/rapportage.js',
+  'src/js/views/beheer.js',
   'src/js/settings.js',
   'src/js/main.js',
 ];

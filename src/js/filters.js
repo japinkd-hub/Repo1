@@ -267,6 +267,7 @@ function matches(a) {
 function applyFilters() {
   if (curView === 'deelnemers') { renderDeelnemers(); return; }
   if (curView === 'rapportage' && typeof renderRapportage === 'function') { renderRapportage(); return; }
+  if (curView === 'beheer') { renderBeheer(); return; }
   updateAllToggleBtns();
   syncURL();
   const visible = AGRS.filter(matches);
@@ -285,6 +286,7 @@ const VIEW_CONFIG = {
   onderdelen:  { btn: 'navO', el: 'viewOnderdelen' },
   deelnemers:  { btn: 'navD', el: 'viewDeelnemers', beheer: true },
   rapportage:  { btn: 'navR', el: 'viewRapportage', beheer: true },
+  beheer:      { btn: 'navB', el: 'viewBeheer', beheer: true },
 };
 function setView(v) {
   if (!VIEW_CONFIG[v]) return;

@@ -211,6 +211,7 @@ function slaPersoonOp(id) {
   if (record.regioTafel && !DB.referentie.regioTafels.includes(record.regioTafel)) DB.referentie.regioTafels.push(record.regioTafel);
   const idx = DB.personen.findIndex(x => x.id === id);
   if (idx >= 0) DB.personen[idx] = record; else DB.personen.push(record);
+  registreerDelta('persoon', record.id);
   bewaarDB();
   sluitModal();
   renderDeelnemers();
@@ -223,6 +224,7 @@ function verwijderPersoon(id) {
   if (!confirm(`Deelnemer "${p.naam}" verwijderen?`)) return;
   DB.personen = DB.personen.filter(x => x.id !== id);
   setDB(DB); // AGRS/CONTACTS-verwijzingen blijven kloppen
+  registreerDelta('persoonVerwijderd', id);
   bewaarDB();
   renderDeelnemers();
   toon(`Deelnemer ${p.naam} verwijderd.`);
@@ -249,6 +251,7 @@ function slaReferentiesOp() {
   const lees = id => [...new Set(document.getElementById(id).value.split('\n').map(s => s.trim()).filter(Boolean))];
   DB.referentie.azwaPartijen = lees('refPartijen');
   DB.referentie.regioTafels = lees('refRegios');
+  registreerDelta('referentie');
   bewaarDB();
   sluitModal();
   renderDeelnemers();

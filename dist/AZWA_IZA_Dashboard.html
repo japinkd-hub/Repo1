@@ -370,6 +370,19 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
 .tour-voet{display:flex;align-items:center;gap:6px;margin-top:12px;justify-content:flex-end}
 .tour-teller{font-size:10.5px;color:#999;margin-right:auto}
 
+/* ─── v1.1: aanleveringen, signalen, beheer ─── */
+.deel-badge{background:#fff;color:var(--primary);border-radius:8px;padding:0 5px;
+  font-size:9.5px;font-weight:800;margin-left:4px}
+.signaal-badge{background:#FFF8E1;color:#8a6d00;border:1px solid #B8860B;border-radius:8px;
+  padding:0 6px;font-size:9.5px;font-weight:700;white-space:nowrap}
+.bh-kaarten{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:10px;margin-bottom:10px}
+.bh-kaart{background:#fff;border:1px solid #ddd;border-radius:var(--radius);padding:14px 16px}
+.bh-kaart h3{font-size:13px;color:var(--primary);margin-bottom:6px}
+.bh-kaart p{font-size:11.5px;color:#444;line-height:1.5;margin-bottom:8px}
+.bh-rij{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.bh-rij select{padding:5px 6px;border:1px solid #ccc;border-radius:4px;font-size:12px;max-width:240px}
+.bh-file-btn{display:inline-block;cursor:pointer}
+
 /* ── src/css/print.css ── */
 /* Afdrukken / PDF: alleen de actieve hoofdview, geoptimaliseerd voor A4 */
 @media print {
@@ -398,9 +411,11 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
     <button class="hnav-btn" id="navO" onclick="setView('onderdelen')">Onderdelen</button>
     <button class="hnav-btn" id="navD" onclick="setView('deelnemers')">Deelnemers</button>
     <button class="hnav-btn" id="navR" onclick="setView('rapportage')">Rapportage</button>
+    <button class="hnav-btn" id="navB" onclick="setView('beheer')">Beheer</button>
   </nav>
   <div class="hdr-data">
     <span id="data-status"></span>
+    <button class="hdr-data-btn" onclick="deelWijzigingen()" title="Download alleen jouw eigen wijzigingen als klein aanleverbestand voor de Teams-map 'Aanleveringen'">&#128228; Deel wijzigingen<span id="deelBadge" class="deel-badge" style="display:none"></span></button>
     <button class="hdr-data-btn" onclick="exporteerDB()" title="Download alle dashboarddata als JSON-bestand">&#11015; Exporteer</button>
     <label class="hdr-data-btn" title="Laad een eerder geëxporteerd JSON-databestand">&#11014; Importeer<input type="file" accept="application/json,.json" hidden onchange="importeerDB(this.files[0]); this.value='';"></label>
     <button class="hdr-data-btn" onclick="herstelDB()" title="Wis lokale wijzigingen en laad de meegeleverde data">&#8634; Herstel</button>
@@ -539,6 +554,37 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
       </div>
       <div id="rpBody"></div>
     </div>
+    <!-- Beheer view -->
+    <div id="viewBeheer" class="hidden">
+      <div class="bh-kaarten">
+        <div class="bh-kaart">
+          <h3>Aanleveringen samenvoegen</h3>
+          <p>Verwerk één of meer aanleverbestanden uit de Teams-map <b>Aanleveringen</b> in één keer.
+          Dubbele updates worden automatisch overgeslagen; hetzelfde bestand twee keer verwerken kan geen kwaad.</p>
+          <label class="btn-primary bh-file-btn">&#128194; Kies aanleverbestanden…<input type="file" accept="application/json,.json" multiple hidden onchange="voegAanleveringenSamen([...this.files]); this.value='';"></label>
+          <p class="frm-hint">Exporteer na het samenvoegen de nieuwe totaalstand (&#11015; Exporteer) naar de Teams-map.</p>
+        </div>
+        <div class="bh-kaart">
+          <h3>Excel-aanleversjabloon</h3>
+          <p>Voor werkgroepen die liever in Excel aanleveren: download het sjabloon, laat de kolommen
+          <b>NieuweStatus</b> t/m <b>Signaal</b> invullen en lees het ingevulde bestand hier weer in (opslaan als CSV).</p>
+          <div class="bh-rij">
+            <select id="bhSjabloonWg" aria-label="Werkgroep voor het sjabloon"></select>
+            <button class="btn-secondary" onclick="downloadSjabloon()">&#11015; Sjabloon</button>
+            <label class="btn-secondary bh-file-btn">&#11014; Ingevuld sjabloon…<input type="file" accept=".csv,text/csv" hidden onchange="importeerSjabloon(this.files[0]); this.value='';"></label>
+          </div>
+        </div>
+      </div>
+      <div class="bh-kaart">
+        <div class="dp-label-rij" style="margin-bottom:6px">
+          <h3 style="margin:0">Werkgroepen en subwerkgroepen</h3>
+          <button class="btn-primary" onclick="nieuweWerkgroep()">＋ Nieuwe werkgroep</button>
+        </div>
+        <p>Hernoem (✎), voeg samen (⇄, bijvoorbeeld als subwerkgroepen fuseren) of verwijder lege werkgroepen (🗑).
+        Bij samenvoegen gaan afspraken en deelnemers mee en blijft alle statushistorie bewaard.</p>
+        <div id="bhWerkgroepen"></div>
+      </div>
+    </div>
   </main>
 
   <!-- DETAIL PANEL -->
@@ -561,7 +607,7 @@ body.view-beheer .sidebar-left,body.view-beheer .detail-panel{display:none}
   <span><span class="stat-dot" style="background:#757575"></span>Nog niet gestart</span>
   <span><span class="stat-dot" style="background:#C00000"></span>Aandacht</span>
   <span><span class="stat-dot" style="background:#aaa"></span>Geparkeerd</span>
-  <span class="sb-hint">v1.0.0 &nbsp;|&nbsp; Esc = sluit paneel &nbsp;|&nbsp; Klik op afspraak voor details</span>
+  <span class="sb-hint">v1.1.0 &nbsp;|&nbsp; Esc = sluit paneel &nbsp;|&nbsp; Klik op afspraak voor details</span>
 </div>
 
 <div id="modalRoot"></div>
@@ -679,6 +725,7 @@ function importeerDB(file) {
       return;
     }
     setDB(d);
+    wisDeltaLog(); // volledige import vervangt alles; eigen delta is verwerkt of achterhaald
     bewaarDB();
     herrenderAlles();
     alert(`Data geïmporteerd: ${d.afspraken.length} afspraken, ${d.personen.length} deelnemers, ${d.voortgang.length} voortgangsrecords.`);
@@ -689,6 +736,7 @@ function importeerDB(file) {
 function herstelDB() {
   if (!confirm('Alle lokale wijzigingen wissen en terug naar de meegeleverde data? Exporteer eerst als je je wijzigingen wilt bewaren.')) return;
   try { localStorage.removeItem(LS_KEY); } catch (e) { /* niets */ }
+  wisDeltaLog();
   setDB(JSON.parse(JSON.stringify(DATA)));
   updateDataStatus();
   herrenderAlles();
@@ -798,10 +846,18 @@ const HELP_TEKSTEN = {
     <ul><li>Kies periode (kwartaal), thematafel en/of werkgroep als scope.</li>
     <li><b>🖨 PDF / afdrukken</b> geeft een nette afdrukversie — kies "Opslaan als PDF" als printer.</li>
     <li><b>⬇ CSV</b> exporteert de statustabel met risico's en laatste updates.</li></ul>`,
+  beheer: `<p><b>Beheer</b> is voor de dashboardbeheerder (secretaris/coördinator).</p>
+    <ul><li><b>Aanleveringen samenvoegen</b>: verwerk de aanleverbestanden uit de Teams-map
+    in één keer; dubbele updates worden automatisch overgeslagen.</li>
+    <li><b>Excel-aanleversjabloon</b>: download het sjabloon per werkgroep en lees het
+    ingevulde CSV-bestand weer in.</li>
+    <li><b>Werkgroepen</b>: hernoem of voeg (sub)werkgroepen samen — afspraken, deelnemers
+    en historie gaan automatisch mee.</li></ul>`,
   algemeen: `<p><b>Gegevens bewaren en delen.</b> Wijzigingen worden automatisch in deze browser
-    bewaard. Gebruik <b>⬇ Exporteer</b> (header) om alles als JSON-bestand te bewaren of te delen;
-    een collega laadt dat bestand via <b>⬆ Importeer</b>. <b>↺ Herstel</b> zet de meegeleverde
-    data terug.</p>
+    bewaard. Met <b>📤 Deel wijzigingen</b> download je alleen je eigen updates als klein
+    aanleverbestand voor de Teams-map "Aanleveringen"; de beheerder voegt die samen via het
+    tabblad Beheer. <b>⬇ Exporteer</b> downloadt de complete datastand; een collega laadt die
+    via <b>⬆ Importeer</b>. <b>↺ Herstel</b> zet de meegeleverde data terug.</p>
     <p><b>Sneltoetsen.</b> Esc sluit het detailpaneel of een venster.</p>
     <p>De volledige handleiding staat in <code>docs/HANDLEIDING.md</code> in de projectmap.</p>`,
 };
@@ -814,7 +870,7 @@ function openHelp() {
     <button class="btn-primary" onclick="sluitModal()">Sluiten</button>`;
   openModal('Hulp — ' + (VIEW_CONFIG[curView] ? {
     thematafels: 'Thematafels', lijst: 'Lijst', onderdelen: 'Onderdelen',
-    deelnemers: 'Deelnemers', rapportage: 'Rapportage' }[curView] : 'Dashboard'), body, footer);
+    deelnemers: 'Deelnemers', rapportage: 'Rapportage', beheer: 'Beheer' }[curView] : 'Dashboard'), body, footer);
 }
 
 // ── Rondleiding ──
@@ -834,7 +890,7 @@ const TOUR_STAPPEN = [
   { doel: '#navR', titel: 'Rapportage',
     tekst: 'Maak per kwartaal, thematafel of werkgroep een bestuurlijke rapportage en exporteer die als PDF of CSV.' },
   { doel: '.hdr-data', titel: 'Gegevens bewaren en delen',
-    tekst: 'Wijzigingen worden automatisch in deze browser bewaard. Exporteer regelmatig een JSON-bestand als back-up of om te delen; importeren kan met één klik.' },
+    tekst: 'Wijzigingen worden automatisch in deze browser bewaard. Met "Deel wijzigingen" download je jouw updates als klein aanleverbestand voor de Teams-map; de beheerder voegt alle aanleveringen samen via het tabblad Beheer.' },
   { titel: 'Klaar!',
     tekst: 'Klik rechtsboven op ? voor hulp per scherm. Veel succes!' },
 ];
@@ -904,10 +960,304 @@ function eindigTour() {
   try { localStorage.setItem('izaTourGezien', '1'); } catch (e) { /* niets */ }
 }
 
+// Eerste bezoek: vraag of de gebruiker uitleg wil, in plaats van de
+// rondleiding automatisch te starten. "Nee" sluit direct; daarna wordt
+// de vraag nooit meer gesteld (herstarten kan altijd via de ?-knop).
 function startTourAlsNieuw() {
   try { if (localStorage.getItem('izaTourGezien')) return; } catch (e) { return; }
-  startTour();
+  const body = `
+    <p style="font-size:13px;line-height:1.55">Welkom bij het IZA-AZWA Dashboard.
+    Wil je een korte uitleg (rondleiding van ±1 minuut) langs de belangrijkste functies?</p>
+    <p class="frm-hint" style="margin-top:6px">Je kunt de rondleiding later altijd starten via de <b>?</b>-knop rechtsboven.</p>`;
+  const footer = `
+    <button class="btn-secondary" onclick="markeerTourGezien(); sluitModal()">Nee, direct beginnen</button>
+    <button class="btn-primary" onclick="markeerTourGezien(); sluitModal(); startTour()">Ja, geef me de uitleg</button>`;
+  openModal('Wil je uitleg bij het dashboard?', body, footer);
 }
+
+function markeerTourGezien() {
+  try { localStorage.setItem('izaTourGezien', '1'); } catch (e) { /* niets */ }
+}
+
+// ── src/js/delta.js ──
+// Aanleveringen (v1.1): deelnemers delen hun eigen wijzigingen als klein
+// "aanleverbestand" (delta-export); de beheerder voegt meerdere aanleveringen
+// in één keer samen. Samenvoegen is idempotent: dezelfde aanlevering twee keer
+// verwerken verandert niets.
+const DELTA_KEY = 'izaDelta_v1';
+let deltaLog = { voortgang: [], personen: [], personenVerwijderd: [], mijlpalen: [], referentie: false };
+
+function laadDeltaLog() {
+  try {
+    const raw = localStorage.getItem(DELTA_KEY);
+    if (raw) deltaLog = { ...deltaLog, ...JSON.parse(raw) };
+  } catch (e) { /* niets */ }
+}
+function bewaarDeltaLog() {
+  try { localStorage.setItem(DELTA_KEY, JSON.stringify(deltaLog)); } catch (e) { /* niets */ }
+  updateDeelKnop();
+}
+function wisDeltaLog() {
+  deltaLog = { voortgang: [], personen: [], personenVerwijderd: [], mijlpalen: [], referentie: false };
+  bewaarDeltaLog();
+}
+
+// Wordt aangeroepen vanuit de formulieren zodra de gebruiker iets wijzigt.
+// soort: 'voortgang' (id) | 'persoon' (id) | 'persoonVerwijderd' (id)
+//        | 'mijlpaal' ({afspraakNr, id}) | 'referentie'
+function registreerDelta(soort, ref) {
+  if (soort === 'voortgang' && !deltaLog.voortgang.includes(ref)) deltaLog.voortgang.push(ref);
+  if (soort === 'persoon' && !deltaLog.personen.includes(ref)) deltaLog.personen.push(ref);
+  if (soort === 'persoonVerwijderd') {
+    deltaLog.personen = deltaLog.personen.filter(id => id !== ref);
+    if (!deltaLog.personenVerwijderd.includes(ref)) deltaLog.personenVerwijderd.push(ref);
+  }
+  if (soort === 'mijlpaal' && !deltaLog.mijlpalen.some(m => m.afspraakNr === ref.afspraakNr && m.id === ref.id))
+    deltaLog.mijlpalen.push(ref);
+  if (soort === 'referentie') deltaLog.referentie = true;
+  bewaarDeltaLog();
+}
+
+function aantalDeltaWijzigingen() {
+  return deltaLog.voortgang.length + deltaLog.personen.length +
+    deltaLog.personenVerwijderd.length + deltaLog.mijlpalen.length + (deltaLog.referentie ? 1 : 0);
+}
+
+function updateDeelKnop() {
+  const el = document.getElementById('deelBadge');
+  if (!el) return;
+  const n = aantalDeltaWijzigingen();
+  el.textContent = n ? String(n) : '';
+  el.style.display = n ? '' : 'none';
+}
+
+// ── Delta-export: "Deel wijzigingen" ──
+function deelWijzigingen() {
+  const n = aantalDeltaWijzigingen();
+  if (!n) { toon('Geen eigen wijzigingen om te delen. Voeg eerst een statusupdate of deelnemer toe.'); return; }
+  let auteur = '';
+  try { auteur = localStorage.getItem('izaAuteur') || ''; } catch (e) { /* niets */ }
+  const mijlpalen = [];
+  for (const m of deltaLog.mijlpalen) {
+    const a = AGRS.find(x => x.nr === m.afspraakNr);
+    const rec = (a?.mijlpalen || []).find(x => x.id === m.id);
+    if (rec) mijlpalen.push({ afspraakNr: m.afspraakNr, record: rec });
+  }
+  const bestand = {
+    type: 'iza-azwa-aanlevering',
+    schemaVersion: 1,
+    gemaaktOp: vandaag(),
+    auteur,
+    voortgang: DB.voortgang.filter(v => deltaLog.voortgang.includes(v.id)),
+    personen: DB.personen.filter(p => deltaLog.personen.includes(p.id)),
+    personenVerwijderd: [...deltaLog.personenVerwijderd],
+    mijlpalen,
+    referentie: deltaLog.referentie ? DB.referentie : null,
+  };
+  const blob = new Blob([JSON.stringify(bestand, null, 1)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const wie = (auteur || 'aanlevering').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'aanlevering';
+  a.download = `aanlevering_${wie}_${vandaag()}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toon(`Aanleverbestand met ${n} wijziging(en) gedownload. Zet het in de Teams-map "Aanleveringen".`);
+}
+
+// ── Samenvoeg-import: beheerder verwerkt één of meer aanleverbestanden ──
+function voegAanleveringenSamen(files) {
+  if (!files || !files.length) return;
+  const rapport = [];
+  let teLezen = files.length;
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      let d;
+      try { d = JSON.parse(reader.result); }
+      catch (e) { rapport.push({ bestand: file.name, fout: 'geen geldige JSON' }); klaar(); return; }
+      if (d && d.type !== 'iza-azwa-aanlevering' && d.schemaVersion === 1 && Array.isArray(d.afspraken)) {
+        rapport.push({ bestand: file.name, fout: 'dit is een volledige export — gebruik hiervoor ⬆ Importeer in de header' });
+        klaar(); return;
+      }
+      if (!d || d.type !== 'iza-azwa-aanlevering') {
+        rapport.push({ bestand: file.name, fout: 'geen aanleverbestand (type ontbreekt)' });
+        klaar(); return;
+      }
+      rapport.push({ bestand: file.name, ...verwerkAanlevering(d) });
+      klaar();
+    };
+    reader.onerror = () => { rapport.push({ bestand: file.name, fout: 'niet leesbaar' }); klaar(); };
+    reader.readAsText(file);
+  }
+  function klaar() {
+    if (--teLezen > 0) return;
+    bewaarDB();
+    herrenderAlles();
+    toonSamenvoegRapport(rapport);
+  }
+}
+
+function verwerkAanlevering(d) {
+  const r = { updates: 0, dubbel: 0, signalen: 0, personenNieuw: 0, personenBijgewerkt: 0,
+              personenVerwijderd: 0, mijlpalen: 0, onbekend: 0 };
+  const nrs = new Set(AGRS.map(a => a.nr));
+  const geraakt = new Set();
+
+  for (const v of d.voortgang || []) {
+    if (!v.afspraakNr || !nrs.has(v.afspraakNr)) { r.onbekend++; continue; }
+    const dubbel = DB.voortgang.some(x => x.afspraakNr === v.afspraakNr && x.datum === v.datum &&
+      x.auteur === v.auteur && x.status === v.status && (x.toelichting || '') === (v.toelichting || ''));
+    if (dubbel) { r.dubbel++; continue; }
+    const rec = { ...v };
+    if (DB.voortgang.some(x => x.id === rec.id)) rec.id = nieuwId('VG', DB.voortgang);
+    DB.voortgang.push(rec);
+    geraakt.add(rec.afspraakNr);
+    r.updates++;
+    if (rec.signaal) r.signalen++;
+  }
+  for (const nr of geraakt) {
+    const a = AGRS.find(x => x.nr === nr);
+    if (a) werkAfspraakStatusBij(a);
+  }
+
+  for (const p of d.personen || []) {
+    if (!p || !p.naam) { r.onbekend++; continue; }
+    const kopie = { ...p, lidmaatschappen: (p.lidmaatschappen || []).filter(l => DB.werkgroepen.some(w => w.id === l.werkgroepId)) };
+    const opId = DB.personen.find(x => x.id === kopie.id);
+    const zelfde = x => x.naam === kopie.naam && (x.email || '') === (kopie.email || '');
+    if (opId && zelfde(opId)) { DB.personen[DB.personen.indexOf(opId)] = kopie; r.personenBijgewerkt++; }
+    else {
+      const opNaam = DB.personen.find(zelfde);
+      if (opNaam) { kopie.id = opNaam.id; DB.personen[DB.personen.indexOf(opNaam)] = kopie; r.personenBijgewerkt++; }
+      else { if (opId) kopie.id = nieuwId('P', DB.personen); DB.personen.push(kopie); r.personenNieuw++; }
+    }
+  }
+
+  for (const id of d.personenVerwijderd || []) {
+    const voor = DB.personen.length;
+    DB.personen = DB.personen.filter(x => x.id !== id);
+    if (DB.personen.length < voor) r.personenVerwijderd++;
+  }
+
+  for (const m of d.mijlpalen || []) {
+    const a = AGRS.find(x => x.nr === m.afspraakNr);
+    if (!a || !m.record) { r.onbekend++; continue; }
+    a.mijlpalen = a.mijlpalen || [];
+    const match = a.mijlpalen.find(x => x.titel === m.record.titel && x.datum === m.record.datum);
+    if (match) { if (match.gehaald !== m.record.gehaald) { match.gehaald = m.record.gehaald; r.mijlpalen++; } }
+    else { a.mijlpalen.push({ ...m.record, id: nieuwId('MP', a.mijlpalen) }); r.mijlpalen++; }
+  }
+
+  if (d.referentie) {
+    for (const v of d.referentie.azwaPartijen || [])
+      if (!DB.referentie.azwaPartijen.includes(v)) DB.referentie.azwaPartijen.push(v);
+    for (const v of d.referentie.regioTafels || [])
+      if (!DB.referentie.regioTafels.includes(v)) DB.referentie.regioTafels.push(v);
+  }
+  return r;
+}
+
+function toonSamenvoegRapport(rapport) {
+  let h = '<table class="rp-tabel"><thead><tr><th scope="col">Bestand</th><th scope="col">Resultaat</th></tr></thead><tbody>';
+  for (const r of rapport) {
+    const tekst = r.fout ? `⚠ Overgeslagen: ${esc(r.fout)}` : esc([
+      r.updates && `${r.updates} statusupdate(s)`,
+      r.signalen && `waarvan ${r.signalen} signaal/signalen`,
+      r.dubbel && `${r.dubbel} al aanwezig (overgeslagen)`,
+      r.personenNieuw && `${r.personenNieuw} deelnemer(s) nieuw`,
+      r.personenBijgewerkt && `${r.personenBijgewerkt} deelnemer(s) bijgewerkt`,
+      r.personenVerwijderd && `${r.personenVerwijderd} deelnemer(s) verwijderd`,
+      r.mijlpalen && `${r.mijlpalen} mijlpa(a)l(en)`,
+      r.onbekend && `${r.onbekend} regel(s) met onbekend nummer overgeslagen`,
+    ].filter(Boolean).join(' · ') || 'geen wijzigingen (alles al aanwezig)');
+    h += `<tr><td>${esc(r.bestand)}</td><td>${tekst}</td></tr>`;
+  }
+  h += '</tbody></table><p class="frm-hint" style="margin-top:8px">Controleer het resultaat en exporteer daarna de nieuwe totaalstand (⬇ Exporteer) naar de Teams-map.</p>';
+  openModal('Aanleveringen samengevoegd', h, '<button class="btn-primary" onclick="sluitModal()">Sluiten</button>');
+}
+
+// ── Excel/CSV-aanleversjabloon ──
+function downloadSjabloon() {
+  const wgId = document.getElementById('bhSjabloonWg')?.value || '';
+  const lijst = AGRS.filter(a => !wgId || a.werkgroepId === wgId || werkgroep(a.werkgroepId)?.parentId === wgId);
+  csvDownload(`aanleversjabloon_${vandaag()}.csv`,
+    ['Nr', 'Afspraak', 'HuidigeStatus', 'NieuweStatus', 'Datum', 'Auteur', 'Toelichting', 'Signaal'],
+    lijst.map(a => [a.nr, a.t, normStatus(a.status), '', '', '', '', '']));
+  toon(`Sjabloon met ${lijst.length} afspraken gedownload. Vul de kolommen NieuweStatus t/m Signaal in Excel in.`);
+}
+
+function parseCsv(tekst) {
+  tekst = tekst.replace(/^﻿/, '');
+  const rijen = [];
+  let rij = [], veld = '', inQuote = false;
+  for (let i = 0; i < tekst.length; i++) {
+    const c = tekst[i];
+    if (inQuote) {
+      if (c === '"' && tekst[i + 1] === '"') { veld += '"'; i++; }
+      else if (c === '"') inQuote = false;
+      else veld += c;
+    } else if (c === '"') inQuote = true;
+    else if (c === ';' || c === ',') { rij.push(veld); veld = ''; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && tekst[i + 1] === '\n') i++;
+      rij.push(veld); veld = '';
+      if (rij.some(v => v.trim() !== '')) rijen.push(rij);
+      rij = [];
+    } else veld += c;
+  }
+  if (veld !== '' || rij.length) { rij.push(veld); if (rij.some(v => v.trim() !== '')) rijen.push(rij); }
+  return rijen;
+}
+
+function importeerSjabloon(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const rijen = parseCsv(String(reader.result));
+    if (!rijen.length) { alert('Het bestand is leeg of niet leesbaar als CSV.'); return; }
+    const kop = rijen[0].map(k => k.trim().toLowerCase());
+    const kol = naam => kop.indexOf(naam);
+    if (kol('nr') < 0 || kol('nieuwestatus') < 0) {
+      alert('Dit lijkt geen aanleversjabloon: kolommen "Nr" en "NieuweStatus" ontbreken. Download het sjabloon via Beheer.');
+      return;
+    }
+    let ok = 0, leeg = 0, fout = [];
+    const geraakt = new Set();
+    for (const rij of rijen.slice(1)) {
+      const nr = (rij[kol('nr')] || '').trim();
+      const status = (rij[kol('nieuwestatus')] || '').trim();
+      const toelichting = kol('toelichting') >= 0 ? (rij[kol('toelichting')] || '').trim() : '';
+      if (!status && !toelichting) { leeg++; continue; }
+      const a = AGRS.find(x => x.nr === nr);
+      if (!a) { fout.push(`rij met nr "${nr}": onbekend afspraaknummer`); continue; }
+      if (status && !STATUS_CATS.includes(status)) {
+        fout.push(`${nr}: status "${status}" onbekend (gebruik: ${STATUS_CATS.join(', ')})`);
+        continue;
+      }
+      let datum = kol('datum') >= 0 ? (rij[kol('datum')] || '').trim() : '';
+      if (datum && !/^\d{4}-\d{2}-\d{2}$/.test(datum)) { fout.push(`${nr}: datum "${datum}" is geen JJJJ-MM-DD`); continue; }
+      if (!datum) datum = vandaag();
+      const auteur = (kol('auteur') >= 0 ? (rij[kol('auteur')] || '').trim() : '') || 'Excel-aanlevering';
+      const signaal = kol('signaal') >= 0 && /^(ja|j|x|1|waar|true)$/i.test((rij[kol('signaal')] || '').trim());
+      const rec = { id: nieuwId('VG', DB.voortgang), afspraakNr: nr, datum, auteur,
+        status: status || normStatus(a.status), toelichting };
+      if (signaal) rec.signaal = true;
+      DB.voortgang.push(rec);
+      registreerDelta('voortgang', rec.id);
+      geraakt.add(nr);
+      ok++;
+    }
+    for (const nr of geraakt) werkAfspraakStatusBij(AGRS.find(x => x.nr === nr));
+    bewaarDB();
+    herrenderAlles();
+    let h = `<p>${ok} statusupdate(s) verwerkt; ${leeg} rij(en) zonder invulling overgeslagen.</p>`;
+    if (fout.length) h += `<p style="color:#C00000;font-size:12px"><b>${fout.length} rij(en) niet verwerkt:</b></p><ul class="help-tekst" style="font-size:11px"><li>${fout.slice(0, 10).map(esc).join('</li><li>')}</li></ul>`;
+    openModal('Sjabloon verwerkt', h, '<button class="btn-primary" onclick="sluitModal()">Sluiten</button>');
+  };
+  reader.readAsText(file);
+}
+
+laadDeltaLog();
 
 // ── src/js/status.js ──
 // Statuslogica, kleuren en labels (PoC-huisstijl)
@@ -1333,6 +1683,7 @@ function matches(a) {
 function applyFilters() {
   if (curView === 'deelnemers') { renderDeelnemers(); return; }
   if (curView === 'rapportage' && typeof renderRapportage === 'function') { renderRapportage(); return; }
+  if (curView === 'beheer') { renderBeheer(); return; }
   updateAllToggleBtns();
   syncURL();
   const visible = AGRS.filter(matches);
@@ -1351,6 +1702,7 @@ const VIEW_CONFIG = {
   onderdelen:  { btn: 'navO', el: 'viewOnderdelen' },
   deelnemers:  { btn: 'navD', el: 'viewDeelnemers', beheer: true },
   rapportage:  { btn: 'navR', el: 'viewRapportage', beheer: true },
+  beheer:      { btn: 'navB', el: 'viewBeheer', beheer: true },
 };
 function setView(v) {
   if (!VIEW_CONFIG[v]) return;
@@ -1945,6 +2297,7 @@ function voortgangSectieHtml(a) {
         <div class="vg-inhoud">
           <div class="vg-kop"><b>${esc(u.datum)}</b> · ${esc(u.auteur || '—')} ·
             <span class="status-pill" style="background:${statColor(u.status)};color:${statusTextColor(u.status)}">${esc(u.status)}</span>
+            ${u.signaal ? '<span class="signaal-badge" title="Gesignaleerd aan de thematafel">💡 signaal</span>' : ''}
             <button class="vg-del" onclick="verwijderVoortgang('${esc(u.id)}')" title="Verwijder deze update" aria-label="Verwijder statusupdate van ${esc(u.datum)}">✕</button>
           </div>
           ${u.toelichting ? `<div class="vg-toel">${esc(u.toelichting)}</div>` : ''}
@@ -1999,6 +2352,7 @@ function openStatusUpdateForm(nr) {
       </div>
       <div class="frm-veld"><label>Nieuwe status *<select id="vgStatus">${opties}</select></label></div>
       <div class="frm-veld"><label>Toelichting<textarea id="vgToel" rows="4" placeholder="Wat is er gebeurd of besloten? Wat is de volgende stap?"></textarea></label></div>
+      <div class="frm-veld"><label style="font-weight:400;font-size:12px;color:#333"><input type="checkbox" id="vgSignaal" style="width:auto;margin-right:6px">💡 Signaleren aan de thematafel — deze update bevat een nieuw inzicht of aandachtspunt</label></div>
     </form>`;
   const footer = `
     <button class="btn-secondary" onclick="sluitModal()">Annuleren</button>
@@ -2014,7 +2368,10 @@ function slaStatusUpdateOp(nr) {
   const status = document.getElementById('vgStatus').value;
   const toelichting = document.getElementById('vgToel').value.trim();
   if (!datum || !auteur || !status) return;
-  DB.voortgang.push({ id: nieuwId('VG', DB.voortgang), afspraakNr: nr, datum, auteur, status, toelichting });
+  const rec = { id: nieuwId('VG', DB.voortgang), afspraakNr: nr, datum, auteur, status, toelichting };
+  if (document.getElementById('vgSignaal')?.checked) rec.signaal = true;
+  DB.voortgang.push(rec);
+  registreerDelta('voortgang', rec.id);
   werkAfspraakStatusBij(a);
   try { localStorage.setItem('izaAuteur', auteur); } catch (e) { /* niets */ }
   bewaarDB();
@@ -2068,7 +2425,9 @@ function slaMijlpaalOp(nr) {
   const datum = document.getElementById('mpDatum').value;
   if (!titel || !datum) return;
   a.mijlpalen = a.mijlpalen || [];
-  a.mijlpalen.push({ id: nieuwId('MP', a.mijlpalen), titel, datum, gehaald: document.getElementById('mpGehaald').checked });
+  const mp = { id: nieuwId('MP', a.mijlpalen), titel, datum, gehaald: document.getElementById('mpGehaald').checked };
+  a.mijlpalen.push(mp);
+  registreerDelta('mijlpaal', { afspraakNr: nr, id: mp.id });
   bewaarDB();
   sluitModal();
   herrenderAlles();
@@ -2079,6 +2438,7 @@ function toggleMijlpaal(nr, id, gehaald) {
   const m = (AGRS.find(x => x.nr === nr)?.mijlpalen || []).find(x => x.id === id);
   if (!m) return;
   m.gehaald = gehaald;
+  registreerDelta('mijlpaal', { afspraakNr: nr, id });
   bewaarDB();
   herrenderAlles();
 }
@@ -2308,6 +2668,7 @@ function slaPersoonOp(id) {
   if (record.regioTafel && !DB.referentie.regioTafels.includes(record.regioTafel)) DB.referentie.regioTafels.push(record.regioTafel);
   const idx = DB.personen.findIndex(x => x.id === id);
   if (idx >= 0) DB.personen[idx] = record; else DB.personen.push(record);
+  registreerDelta('persoon', record.id);
   bewaarDB();
   sluitModal();
   renderDeelnemers();
@@ -2320,6 +2681,7 @@ function verwijderPersoon(id) {
   if (!confirm(`Deelnemer "${p.naam}" verwijderen?`)) return;
   DB.personen = DB.personen.filter(x => x.id !== id);
   setDB(DB); // AGRS/CONTACTS-verwijzingen blijven kloppen
+  registreerDelta('persoonVerwijderd', id);
   bewaarDB();
   renderDeelnemers();
   toon(`Deelnemer ${p.naam} verwijderd.`);
@@ -2346,6 +2708,7 @@ function slaReferentiesOp() {
   const lees = id => [...new Set(document.getElementById(id).value.split('\n').map(s => s.trim()).filter(Boolean))];
   DB.referentie.azwaPartijen = lees('refPartijen');
   DB.referentie.regioTafels = lees('refRegios');
+  registreerDelta('referentie');
   bewaarDB();
   sluitModal();
   renderDeelnemers();
@@ -2408,6 +2771,7 @@ function renderRapportage() {
   const { periode, tf, wgId } = rpScope();
   const afspraken = rpAfspraken();
   const updates = rpUpdates(afspraken);
+  const signalen = updates.filter(u => u.signaal);
   const risicos = afspraken.filter(isDeadlineRisk);
 
   const counts = {};
@@ -2433,6 +2797,7 @@ function renderRapportage() {
   for (const c of [...STATUS_CATS, 'Onbekend'])
     if (counts[c]) h += rpTegel(counts[c], c, STATUS_NORM_COLORS[c]);
   h += rpTegel(risicos.length, '⚠ deadlinerisico', '#C00000');
+  if (signalen.length) h += rpTegel(signalen.length, '💡 signalen', '#B8860B');
   h += rpTegel(updates.length, periode ? `updates in ${periode}` : 'statusupdates totaal', 'var(--primary)');
   h += '</div>';
 
@@ -2460,6 +2825,20 @@ function renderRapportage() {
     for (const [id, lijst] of [...perWg.entries()].sort((x, y) => y[1].length - x[1].length))
       h += rpStatusBalk(werkgroepNaam(id), lijst, '#777');
     h += '</div>';
+  }
+
+  // Signalen: door werkgroepen gemarkeerde nieuwe inzichten/aandachtspunten
+  if (signalen.length) {
+    h += `<h3 class="rp-h3">💡 Signalen &amp; nieuwe inzichten (${signalen.length})</h3>
+      <table class="rp-tabel"><thead><tr><th scope="col">Datum</th><th scope="col">Afspraak</th>
+      <th scope="col">Auteur</th><th scope="col">Signaal</th></tr></thead><tbody>`;
+    for (const u of signalen) {
+      const a = AGRS.find(x => x.nr === u.afspraakNr);
+      h += `<tr><td style="white-space:nowrap">${esc(u.datum)}</td>
+        <td><b>${esc(u.afspraakNr)}</b> ${esc(a?.t || '')}</td>
+        <td>${esc(u.auteur || '—')}</td><td>${esc(u.toelichting || '—')}</td></tr>`;
+    }
+    h += '</tbody></table>';
   }
 
   // Risico's
@@ -2564,6 +2943,175 @@ function exporteerRapportCsv() {
   toon(`${afspraken.length} afspraken geëxporteerd als CSV.`);
 }
 
+// ── src/js/views/beheer.js ──
+// Beheer (v1.1): aanleveringen samenvoegen, Excel/CSV-sjabloon en
+// werkgroepbeheer (hernoemen, samenvoegen, toevoegen, verwijderen).
+
+function renderBeheer() {
+  const wgSel = document.getElementById('bhSjabloonWg');
+  if (wgSel) {
+    const huidig = wgSel.value;
+    wgSel.innerHTML = '<option value="">Alle werkgroepen</option>' + werkgroepOpties();
+    if ([...wgSel.options].some(o => o.value === huidig)) wgSel.value = huidig;
+  }
+  renderWerkgroepTabel();
+}
+
+function renderWerkgroepTabel() {
+  const el = document.getElementById('bhWerkgroepen');
+  if (!el) return;
+  const afsprakenPer = {}, ledenPer = {};
+  AGRS.forEach(a => { afsprakenPer[a.werkgroepId] = (afsprakenPer[a.werkgroepId] || 0) + 1; });
+  DB.personen.forEach(p => (p.lidmaatschappen || []).forEach(l => {
+    ledenPer[l.werkgroepId] = (ledenPer[l.werkgroepId] || 0) + 1;
+  }));
+
+  const hoofd = DB.werkgroepen.filter(w => !w.parentId).sort((a, b) => a.naam.localeCompare(b.naam, 'nl'));
+  let h = `<table class="rp-tabel"><thead><tr>
+    <th scope="col">Werkgroep</th><th scope="col">Tafel</th>
+    <th scope="col">Afspraken</th><th scope="col">Deelnemers</th>
+    <th scope="col"><span class="sr-only">Acties</span></th></tr></thead><tbody>`;
+  const rij = (w, sub) => {
+    const leeg = !(afsprakenPer[w.id] || ledenPer[w.id]) &&
+      !DB.werkgroepen.some(x => x.parentId === w.id);
+    h += `<tr>
+      <td>${sub ? '<span style="color:#bbb">└─</span> ' : ''}<b>${esc(w.naam)}</b>${w.gremium ? ' <span class="dl-wg-chip" title="Aanspreekpunt-gremium uit het PoC">gremium</span>' : ''}</td>
+      <td>${esc(w.tafel || '—')}</td>
+      <td>${afsprakenPer[w.id] || 0}</td>
+      <td>${ledenPer[w.id] || 0}</td>
+      <td class="dl-acties">
+        <button class="dl-btn" onclick="hernoemWerkgroep('${esc(w.id)}')" title="Hernoem ${esc(w.naam)}" aria-label="Hernoem ${esc(w.naam)}">✎</button>
+        ${w.gremium ? '' : `<button class="dl-btn" onclick="openSamenvoegen('${esc(w.id)}')" title="Voeg ${esc(w.naam)} samen met een andere werkgroep" aria-label="Voeg ${esc(w.naam)} samen">⇄</button>`}
+        ${leeg && !w.gremium ? `<button class="dl-btn" onclick="verwijderWerkgroep('${esc(w.id)}')" title="Verwijder ${esc(w.naam)} (leeg)" aria-label="Verwijder ${esc(w.naam)}">🗑</button>` : ''}
+      </td></tr>`;
+  };
+  for (const w of hoofd) {
+    rij(w, false);
+    for (const s of DB.werkgroepen.filter(x => x.parentId === w.id).sort((a, b) => a.naam.localeCompare(b.naam, 'nl')))
+      rij(s, true);
+  }
+  el.innerHTML = h + '</tbody></table>';
+}
+
+function subboomIds(id) {
+  const ids = [id];
+  for (const w of DB.werkgroepen.filter(x => x.parentId === id)) ids.push(...subboomIds(w.id));
+  return ids;
+}
+
+function hernoemWerkgroep(id) {
+  const w = werkgroep(id);
+  if (!w) return;
+  const naam = prompt(`Nieuwe naam voor "${w.naam}":`, w.naam);
+  if (!naam || !naam.trim() || naam.trim() === w.naam) return;
+  w.naam = naam.trim();
+  AGRS.filter(a => a.werkgroepId === id).forEach(a => { a.wg = werkgroepNaam(id).replace(' — ', ' / '); });
+  bewaarDB();
+  herrenderAlles();
+  renderBeheer();
+  toon(`Werkgroep hernoemd naar "${w.naam}".`);
+}
+
+function openSamenvoegen(bronId) {
+  const bron = werkgroep(bronId);
+  if (!bron) return;
+  if (bron.gremium) { alert('Gremia (aanspreekpunten uit het PoC) kunnen niet worden samengevoegd.'); return; }
+  const verboden = new Set(subboomIds(bronId)); // geen samenvoegen met zichzelf of eigen subwerkgroep
+  const opties = DB.werkgroepen.filter(w => !verboden.has(w.id))
+    .sort((a, b) => werkgroepNaam(a.id).localeCompare(werkgroepNaam(b.id), 'nl'))
+    .map(w => `<option value="${esc(w.id)}">${esc(werkgroepNaam(w.id))}</option>`).join('');
+  const nAfspraken = AGRS.filter(a => a.werkgroepId === bronId).length;
+  const nLeden = DB.personen.filter(p => (p.lidmaatschappen || []).some(l => l.werkgroepId === bronId)).length;
+  const nSubs = DB.werkgroepen.filter(w => w.parentId === bronId).length;
+  const body = `
+    <p style="font-size:12px">Alles van <b>${esc(werkgroepNaam(bronId))}</b> gaat over naar de gekozen
+    doelwerkgroep: ${nAfspraken} afspraak/afspraken, ${nLeden} deelnemer(s)${nSubs ? ` en ${nSubs} subwerkgroep(en)` : ''}.
+    De statushistorie blijft volledig bewaard (die hangt aan de afspraken). Daarna wordt
+    "${esc(bron.naam)}" verwijderd. Dit kan niet ongedaan worden gemaakt — exporteer eerst een back-up.</p>
+    <div class="frm-veld"><label>Samenvoegen met (doelwerkgroep)
+      <select id="bhDoelWg">${opties}</select></label></div>`;
+  const footer = `
+    <button class="btn-secondary" onclick="sluitModal()">Annuleren</button>
+    <button class="btn-primary" onclick="voerSamenvoegingUit('${esc(bronId)}')">Samenvoegen</button>`;
+  openModal(`Werkgroep samenvoegen — ${bron.naam}`, body, footer);
+}
+
+function voerSamenvoegingUit(bronId) {
+  const doelId = document.getElementById('bhDoelWg').value;
+  const bron = werkgroep(bronId), doel = werkgroep(doelId);
+  if (!bron || !doel || bronId === doelId || subboomIds(bronId).includes(doelId)) return;
+
+  AGRS.filter(a => a.werkgroepId === bronId).forEach(a => {
+    a.werkgroepId = doelId;
+    a.wg = werkgroepNaam(doelId).replace(' — ', ' / ');
+  });
+  DB.werkgroepen.filter(w => w.parentId === bronId).forEach(w => { w.parentId = doel.parentId ? doel.parentId : doelId; });
+  for (const p of DB.personen) {
+    if (!(p.lidmaatschappen || []).length) continue;
+    p.lidmaatschappen.forEach(l => { if (l.werkgroepId === bronId) l.werkgroepId = doelId; });
+    p.lidmaatschappen = p.lidmaatschappen.filter((l, i, all) =>
+      all.findIndex(x => x.werkgroepId === l.werkgroepId) === i);
+  }
+  DB.werkgroepen = DB.werkgroepen.filter(w => w.id !== bronId);
+  setDB(DB);
+  bewaarDB();
+  sluitModal();
+  herrenderAlles();
+  renderBeheer();
+  toon(`"${bron.naam}" is samengevoegd met "${doel.naam}".`);
+}
+
+function nieuweWerkgroep() {
+  const opties = DB.werkgroepen.filter(w => !w.parentId)
+    .sort((a, b) => a.naam.localeCompare(b.naam, 'nl'))
+    .map(w => `<option value="${esc(w.id)}">${esc(w.naam)}</option>`).join('');
+  const body = `
+    <div class="frm-veld"><label>Naam *<input id="bhNieuwNaam" required placeholder="bijv. Werkgroep Hybride Zorg"></label></div>
+    <div class="frm-rij">
+      <div class="frm-veld"><label>Thematafel
+        <select id="bhNieuwTafel"><option value="">—</option>
+          ${Object.entries(TF_META).map(([k, m]) => `<option value="${k}">${esc(m.label)}</option>`).join('')}
+        </select></label></div>
+      <div class="frm-veld"><label>Valt onder (subwerkgroep van)
+        <select id="bhNieuwParent"><option value="">— zelfstandige werkgroep —</option>${opties}</select></label></div>
+    </div>`;
+  const footer = `
+    <button class="btn-secondary" onclick="sluitModal()">Annuleren</button>
+    <button class="btn-primary" onclick="slaNieuweWerkgroepOp()">Werkgroep toevoegen</button>`;
+  openModal('Nieuwe (sub)werkgroep', body, footer);
+}
+
+function slaNieuweWerkgroepOp() {
+  const naam = document.getElementById('bhNieuwNaam').value.trim();
+  if (!naam) return;
+  let id = 'WG_' + naam.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '').toUpperCase().slice(0, 48);
+  while (DB.werkgroepen.some(w => w.id === id)) id += '_2';
+  const parentId = document.getElementById('bhNieuwParent').value || null;
+  DB.werkgroepen.push({ id, naam,
+    tafel: document.getElementById('bhNieuwTafel').value || (parentId ? werkgroep(parentId)?.tafel || '' : ''),
+    parentId, toelichting: '', gremium: false });
+  bewaarDB();
+  sluitModal();
+  renderBeheer();
+  toon(`Werkgroep "${naam}" toegevoegd.`);
+}
+
+function verwijderWerkgroep(id) {
+  const w = werkgroep(id);
+  if (!w) return;
+  const inGebruik = AGRS.some(a => a.werkgroepId === id) ||
+    DB.personen.some(p => (p.lidmaatschappen || []).some(l => l.werkgroepId === id)) ||
+    DB.werkgroepen.some(x => x.parentId === id);
+  if (inGebruik) { alert('Deze werkgroep is nog in gebruik. Voeg hem eerst samen met een andere werkgroep.'); return; }
+  if (!confirm(`Lege werkgroep "${w.naam}" verwijderen?`)) return;
+  DB.werkgroepen = DB.werkgroepen.filter(x => x.id !== id);
+  setDB(DB);
+  bewaarDB();
+  renderBeheer();
+  toon(`Werkgroep "${w.naam}" verwijderd.`);
+}
+
 // ── src/js/settings.js ──
 // Instellingen detailpaneel + sidebar-toggle
 // === DP VISIBILITY SETTINGS ===
@@ -2637,6 +3185,7 @@ function toggleSidebar(){
 // ── src/js/main.js ──
 // Init
 updateDataStatus();
+updateDeelKnop();
 loadFromURL();
 buildChips();
 updateAllToggleBtns();

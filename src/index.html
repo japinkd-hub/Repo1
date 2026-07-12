@@ -16,9 +16,11 @@
     <button class="hnav-btn" id="navO" onclick="setView('onderdelen')">Onderdelen</button>
     <button class="hnav-btn" id="navD" onclick="setView('deelnemers')">Deelnemers</button>
     <button class="hnav-btn" id="navR" onclick="setView('rapportage')">Rapportage</button>
+    <button class="hnav-btn" id="navB" onclick="setView('beheer')">Beheer</button>
   </nav>
   <div class="hdr-data">
     <span id="data-status"></span>
+    <button class="hdr-data-btn" onclick="deelWijzigingen()" title="Download alleen jouw eigen wijzigingen als klein aanleverbestand voor de Teams-map 'Aanleveringen'">&#128228; Deel wijzigingen<span id="deelBadge" class="deel-badge" style="display:none"></span></button>
     <button class="hdr-data-btn" onclick="exporteerDB()" title="Download alle dashboarddata als JSON-bestand">&#11015; Exporteer</button>
     <label class="hdr-data-btn" title="Laad een eerder geëxporteerd JSON-databestand">&#11014; Importeer<input type="file" accept="application/json,.json" hidden onchange="importeerDB(this.files[0]); this.value='';"></label>
     <button class="hdr-data-btn" onclick="herstelDB()" title="Wis lokale wijzigingen en laad de meegeleverde data">&#8634; Herstel</button>
@@ -157,6 +159,37 @@
       </div>
       <div id="rpBody"></div>
     </div>
+    <!-- Beheer view -->
+    <div id="viewBeheer" class="hidden">
+      <div class="bh-kaarten">
+        <div class="bh-kaart">
+          <h3>Aanleveringen samenvoegen</h3>
+          <p>Verwerk één of meer aanleverbestanden uit de Teams-map <b>Aanleveringen</b> in één keer.
+          Dubbele updates worden automatisch overgeslagen; hetzelfde bestand twee keer verwerken kan geen kwaad.</p>
+          <label class="btn-primary bh-file-btn">&#128194; Kies aanleverbestanden…<input type="file" accept="application/json,.json" multiple hidden onchange="voegAanleveringenSamen([...this.files]); this.value='';"></label>
+          <p class="frm-hint">Exporteer na het samenvoegen de nieuwe totaalstand (&#11015; Exporteer) naar de Teams-map.</p>
+        </div>
+        <div class="bh-kaart">
+          <h3>Excel-aanleversjabloon</h3>
+          <p>Voor werkgroepen die liever in Excel aanleveren: download het sjabloon, laat de kolommen
+          <b>NieuweStatus</b> t/m <b>Signaal</b> invullen en lees het ingevulde bestand hier weer in (opslaan als CSV).</p>
+          <div class="bh-rij">
+            <select id="bhSjabloonWg" aria-label="Werkgroep voor het sjabloon"></select>
+            <button class="btn-secondary" onclick="downloadSjabloon()">&#11015; Sjabloon</button>
+            <label class="btn-secondary bh-file-btn">&#11014; Ingevuld sjabloon…<input type="file" accept=".csv,text/csv" hidden onchange="importeerSjabloon(this.files[0]); this.value='';"></label>
+          </div>
+        </div>
+      </div>
+      <div class="bh-kaart">
+        <div class="dp-label-rij" style="margin-bottom:6px">
+          <h3 style="margin:0">Werkgroepen en subwerkgroepen</h3>
+          <button class="btn-primary" onclick="nieuweWerkgroep()">＋ Nieuwe werkgroep</button>
+        </div>
+        <p>Hernoem (✎), voeg samen (⇄, bijvoorbeeld als subwerkgroepen fuseren) of verwijder lege werkgroepen (🗑).
+        Bij samenvoegen gaan afspraken en deelnemers mee en blijft alle statushistorie bewaard.</p>
+        <div id="bhWerkgroepen"></div>
+      </div>
+    </div>
   </main>
 
   <!-- DETAIL PANEL -->
@@ -179,7 +212,7 @@
   <span><span class="stat-dot" style="background:#757575"></span>Nog niet gestart</span>
   <span><span class="stat-dot" style="background:#C00000"></span>Aandacht</span>
   <span><span class="stat-dot" style="background:#aaa"></span>Geparkeerd</span>
-  <span class="sb-hint">v1.0.0 &nbsp;|&nbsp; Esc = sluit paneel &nbsp;|&nbsp; Klik op afspraak voor details</span>
+  <span class="sb-hint">v1.1.0 &nbsp;|&nbsp; Esc = sluit paneel &nbsp;|&nbsp; Klik op afspraak voor details</span>
 </div>
 
 <div id="modalRoot"></div>
