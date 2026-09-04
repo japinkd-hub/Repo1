@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CDS Data Samenwerkingen</title>
+<title>CDS Data Samenwerkingen v3</title>
 <style>/* system fonts fallback */ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }</style>
 <style>
 :root {
@@ -98,6 +98,19 @@ header{background:var(--navy);color:#fff;padding:0 24px;height:60px;display:flex
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;color:var(--muted);padding:40px;text-align:center}
 .ei{font-size:40px;opacity:.3}
 .et{font-size:13px}
+
+/* USE-CASE FILTER BAR */
+.ucbar{background:#fff;border-bottom:1px solid var(--border);padding:6px 24px;display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.ucbar-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-right:4px;white-space:nowrap}
+.ucbtn{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:11.5px;font-weight:500;color:var(--text);cursor:pointer;transition:all .12s;white-space:nowrap}
+.ucbtn:hover{border-color:var(--paars);color:var(--paars);background:rgba(122,0,223,.04)}
+.ucbtn.active{background:var(--paars);border-color:var(--paars);color:#fff}
+.ucbtn .ubdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:currentColor;opacity:.6}
+
+/* UC legend in panel */
+.uc-legend{display:flex;gap:12px;flex-wrap:wrap;padding:10px 18px;border-bottom:1px solid var(--border);background:var(--bg)}
+.uc-leg-item{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--muted)}
+.uc-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -111,6 +124,15 @@ header{background:var(--navy);color:#fff;padding:0 24px;height:60px;display:flex
   </div>
 </header>
 <div class="statsbar" id="statsbar"></div>
+<div class="ucbar" id="ucbar">
+  <span class="ucbar-label">Kleur op:</span>
+  <button class="ucbtn active" data-uc="status" onclick="setUC(this)"><span class="ubdot"></span>Initiatief status</button>
+  <button class="ucbtn" data-uc="platform" onclick="setUC(this)"><span class="ubdot"></span>Dataplatform</button>
+  <button class="ucbtn" data-uc="pzp" onclick="setUC(this)"><span class="ubdot"></span>PZP</button>
+  <button class="ucbtn" data-uc="zorgco" onclick="setUC(this)"><span class="ubdot"></span>Zorgcoördinatie</button>
+  <button class="ucbtn" data-uc="viewer" onclick="setUC(this)"><span class="ubdot"></span>360° viewer</button>
+  <button class="ucbtn" data-uc="overig" onclick="setUC(this)"><span class="ubdot"></span>Overige use case</button>
+</div>
 <div class="main">
   <div class="maparea" id="maparea">
     <div id="map"></div>
@@ -225,11 +247,13 @@ function renderStats(){
   document.getElementById('statsbar').innerHTML=h;
 }
 function renderLegend(){
+  const el=document.getElementById('legend');
+  if(!el)return;
   let h='';
   Object.entries(STATUSCFG).forEach(([k,v])=>{
     h+=`<div class="leg"><div class="ldot" style="background:${v.c}"></div>${k}</div>`;
   });
-  document.getElementById('legend').innerHTML=h;
+  el.innerHTML=h;
 }
 
 var panelOpen = false;
@@ -294,7 +318,22 @@ function buildBody(r){
   const hasContact=r.contact||r.email||r.eigenaar;
   const hasAp=r.ap&&r.ap.trim();
 
-  return `
+  // UC highlight bovenaan het paneel als een use-case geselecteerd is
+  var ucHighlight = '';
+  if (currentUC !== 'status') {
+    var ucCfg = UCCFG[currentUC];
+    var ucVal = r[ucCfg.field] || '';
+    var ucCol = getUCColor(ucVal);
+    var ucDisp = ucVal || 'Geen data';
+    ucHighlight = '<div style="margin:10px 18px 0;padding:10px 14px;border-radius:8px;border-left:4px solid '
+      + ucCol + ';background:rgba(0,0,0,.03)">'
+      + '<div style="font-size:10px;font-weight:700;color:#6b7194;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">'
+      + ucCfg.label + '</div>'
+      + '<div style="font-size:14px;font-weight:600;color:' + ucCol + '">' + ucDisp + '</div>'
+      + '</div>';
+  }
+
+  return ucHighlight + `
   ${hasAp?`<div style="padding:10px 18px 0"><div class="warn">⚠️ <span>${r.ap}</span></div></div>`:''}
 
   <div class="acc-sec">
@@ -367,11 +406,81 @@ const resolve = function(sn) {
   if (byRegio[sn]) return sn;
   return null;
 };
+
+var currentUC = 'status';
+
+// UC definitions: field, label, colors
+const UCCFG = {
+  status:   { label: 'Initiatief status', field: 'status' },
+  platform: { label: 'Dataplatform',      field: 'platform' },
+  pzp:      { label: 'PZP',               field: 'pzp' },
+  zorgco:   { label: 'Zorgcoördinatie',   field: 'zorgco' },
+  viewer:   { label: '360° viewer',       field: 'viewer' },
+  overig:   { label: 'Overige use case',  field: 'overig' },
+};
+
+const UC_C = {
+  filled: '#27ae60',   // has value
+  ntb:    '#f39c12',   // n.t.b.
+  none:   '#e74c3c',   // empty / geen
+  grey:   '#ccd0e0',   // no data
+};
+
+function getUCColor(val) {
+  if (!val || val.trim() === '') return UC_C.grey;
+  const v = val.trim().toLowerCase();
+  if (v === 'n.t.b.' || v === 'ntb') return UC_C.ntb;
+  if (v === 'geen dataplatform' || v === 'geen') return UC_C.none;
+  return UC_C.filled;
+}
+
 function getColor(sn) {
   const rn = resolve(sn);
   const d = byRegio[rn];
-  const s = d ? d.status : 'Onbekend';
-  return (STATUSCFG[s] || {c: '#ccd0e0'}).c;
+  if (!d) return UC_C.grey;
+  if (currentUC === 'status') {
+    const s = d.status || 'Onbekend';
+    return (STATUSCFG[s] || {c: '#ccd0e0'}).c;
+  }
+  return getUCColor(d[UCCFG[currentUC].field]);
+}
+
+// Alle kaartpaden opslaan voor herkleur
+var _geoEls = [];
+
+function recolorMap() {
+  _geoEls.forEach(function(item) {
+    item.el.setAttribute('fill', getColor(item.sn));
+  });
+}
+
+function setUC(btn) {
+  currentUC = btn.getAttribute('data-uc');
+  document.querySelectorAll('.ucbtn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  recolorMap();
+  updateUCStats();
+}
+
+function updateUCStats() {
+  var bar = document.getElementById('statsbar');
+  if (currentUC === 'status') { renderStats(); return; }
+  var cfg = UCCFG[currentUC];
+  var filled = 0, ntb = 0, none = 0, grey = 0;
+  DATA.forEach(function(d) {
+    var v = d[cfg.field] || '';
+    var vl = v.trim().toLowerCase();
+    if (!v || v.trim() === '') grey++;
+    else if (vl === 'n.t.b.' || vl === 'ntb') ntb++;
+    else if (vl === 'geen dataplatform' || vl === 'geen') none++;
+    else filled++;
+  });
+  var h = '<div style="display:flex;align-items:center;gap:6px"><div class="snum">' + DATA.length + '</div><div class="slbl">IZA<br>regio\'s</div></div><div class="sdiv"></div>';
+  h += '<div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:50%;background:' + UC_C.filled + '"></div><div><div class="snum" style="color:' + UC_C.filled + ';font-size:15px">' + filled + '</div><div class="slbl">Ingevuld</div></div></div>';
+  if (ntb > 0) h += '<div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:50%;background:' + UC_C.ntb + '"></div><div><div class="snum" style="color:' + UC_C.ntb + ';font-size:15px">' + ntb + '</div><div class="slbl">n.t.b.</div></div></div>';
+  if (none > 0) h += '<div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:50%;background:' + UC_C.none + '"></div><div><div class="snum" style="color:' + UC_C.none + ';font-size:15px">' + none + '</div><div class="slbl">Niet aanwezig</div></div></div>';
+  if (grey > 0) h += '<div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:50%;background:' + UC_C.grey + '"></div><div><div class="snum" style="color:' + UC_C.grey + ';font-size:15px">' + grey + '</div><div class="slbl">Geen data</div></div></div>';
+  bar.innerHTML = h;
 }
 
 const GEO = [
@@ -427,15 +536,25 @@ function initMap() {
     el.setAttribute('class', 'region');
     el.setAttribute('d', feat.d);
     el.setAttribute('fill', getColor(sn));
+    _geoEls.push({el: el, sn: sn});
 
     el.addEventListener('mousemove', function(ev) {
       const rn = resolve(sn) || sn;
       const row = byRegio[rn];
-      const s = row ? row.status : 'Onbekend';
-      const sc = STATUSCFG[s] || {c: '#aaa'};
-      tip.innerHTML = '<div class="tn">' + rn + '</div>'
-        + '<div class="ts" style="color:' + sc.c + '">' + s + '</div>'
-        + (row && row.platform ? '<div class="tp">📡 ' + row.platform + '</div>' : '');
+      var tipVal = '';
+      if (currentUC === 'status') {
+        const s = row ? row.status : 'Onbekend';
+        const sc = STATUSCFG[s] || {c: '#aaa'};
+        tipVal = '<div class="ts" style="color:' + sc.c + '">' + s + '</div>'
+          + (row && row.platform ? '<div class="tp">\u{1F4E1} ' + row.platform + '</div>' : '');
+      } else {
+        var cfg = UCCFG[currentUC];
+        var val = row ? (row[cfg.field] || '') : '';
+        var col = getUCColor(val);
+        tipVal = '<div class="ts" style="color:' + col + '">' + (val || 'Geen data') + '</div>'
+          + '<div class="tp" style="opacity:.6">' + cfg.label + '</div>';
+      }
+      tip.innerHTML = '<div class="tn">' + rn + '</div>' + tipVal;
       tip.classList.add('show');
       const r = cont.getBoundingClientRect();
       let x = ev.clientX - r.left + 14, y = ev.clientY - r.top - 10;
