@@ -17,7 +17,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 /* HEADER */
 header{background:var(--navy);color:#fff;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.2);z-index:10}
 .hbadge{background:var(--paars);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-right:12px}
-.htitle{font-size:16px;font-weight:600}
+.htitle{font-size:18px;font-weight:700;letter-spacing:.2px}
+.hsubtitle{font-size:12px;font-weight:400;color:rgba(255,255,255,.6);margin-top:1px}
 .legend{display:flex;gap:10px;align-items:center}
 .leg{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.8);padding:3px 8px;border-radius:20px}
 .ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
@@ -103,11 +104,10 @@ header{background:var(--navy);color:#fff;padding:0 24px;height:60px;display:flex
 <header>
   <div style="display:flex;align-items:center">
     <span class="hbadge">CDS</span>
-    <span class="htitle">Data Samenwerkingen — IZA Regio Monitor</span>
-  </div>
-  <div style="display:flex;align-items:center;gap:20px">
-    <div class="legend" id="legend"></div>
-    <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px">ZN</span>
+    <div>
+      <div class="htitle">Data Samenwerkingen</div>
+      <div class="hsubtitle">IZA Regio Monitor — Zorgverzekeraars Nederland</div>
+    </div>
   </div>
 </header>
 <div class="statsbar" id="statsbar"></div>
